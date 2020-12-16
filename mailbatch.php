@@ -1,8 +1,24 @@
 <?php
+/*-------------------------------------------------------+
+| SYSTOPIA MailBatch Extension                           |
+| Copyright (C) 2020 SYSTOPIA                            |
+| Author: B. Endres (endres@systopia.de)                 |
+| http://www.systopia.de/                                |
++--------------------------------------------------------+
+| This program is released as free software under the    |
+| Affero GPL license. You can redistribute it and/or     |
+| modify it under the terms of this license which you    |
+| can read by viewing the included agpl.txt or online    |
+| at www.gnu.org/licenses/agpl.html. Removal of this     |
+| copyright header is strictly prohibited without        |
+| written permission from the original author(s).        |
++--------------------------------------------------------*/
 
 require_once 'mailbatch.civix.php';
+
 // phpcs:disable
 use CRM_Mailbatch_ExtensionUtil as E;
+
 // phpcs:enable
 
 /**
@@ -10,8 +26,9 @@ use CRM_Mailbatch_ExtensionUtil as E;
  *
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_config/
  */
-function mailbatch_civicrm_config(&$config) {
-  _mailbatch_civix_civicrm_config($config);
+function mailbatch_civicrm_config(&$config)
+{
+    _mailbatch_civix_civicrm_config($config);
 }
 
 /**
@@ -19,8 +36,9 @@ function mailbatch_civicrm_config(&$config) {
  *
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_xmlMenu
  */
-function mailbatch_civicrm_xmlMenu(&$files) {
-  _mailbatch_civix_civicrm_xmlMenu($files);
+function mailbatch_civicrm_xmlMenu(&$files)
+{
+    _mailbatch_civix_civicrm_xmlMenu($files);
 }
 
 /**
@@ -28,8 +46,9 @@ function mailbatch_civicrm_xmlMenu(&$files) {
  *
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_install
  */
-function mailbatch_civicrm_install() {
-  _mailbatch_civix_civicrm_install();
+function mailbatch_civicrm_install()
+{
+    _mailbatch_civix_civicrm_install();
 }
 
 /**
@@ -37,8 +56,9 @@ function mailbatch_civicrm_install() {
  *
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_postInstall
  */
-function mailbatch_civicrm_postInstall() {
-  _mailbatch_civix_civicrm_postInstall();
+function mailbatch_civicrm_postInstall()
+{
+    _mailbatch_civix_civicrm_postInstall();
 }
 
 /**
@@ -46,8 +66,9 @@ function mailbatch_civicrm_postInstall() {
  *
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_uninstall
  */
-function mailbatch_civicrm_uninstall() {
-  _mailbatch_civix_civicrm_uninstall();
+function mailbatch_civicrm_uninstall()
+{
+    _mailbatch_civix_civicrm_uninstall();
 }
 
 /**
@@ -55,8 +76,9 @@ function mailbatch_civicrm_uninstall() {
  *
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_enable
  */
-function mailbatch_civicrm_enable() {
-  _mailbatch_civix_civicrm_enable();
+function mailbatch_civicrm_enable()
+{
+    _mailbatch_civix_civicrm_enable();
 }
 
 /**
@@ -64,8 +86,9 @@ function mailbatch_civicrm_enable() {
  *
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_disable
  */
-function mailbatch_civicrm_disable() {
-  _mailbatch_civix_civicrm_disable();
+function mailbatch_civicrm_disable()
+{
+    _mailbatch_civix_civicrm_disable();
 }
 
 /**
@@ -73,8 +96,9 @@ function mailbatch_civicrm_disable() {
  *
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_upgrade
  */
-function mailbatch_civicrm_upgrade($op, CRM_Queue_Queue $queue = NULL) {
-  return _mailbatch_civix_civicrm_upgrade($op, $queue);
+function mailbatch_civicrm_upgrade($op, CRM_Queue_Queue $queue = null)
+{
+    return _mailbatch_civix_civicrm_upgrade($op, $queue);
 }
 
 /**
@@ -85,8 +109,9 @@ function mailbatch_civicrm_upgrade($op, CRM_Queue_Queue $queue = NULL) {
  *
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_managed
  */
-function mailbatch_civicrm_managed(&$entities) {
-  _mailbatch_civix_civicrm_managed($entities);
+function mailbatch_civicrm_managed(&$entities)
+{
+    _mailbatch_civix_civicrm_managed($entities);
 }
 
 /**
@@ -98,8 +123,9 @@ function mailbatch_civicrm_managed(&$entities) {
  *
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_caseTypes
  */
-function mailbatch_civicrm_caseTypes(&$caseTypes) {
-  _mailbatch_civix_civicrm_caseTypes($caseTypes);
+function mailbatch_civicrm_caseTypes(&$caseTypes)
+{
+    _mailbatch_civix_civicrm_caseTypes($caseTypes);
 }
 
 /**
@@ -112,8 +138,9 @@ function mailbatch_civicrm_caseTypes(&$caseTypes) {
  *
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_angularModules
  */
-function mailbatch_civicrm_angularModules(&$angularModules) {
-  _mailbatch_civix_civicrm_angularModules($angularModules);
+function mailbatch_civicrm_angularModules(&$angularModules)
+{
+    _mailbatch_civix_civicrm_angularModules($angularModules);
 }
 
 /**
@@ -121,8 +148,9 @@ function mailbatch_civicrm_angularModules(&$angularModules) {
  *
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_alterSettingsFolders
  */
-function mailbatch_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
-  _mailbatch_civix_civicrm_alterSettingsFolders($metaDataFolders);
+function mailbatch_civicrm_alterSettingsFolders(&$metaDataFolders = null)
+{
+    _mailbatch_civix_civicrm_alterSettingsFolders($metaDataFolders);
 }
 
 /**
@@ -132,41 +160,15 @@ function mailbatch_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
  *
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_entityTypes
  */
-function mailbatch_civicrm_entityTypes(&$entityTypes) {
-  _mailbatch_civix_civicrm_entityTypes($entityTypes);
+function mailbatch_civicrm_entityTypes(&$entityTypes)
+{
+    _mailbatch_civix_civicrm_entityTypes($entityTypes);
 }
 
 /**
  * Implements hook_civicrm_thems().
  */
-function mailbatch_civicrm_themes(&$themes) {
-  _mailbatch_civix_civicrm_themes($themes);
+function mailbatch_civicrm_themes(&$themes)
+{
+    _mailbatch_civix_civicrm_themes($themes);
 }
-
-// --- Functions below this ship commented out. Uncomment as required. ---
-
-/**
- * Implements hook_civicrm_preProcess().
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_preProcess
- */
-//function mailbatch_civicrm_preProcess($formName, &$form) {
-//
-//}
-
-/**
- * Implements hook_civicrm_navigationMenu().
- *
- * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_navigationMenu
- */
-//function mailbatch_civicrm_navigationMenu(&$menu) {
-//  _mailbatch_civix_insert_navigation_menu($menu, 'Mailings', array(
-//    'label' => E::ts('New subliminal message'),
-//    'name' => 'mailing_subliminal_message',
-//    'url' => 'civicrm/mailing/subliminal',
-//    'permission' => 'access CiviMail',
-//    'operator' => 'OR',
-//    'separator' => 0,
-//  ));
-//  _mailbatch_civix_navigationMenu($menu);
-//}
