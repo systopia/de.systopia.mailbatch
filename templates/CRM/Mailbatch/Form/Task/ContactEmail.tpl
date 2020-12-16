@@ -53,30 +53,47 @@
   <h3>{ts}Content{/ts}</h3><br/>
 
   <div class="crm-section">
-    {capture assign=label_help}{ts}Template Help{/ts}{/capture}
-    <div class="label">{$form.template_id.label}{help id="id-token-help" title=$label_help}</div>
+    <div class="label">{$form.template_id.label}</div>
     <div class="content">{$form.template_id.html}</div>
     <div class="clear"></div>
   </div>
 
   <div class="crm-section">
-    <div class="label">{$form.attachment1_name.label}</div>
-    <div class="content">{$form.attachment1_name.html}</div>
-    <div class="clear"></div>
-  </div>
-
-  <div class="crm-section">
-    <div class="label">{$form.attachment1_path.label}</div>
+    <div class="label">{$form.attachment1_path.label}&nbsp;{help id="id-attachment-path" title=$form.attachment1_path.label}</div>
     <div class="content">{$form.attachment1_path.html}</div>
     <div class="clear"></div>
   </div>
 
-  <h3>{ts}Acitivities{/ts}</h3><br/>
+  <div class="crm-section">
+    <div class="label">{$form.attachment1_name.label}&nbsp;{help id="id-attachment-name" title=$form.attachment1_name.label}</div>
+    <div class="content">{$form.attachment1_name.html}</div>
+    <div class="clear"></div>
+  </div>
+
+
+  <h3>{ts}Activities{/ts}</h3><br/>
 
   <div class="crm-section">
-    {capture assign=label_help}{ts}Template Help{/ts}{/capture}
-    <div class="label">{$form.template_id.label}{help id="id-token-help" title=$label_help}</div>
-    <div class="content">{$form.template_id.html}</div>
+    <div class="label">{$form.sent_activity_type_id.label}</div>
+    <div class="content">{$form.sent_activity_type_id.html}</div>
+    <div class="clear"></div>
+  </div>
+
+  <div class="crm-section mailbatch-sent-section">
+    <div class="label">{$form.sent_activity_subject.label}</div>
+    <div class="content">{$form.sent_activity_subject.html}</div>
+    <div class="clear"></div>
+  </div>
+
+  <div class="crm-section">
+    <div class="label">{$form.failed_activity_type_id.label}</div>
+    <div class="content">{$form.failed_activity_type_id.html}</div>
+    <div class="clear"></div>
+  </div>
+
+  <div class="crm-section mailbatch-failed-section">
+    <div class="label">{$form.failed_activity_subject.label}</div>
+    <div class="content">{$form.failed_activity_subject.html}</div>
     <div class="clear"></div>
   </div>
 
@@ -85,3 +102,31 @@
       {include file="CRM/common/formButtons.tpl" location="bottom"}
   </div>
 {/crmScope}
+
+{literal}
+<script>
+  cj(document).ready(function() {
+    // add logic to sent_activity
+    cj("[name=sent_activity_type_id]").change(function() {
+      let active = cj("[name=sent_activity_type_id]").val();
+      if (active) {
+        cj("div.mailbatch-sent-section").show();
+      } else {
+        cj("div.mailbatch-sent-section").hide();
+      }
+    });
+    cj("[name=sent_activity_type_id]").change();
+
+    // add logic to failed_activity
+    cj("[name=failed_activity_type_id]").change(function() {
+      let active = cj("[name=failed_activity_type_id]").val();
+      if (active) {
+        cj("div.mailbatch-failed-section").show();
+      } else {
+        cj("div.mailbatch-failed-section").hide();
+      }
+    });
+    cj("[name=failed_activity_type_id]").change();
+  });
+</script>
+{/literal}

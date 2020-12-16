@@ -16,54 +16,45 @@
 use CRM_Eventmessages_ExtensionUtil as E;
 
 /**
- * Queue item for sending emails to participants
+ * Queue item for sending emails to contacts
  */
 class CRM_Mailbatch_SendMailJob
 {
     /** @var string job title */
     public $title = '';
 
-    /** @var array list of (int) participant IDs */
-    protected $participant_ids;
+    /** @var array list of (int) contact IDs */
+    protected $contact_ids;
 
-    /** @var integer template to send to */
-    protected $template_id;
+    /** @var array template to send to */
+    protected $config;
 
-    public function __construct($participant_ids, $template_id, $title)
+    public function __construct($contact_ids, $config, $title)
     {
-        $this->participant_ids = $participant_ids;
-        $this->template_id = $template_id;
+        $this->contact_ids = $contact_ids;
+        $this->config = $config;
         $this->title = $title;
     }
 
     /**
-     *
-     *
+     * Execute the batch of emails to be sent
      * @return true
      */
     public function run(): bool
     {
-        if (!empty($this->participant_ids)) {
-            // load the participants
-            $participants = civicrm_api3('Participant', 'get', [
-                'id'           => ['IN' => $this->participant_ids],
-                'return'       => 'id,contact_id,event_id,status_id',
+        if (!empty($this->contact_ids)) {
+            // load the contacts
+            $contacts = civicrm_api3('Contact', 'get', [
+                'id'           => ['IN' => $this->contact_ids],
                 'option.limit' => 0,
             ]);
             // trigger sendMessageTo for each one of them
-            foreach ($participants['values'] as $participant) {
+            foreach ($contacts['values'] as $contact) {
                 try {
-                    CRM_Eventmessages_SendMail::sendMessageTo([
-                          'participant_id' => $participant['id'],
-                          'event_id'       => $participant['event_id'],
-                          'from'           => $participant['status_id'],
-                          'to'             => $participant['status_id'],
-                          'rule'           => 0,
-                          'template_id'    => $this->template_id
-                    ]);
+
                 } catch (Exception $exception) {
                     // this shouldn't happen, sendMessageTo has it's own error handling
-                    Civi::log()->notice("EventMessages.SendMailJob: Error sending to participant [{$participant['id']}]: " . $exception->getMessage());
+                    Civi::log()->notice("EventMessages.SendMailJob: Error sending to contact [{$contact['id']}]: " . $exception->getMessage());
                 }
             }
         }

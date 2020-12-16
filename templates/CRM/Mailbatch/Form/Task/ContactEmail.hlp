@@ -12,11 +12,15 @@
 | written permission from the original author(s).        |
 +-------------------------------------------------------*}
 
-{crmScope extensionKey='de.systopia.eventmessages'}
+{crmScope extensionKey='de.systopia.mailbatch'}
 
-{htxt id='id-token-help'}
-{capture assign=token_url}{crmURL p="civicrm/eventmessages/tokenlist"}{/capture}
-  <p>{ts domain="de.systopia.eventmessages" 1=$token_url}Did you know that you can find a list of all tokens available in the email templates <a class="crm-popup" href="%1">HERE</a>?{/ts}</p>
+{htxt id='id-attachment-name'}
+  {ts}This the the name the recipient will receive the attachment under{/ts}
+{/htxt}
+
+{htxt id='id-attachment-path'}
+  {ts}This needs to specify an absolute file path that is accessible from CiviCRM.{/ts}
+  {ts}In Order to send different attachments per contact, you can use the token <code>{literal}{{/literal}contact_id{literal}}{/literal}</code> in the filename.{/ts}
 {/htxt}
 
 {/crmScope}

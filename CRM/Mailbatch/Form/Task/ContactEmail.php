@@ -88,27 +88,68 @@ class CRM_Mailbatch_Form_Task_ContactEmail extends CRM_Contact_Form_Task
 
         $this->add(
             'text',
-            'attachment1_name',
-            E::ts('Attachment Name'),
-            ['class' => 'huge'],
-            false
-        );
-
-        $this->add(
-            'text',
             'attachment1_path',
             E::ts('Attachment Path/URL'),
             ['class' => 'huge'],
             false
         );
 
+        $this->add(
+            'text',
+            'attachment1_name',
+            E::ts('Attachment Name'),
+            ['class' => 'huge'],
+            false
+        );
+
+        $activity_types = $this->getActivityTypes();
+        $this->add(
+            'select',
+            'sent_activity_type_id',
+            E::ts('Activity (when sent)'),
+            $activity_types,
+            false,
+            ['class' => 'huge']
+        );
+
+        $this->add(
+            'text',
+            'sent_activity_subject',
+            E::ts('Activity Subject'),
+            ['class' => 'huge'],
+            false
+        );
+
+        $this->add(
+            'select',
+            'failed_activity_type_id',
+            E::ts('Activity (when failed)'),
+            $activity_types,
+            false,
+            ['class' => 'huge']
+        );
+
+        $this->add(
+            'text',
+            'failed_activity_subject',
+            E::ts('Activity Subject'),
+            false
+        );
+
         // set default values
         $this->setDefaults([
-            'template_id'     => Civi::settings()->get('batchmail_template_id'),
-            'batch_size'      => Civi::settings()->get('batchmail_batch_size'),
-            'sender_cc'       => Civi::settings()->get('batchmail_sender_cc'),
-            'sender_bcc'      => Civi::settings()->get('batchmail_sender_bcc'),
-            'sender_reply_to' => Civi::settings()->get('batchmail_sender_reply_to'),
+            'template_id'      => Civi::settings()->get('batchmail_template_id'),
+            'batch_size'       => Civi::settings()->get('batchmail_batch_size'),
+            'sender_email'     => Civi::settings()->get('batchmail_sender_email'),
+            'sender_cc'        => Civi::settings()->get('batchmail_sender_cc'),
+            'sender_bcc'       => Civi::settings()->get('batchmail_sender_bcc'),
+            'sender_reply_to'  => Civi::settings()->get('batchmail_sender_reply_to'),
+            'attachment1_path' => Civi::settings()->get('batchmail_attachment1_path'),
+            'attachment1_name' => Civi::settings()->get('batchmail_attachment1_name'),
+            'sent_activity_type_id'   => Civi::settings()->get('batchmail_sent_activity_type_id'),
+            'sent_activity_subject'   => Civi::settings()->get('batchmail_sent_activity_subject'),
+            'failed_activity_type_id' => Civi::settings()->get('batchmail_failed_activity_type_id'),
+            'failed_activity_subject' => Civi::settings()->get('batchmail_failed_activity_subject'),
        ]);
 
         CRM_Core_Form::addDefaultButtons(E::ts("Send %1 Emails", [1 => $contact_count - $no_email_count]));
@@ -118,12 +159,22 @@ class CRM_Mailbatch_Form_Task_ContactEmail extends CRM_Contact_Form_Task
     function postProcess()
     {
         $values = $this->exportValues();
+        $values['sender_contact_id'] = CRM_Core_Session::getLoggedInContactID();
         $contact_count = count($this->_contactIds) - $this->getNoEmailCount();
 
         // store default values
-        Civi::settings()->set('batchmail_template_id',  $values['template_id']);
-        Civi::settings()->set('batchmail_sender_email', $values['sender_email']);
-        Civi::settings()->set('batchmail_batch_size',   $values['batch_size']);
+        Civi::settings()->set('batchmail_template_id',      $values['template_id']);
+        Civi::settings()->set('batchmail_sender_email',     $values['sender_email']);
+        Civi::settings()->set('batchmail_batch_size',       $values['batch_size']);
+        Civi::settings()->set('batchmail_sender_cc',        $values['sender_cc']);
+        Civi::settings()->set('batchmail_sender_bcc',       $values['sender_bcc']);
+        Civi::settings()->set('batchmail_sender_reply_to',  $values['sender_reply_to']);
+        Civi::settings()->set('batchmail_attachment1_path', $values['attachment1_path']);
+        Civi::settings()->set('batchmail_attachment1_name', $values['attachment1_name']);
+        Civi::settings()->set('batchmail_sent_activity_type_id',   $values['sent_activity_type_id']);
+        Civi::settings()->set('batchmail_sent_activity_subject',   $values['sent_activity_subject']);
+        Civi::settings()->set('batchmail_failed_activity_type_id', $values['failed_activity_type_id']);
+        Civi::settings()->set('batchmail_failed_activity_subject', $values['failed_activity_subject']);
 
         // init a queue
         $queue = CRM_Queue_Service::singleton()->create([
@@ -150,8 +201,7 @@ class CRM_Mailbatch_Form_Task_ContactEmail extends CRM_Contact_Form_Task
                    AND email.is_primary = 1
                    AND email.on_hold = 0
             WHERE contact.id IN ({$contact_id_list})
-              AND email.id IS NOT NULL
-            ORDER BY contact.event_id ASC");
+              AND email.id IS NOT NULL");
 
         // batch the contacts into bite-sized jobs
         $current_batch = [];
@@ -160,9 +210,8 @@ class CRM_Mailbatch_Form_Task_ContactEmail extends CRM_Contact_Form_Task
             $current_batch[] = $contact_query->contact_id;
             if (count($current_batch) >= $values['batch_size']) {
                 $queue->createItem(
-                    new CRM_Mailbatch_SendMailJob(
-                        $current_batch,
-                        $values['template_id'],
+                    new CRM_Mailbatch_SendMailJob($current_batch,
+                        $values,
                         E::ts("Sending Emails %1 - %2", [
                             1 => $next_offset, // keep in mind that this is showing when the _next_ task is running
                             2 => $next_offset + $values['batch_size']])
@@ -177,7 +226,7 @@ class CRM_Mailbatch_Form_Task_ContactEmail extends CRM_Contact_Form_Task
         $queue->createItem(
             new CRM_Mailbatch_SendMailJob(
                 $current_batch,
-                $values['template_id'],
+                $values,
                 E::ts("Finishing")
             )
         );
@@ -259,6 +308,23 @@ class CRM_Mailbatch_Form_Task_ContactEmail extends CRM_Contact_Form_Task
             '150' => E::ts("%1 E-Mails per Batch", [1 => 150]),
             '250' => E::ts("%1 E-Mails per Batch", [1 => 250]),
         ];
+    }
+
+    /**
+     * Get a list of activity types
+     */
+    private function getActivityTypes()
+    {
+        $types = ['' => E::ts("disabled")];
+        $query = civicrm_api3('OptionValue', 'get', [
+            'option_group_id' => 'activity_type',
+            'option.limit'    => 0,
+            'return'          => 'label,value'
+        ]);
+        foreach ($query['values'] as $type) {
+            $types[$type['value']] = $type['label'];
+        }
+        return $types;
     }
 
     /**
