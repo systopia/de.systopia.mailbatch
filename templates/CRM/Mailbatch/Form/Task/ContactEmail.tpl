@@ -58,6 +58,13 @@
     <div class="clear"></div>
   </div>
 
+
+  <div class="crm-section">
+    <div class="label">{$form.send_wo_attachment.label}&nbsp;{help id="id-no-attachment" title=$form.send_wo_attachment.label}</div>
+    <div class="content">{$form.send_wo_attachment.html}</div>
+    <div class="clear"></div>
+  </div>
+
   <div class="crm-section">
     <div class="label">{$form.attachment1_path.label}&nbsp;{help id="id-attachment-path" title=$form.attachment1_path.label}</div>
     <div class="content">{$form.attachment1_path.html}</div>

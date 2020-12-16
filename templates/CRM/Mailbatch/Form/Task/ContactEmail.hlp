@@ -23,4 +23,9 @@
   {ts}In Order to send different attachments per contact, you can use the token <code>{literal}{{/literal}contact_id{literal}}{/literal}</code> in the filename.{/ts}
 {/htxt}
 
+{htxt id='id-no-attachment'}
+  {ts}If this is checked, the email will be sent, even if the attachment is not found.{/ts}
+  {ts}Otherwise it will be not sent, and receive an error activity instead.{/ts}
+{/htxt}
+
 {/crmScope}

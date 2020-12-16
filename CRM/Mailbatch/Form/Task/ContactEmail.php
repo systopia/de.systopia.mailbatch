@@ -87,6 +87,12 @@ class CRM_Mailbatch_Form_Task_ContactEmail extends CRM_Contact_Form_Task
         );
 
         $this->add(
+            'checkbox',
+            'send_wo_attachment',
+            E::ts('Send if attachment not found?')
+        );
+
+        $this->add(
             'text',
             'attachment1_path',
             E::ts('Attachment Path/URL'),
@@ -144,8 +150,9 @@ class CRM_Mailbatch_Form_Task_ContactEmail extends CRM_Contact_Form_Task
             'sender_cc'        => Civi::settings()->get('batchmail_sender_cc'),
             'sender_bcc'       => Civi::settings()->get('batchmail_sender_bcc'),
             'sender_reply_to'  => Civi::settings()->get('batchmail_sender_reply_to'),
-            'attachment1_path' => Civi::settings()->get('batchmail_attachment1_path'),
-            'attachment1_name' => Civi::settings()->get('batchmail_attachment1_name'),
+            'send_wo_attachment' => Civi::settings()->get('batchmail_send_wo_attachment'),
+            'attachment1_path'   => Civi::settings()->get('batchmail_attachment1_path'),
+            'attachment1_name'   => Civi::settings()->get('batchmail_attachment1_name'),
             'sent_activity_type_id'   => Civi::settings()->get('batchmail_sent_activity_type_id'),
             'sent_activity_subject'   => Civi::settings()->get('batchmail_sent_activity_subject'),
             'failed_activity_type_id' => Civi::settings()->get('batchmail_failed_activity_type_id'),
@@ -169,8 +176,9 @@ class CRM_Mailbatch_Form_Task_ContactEmail extends CRM_Contact_Form_Task
         Civi::settings()->set('batchmail_sender_cc',        $values['sender_cc']);
         Civi::settings()->set('batchmail_sender_bcc',       $values['sender_bcc']);
         Civi::settings()->set('batchmail_sender_reply_to',  $values['sender_reply_to']);
-        Civi::settings()->set('batchmail_attachment1_path', $values['attachment1_path']);
-        Civi::settings()->set('batchmail_attachment1_name', $values['attachment1_name']);
+        Civi::settings()->set('batchmail_send_wo_attachment', CRM_Utils_Array::value('send_wo_attachment', $values, 0));
+        Civi::settings()->set('batchmail_attachment1_path',   $values['attachment1_path']);
+        Civi::settings()->set('batchmail_attachment1_name',   $values['attachment1_name']);
         Civi::settings()->set('batchmail_sent_activity_type_id',   $values['sent_activity_type_id']);
         Civi::settings()->set('batchmail_sent_activity_subject',   $values['sent_activity_subject']);
         Civi::settings()->set('batchmail_failed_activity_type_id', $values['failed_activity_type_id']);
@@ -210,7 +218,8 @@ class CRM_Mailbatch_Form_Task_ContactEmail extends CRM_Contact_Form_Task
             $current_batch[] = $contact_query->contact_id;
             if (count($current_batch) >= $values['batch_size']) {
                 $queue->createItem(
-                    new CRM_Mailbatch_SendMailJob($current_batch,
+                    new CRM_Mailbatch_SendMailJob(
+                        $current_batch,
                         $values,
                         E::ts("Sending Emails %1 - %2", [
                             1 => $next_offset, // keep in mind that this is showing when the _next_ task is running
@@ -269,28 +278,14 @@ class CRM_Mailbatch_Form_Task_ContactEmail extends CRM_Contact_Form_Task
 
     /**
      * Get a list of the available/allowed sender email addresses
-     *
-     * @return array
-     *   list of sender options
      */
-    private function getSenderOptions(): array
-    {
-        $list = [];
-        $query = civicrm_api3(
-            'OptionValue',
-            'get',
-            [
-                'option_group_id' => 'from_email_address',
-                'option.limit' => 0,
-                'return' => 'value,label',
-            ]
-        );
-
-        foreach ($query['values'] as $sender) {
-            $list[$sender['value']] = $sender['label'];
+    protected function getSenderOptions() {
+        $dropdown_list = [];
+        $from_email_addresses = CRM_Core_OptionGroup::values('from_email_address');
+        foreach ($from_email_addresses as $key => $from_email_address) {
+            $dropdown_list[$key] = htmlentities($from_email_address);
         }
-
-        return $list;
+        return $dropdown_list;
     }
 
     /**
