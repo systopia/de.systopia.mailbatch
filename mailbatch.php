@@ -172,3 +172,19 @@ function mailbatch_civicrm_themes(&$themes)
 {
     _mailbatch_civix_civicrm_themes($themes);
 }
+
+/**
+ * Implementation of hook_civicrm_searchTasks,
+ *  to inject our 'Send E-Mail' task
+ */
+function mailbatch_civicrm_searchTasks($objectType, &$tasks)
+{
+    // add "Send E-Mail" task to contact search result
+    if ($objectType == 'contact') {
+        $tasks[] = [
+            'title' => E::ts('Send Emails (via MailBatch)'),
+            'class' => 'CRM_Mailbatch_Form_Task_ContactEmail',
+            'result' => false
+        ];
+    }
+}
