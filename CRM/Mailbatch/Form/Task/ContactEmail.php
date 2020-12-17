@@ -310,9 +310,11 @@ class CRM_Mailbatch_Form_Task_ContactEmail extends CRM_Contact_Form_Task
      */
     private function getActivityTypes()
     {
-        $types = ['' => E::ts("disabled")];
+        $types = ['' => E::ts("--disabled--")];
         $query = civicrm_api3('OptionValue', 'get', [
             'option_group_id' => 'activity_type',
+            'is_reserved'     => 0,
+            'component_id'    => ['IS NULL' => 1],
             'option.limit'    => 0,
             'return'          => 'label,value'
         ]);
