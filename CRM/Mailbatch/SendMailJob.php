@@ -159,14 +159,19 @@ class CRM_Mailbatch_SendMailJob
      */
     protected function createActivity($activity_type_id, $subject, $sender_contact_id, $target_contact_ids, $status, $details = null)
     {
-        civicrm_api3('Activity', 'create', [
-            'activity_type_id'  => $activity_type_id,
-            'status_id'         => $status,
-            'source_contact_id' => $sender_contact_id,
-            'target_contact_id' => $target_contact_ids,
-            'subject'           => $subject,
-            'details'           => $details,
-        ]);
+        try {
+            $activity_data = [
+                'activity_type_id'  => $activity_type_id,
+                'status_id'         => $status,
+                'source_contact_id' => $sender_contact_id,
+                'target_contact_id' => $target_contact_ids,
+                'subject'           => $subject,
+                'details'           => $details,
+            ];
+            civicrm_api3('Activity', 'create', $activity_data);
+        } catch (CiviCRM_API3_Exception $ex) {
+            Civi::log()->debug("Couldn't create activity: " . json_encode($activity_data) . ' - error was: ' . $ex->getMessage());
+        }
     }
 
     /**
