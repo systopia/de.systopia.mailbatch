@@ -29,6 +29,9 @@ class CRM_Mailbatch_SendMailJob
     /** @var array template to send to */
     protected $config;
 
+    /** @var array errors by contact ID */
+    protected $errors;
+
     public function __construct($contact_ids, $config, $title)
     {
         $this->contact_ids = $contact_ids;
@@ -85,8 +88,13 @@ class CRM_Mailbatch_SendMailJob
                             'mime_type' => $this->getMimeType($attachment_file),
                             'cleanName' => $file_name,
                         ];
+                        $email_data['attachments'] = $attachments;
+
+                    } elseif (empty($this->config['send_wo_attachment'])) {
+                        // no attachment -> cannot send
+                        throw new Exception(E::ts("Attachment '%1' not found.", [
+                            1 => $this->config['attachment1_path']]));
                     }
-                    $email_data['attachments'] = $attachments;
 
                     // send email
                     civicrm_api3('MessageTemplate', 'send', $email_data);
@@ -97,7 +105,7 @@ class CRM_Mailbatch_SendMailJob
                 } catch (Exception $exception) {
                     // this shouldn't happen, sendMessageTo has it's own error handling
                     $mail_sending_failed[] = $contact['id'];
-                    Civi::log()->warning("MailBatch.SendMailJob: Error sending to contact [{$contact['id']}]: " . $exception->getMessage());
+                    $this->errors[$contact['id']] = $exception->getMessage();
                 }
             }
 
@@ -113,12 +121,25 @@ class CRM_Mailbatch_SendMailJob
             }
 
             if (!empty($mail_sending_failed) && !empty($this->config['failed_activity_type_id'])) {
+                // render list of errors
+                $error_to_contact_id = [];
+                foreach ($this->errors as $contact_id => $error) {
+                    $error_to_contact_id[$error][] = $contact_id;
+                }
+                $details = E::ts("<p>The following errors occurred (with contact IDs):<ul>");
+                foreach ($error_to_contact_id as $error => $contact_ids) {
+                    $contact_id_list = implode(',', $contact_ids);
+                    $details.= E::ts("<li>%1 (%2)</li>", [1 => $error, 2 => $contact_id_list]);
+                }
+                $details.= "</ul></p>";
+
                 $this->createActivity(
                     $this->config['failed_activity_type_id'],
                     $this->config['failed_activity_subject'],
                     $this->config['sender_contact_id'],
                     $mail_sending_failed,
-                    'Scheduled'
+                    'Scheduled',
+                    $details
                 );
             }
 
@@ -132,10 +153,11 @@ class CRM_Mailbatch_SendMailJob
      * @param integer $activity_type_id
      * @param string $subject
      * @param string $status
+     * @param string $details
      * @param integer $sender_contact_id
      * @param array $target_contact_ids
      */
-    protected function createActivity($activity_type_id, $subject, $sender_contact_id, $target_contact_ids, $status)
+    protected function createActivity($activity_type_id, $subject, $sender_contact_id, $target_contact_ids, $status, $details = null)
     {
         civicrm_api3('Activity', 'create', [
             'activity_type_id'  => $activity_type_id,
@@ -143,6 +165,7 @@ class CRM_Mailbatch_SendMailJob
             'source_contact_id' => $sender_contact_id,
             'target_contact_id' => $target_contact_ids,
             'subject'           => $subject,
+            'details'           => $details,
         ]);
     }
 
