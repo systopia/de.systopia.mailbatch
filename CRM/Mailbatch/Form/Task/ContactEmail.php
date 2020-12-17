@@ -245,7 +245,7 @@ class CRM_Mailbatch_Form_Task_ContactEmail extends CRM_Contact_Form_Task
                 'title'     => E::ts("Sending %1 Event Emails", [1 => $contact_count]),
                 'queue'     => $queue,
                 'errorMode' => CRM_Queue_Runner::ERROR_ABORT,
-                'onEndUrl'  => CRM_Core_Session::singleton()->readUserContext()
+                'onEndUrl'  => html_entity_decode(CRM_Core_Session::singleton()->readUserContext())
         ]);
         $runner->runAllViaWeb();
     }
@@ -296,9 +296,9 @@ class CRM_Mailbatch_Form_Task_ContactEmail extends CRM_Contact_Form_Task
      */
     private function getBatchSizes() {
         return [
-            '10' => E::ts("%1 E-Mails per Batch", [1 => 10]),
-            '25' => E::ts("%1 E-Mails per Batch", [1 => 25]),
-            '50' => E::ts("%1 E-Mails per Batch", [1 => 50]),
+            '10'  => E::ts("%1 E-Mails per Batch", [1 => 10]),
+            '25'  => E::ts("%1 E-Mails per Batch", [1 => 25]),
+            '50'  => E::ts("%1 E-Mails per Batch", [1 => 50]),
             '100' => E::ts("%1 E-Mails per Batch", [1 => 100]),
             '150' => E::ts("%1 E-Mails per Batch", [1 => 150]),
             '250' => E::ts("%1 E-Mails per Batch", [1 => 250]),
