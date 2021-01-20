@@ -136,6 +136,15 @@ class CRM_Mailbatch_Form_Task_ContactEmail extends CRM_Contact_Form_Task
         );
 
         $this->add(
+            'select',
+            'activity_grouped',
+            E::ts('Activity Style'),
+            [0 => E::ts("Individual"), 1 => E::ts("Grouped")],
+            false,
+            ['class' => 'huge']
+        );
+
+        $this->add(
             'text',
             'failed_activity_subject',
             E::ts('Activity Subject'),
@@ -154,6 +163,7 @@ class CRM_Mailbatch_Form_Task_ContactEmail extends CRM_Contact_Form_Task
             'attachment1_path'   => Civi::settings()->get('batchmail_attachment1_path'),
             'attachment1_name'   => Civi::settings()->get('batchmail_attachment1_name'),
             'sent_activity_type_id'   => Civi::settings()->get('batchmail_sent_activity_type_id'),
+            'sent_activity_grouped'   => Civi::settings()->get('batchmail_sent_activity_grouped'),
             'sent_activity_subject'   => Civi::settings()->get('batchmail_sent_activity_subject'),
             'failed_activity_type_id' => Civi::settings()->get('batchmail_failed_activity_type_id'),
             'failed_activity_subject' => Civi::settings()->get('batchmail_failed_activity_subject'),
@@ -182,6 +192,7 @@ class CRM_Mailbatch_Form_Task_ContactEmail extends CRM_Contact_Form_Task
         Civi::settings()->set('batchmail_sent_activity_type_id',   $values['sent_activity_type_id']);
         Civi::settings()->set('batchmail_sent_activity_subject',   $values['sent_activity_subject']);
         Civi::settings()->set('batchmail_failed_activity_type_id', $values['failed_activity_type_id']);
+        Civi::settings()->set('batchmail_activity_grouped',        $values['activity_grouped']);
         Civi::settings()->set('batchmail_failed_activity_subject', $values['failed_activity_subject']);
 
         // init a queue

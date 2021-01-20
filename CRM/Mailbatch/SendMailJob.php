@@ -111,13 +111,27 @@ class CRM_Mailbatch_SendMailJob
 
             // create activities
             if (!empty($mail_successfully_sent) && !empty($this->config['sent_activity_type_id'])) {
-                $this->createActivity(
-                    $this->config['sent_activity_type_id'],
-                    $this->config['sent_activity_subject'],
-                    $this->config['sender_contact_id'],
-                    $mail_successfully_sent,
-                    'Completed'
-                );
+                if (!empty($this->config['activity_grouped'])) {
+                    // create one grouped activity:
+                    $this->createActivity(
+                        $this->config['sent_activity_type_id'],
+                        $this->config['sent_activity_subject'],
+                        $this->config['sender_contact_id'],
+                        $mail_successfully_sent,
+                        'Completed'
+                    );
+                } else {
+                    // create individual activities
+                    foreach ($mail_successfully_sent as $contact_id) {
+                        $this->createActivity(
+                            $this->config['sent_activity_type_id'],
+                            $this->config['sent_activity_subject'],
+                            $this->config['sender_contact_id'],
+                            [$contact_id],
+                            'Completed'
+                        );
+                    }
+                }
             }
 
             if (!empty($mail_sending_failed) && !empty($this->config['failed_activity_type_id'])) {
@@ -132,6 +146,30 @@ class CRM_Mailbatch_SendMailJob
                     $details.= E::ts("<li>%1 (%2)</li>", [1 => $error, 2 => $contact_id_list]);
                 }
                 $details.= "</ul></p>";
+
+                if (!empty($this->config['activity_grouped'])) {
+                    // create one grouped activity:
+                    $this->createActivity(
+                        $this->config['failed_activity_type_id'],
+                        $this->config['failed_activity_subject'],
+                        $this->config['sender_contact_id'],
+                        $mail_sending_failed,
+                        'Scheduled',
+                        $details
+                    );
+                } else {
+                    // create individual activities
+                    foreach ($mail_sending_failed as $contact_id) {
+                        $this->createActivity(
+                            $this->config['failed_activity_type_id'],
+                            $this->config['failed_activity_subject'],
+                            $this->config['sender_contact_id'],
+                            [$contact_id],
+                            'Scheduled',
+                            E::ts("Error was: %1", $this->errors[$contact_id])
+                        );
+                    }
+                }
 
                 $this->createActivity(
                     $this->config['failed_activity_type_id'],
