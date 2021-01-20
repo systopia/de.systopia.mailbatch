@@ -166,19 +166,10 @@ class CRM_Mailbatch_SendMailJob
                             $this->config['sender_contact_id'],
                             [$contact_id],
                             'Scheduled',
-                            E::ts("Error was: %1", $this->errors[$contact_id])
+                            E::ts("Error was: %1", [1 => $this->errors[$contact_id]])
                         );
                     }
                 }
-
-                $this->createActivity(
-                    $this->config['failed_activity_type_id'],
-                    $this->config['failed_activity_subject'],
-                    $this->config['sender_contact_id'],
-                    $mail_sending_failed,
-                    'Scheduled',
-                    $details
-                );
             }
 
         }
