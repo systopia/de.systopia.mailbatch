@@ -58,6 +58,11 @@
     <div class="clear"></div>
   </div>
 
+  <div class="crm-section">
+    <div class="label">{$form.enable_smarty.label}&nbsp;{help id="id-smarty" title=$form.enable_smarty.label}</div>
+    <div class="content">{$form.enable_smarty.html}</div>
+    <div class="clear"></div>
+  </div>
 
   <div class="crm-section">
     <div class="label">{$form.send_wo_attachment.label}&nbsp;{help id="id-no-attachment" title=$form.send_wo_attachment.label}</div>
