@@ -61,9 +61,6 @@ class CRM_Mailbatch_SendMailJob
                 $sender = reset($from_addresses);
             }
 
-            // disable smarty for emails?
-            $smarty_previously_enabled = (defined('CIVICRM_MAIL_SMARTY') && CIVICRM_MAIL_SMARTY);
-
             // trigger sendMessageTo for each one of them
             $mail_successfully_sent = [];
             $mail_sending_failed = [];
@@ -100,9 +97,7 @@ class CRM_Mailbatch_SendMailJob
                     }
 
                     // send email
-                    define('CIVICRM_MAIL_SMARTY', (boolean) $this->config['enable_smarty']);
                     civicrm_api3('MessageTemplate', 'send', $email_data);
-                    define('CIVICRM_MAIL_SMARTY', $smarty_previously_enabled);
 
                     // mark as success
                     $mail_successfully_sent[] = $contact['id'];
@@ -111,7 +106,6 @@ class CRM_Mailbatch_SendMailJob
                     // this shouldn't happen, sendMessageTo has it's own error handling
                     $mail_sending_failed[] = $contact['id'];
                     $this->errors[$contact['id']] = $exception->getMessage();
-                    define('CIVICRM_MAIL_SMARTY', $smarty_previously_enabled);
                 }
             }
 

@@ -44,11 +44,11 @@ class CRM_Mailbatch_Form_Task_ContactEmail extends CRM_Contact_Form_Task
             ['class' => 'crm-select2 huge']
         );
 
-        $this->add(
-            'checkbox',
-            'enable_smarty',
-            E::ts('Enable SMARTY for this template')
-        );
+//        $this->add(
+//            'checkbox',
+//            'enable_smarty',
+//            E::ts('Enable SMARTY for this template')
+//        );
 
         $this->add(
             'select',
@@ -176,7 +176,7 @@ class CRM_Mailbatch_Form_Task_ContactEmail extends CRM_Contact_Form_Task
             'sender_bcc'               => Civi::settings()->get('batchmail_sender_bcc'),
             'sender_reply_to'          => Civi::settings()->get('batchmail_sender_reply_to'),
             'send_wo_attachment'       => Civi::settings()->get('batchmail_send_wo_attachment'),
-            'enable_smarty'            => Civi::settings()->get('batchmail_enable_smarty'),
+            //'enable_smarty'            => Civi::settings()->get('batchmail_enable_smarty'),
             'attachment1_path'         => Civi::settings()->get('batchmail_attachment1_path'),
             'attachment1_name'         => Civi::settings()->get('batchmail_attachment1_name'),
             'sent_activity_type_id'    => Civi::settings()->get('batchmail_sent_activity_type_id'),
@@ -205,7 +205,7 @@ class CRM_Mailbatch_Form_Task_ContactEmail extends CRM_Contact_Form_Task
         Civi::settings()->set('batchmail_sender_bcc',               $values['sender_bcc']);
         Civi::settings()->set('batchmail_sender_reply_to',          $values['sender_reply_to']);
         Civi::settings()->set('batchmail_send_wo_attachment',       CRM_Utils_Array::value('send_wo_attachment', $values, 0));
-        Civi::settings()->set('batchmail_enable_smarty',            CRM_Utils_Array::value('enable_smarty', $values, 0));
+        //Civi::settings()->set('batchmail_enable_smarty',            CRM_Utils_Array::value('enable_smarty', $values, 0));
         Civi::settings()->set('batchmail_attachment1_path',         $values['attachment1_path']);
         Civi::settings()->set('batchmail_attachment1_name',         $values['attachment1_name']);
         Civi::settings()->set('batchmail_sent_activity_type_id',    $values['sent_activity_type_id']);
