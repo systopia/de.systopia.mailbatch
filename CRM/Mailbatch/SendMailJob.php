@@ -161,7 +161,8 @@ class CRM_Mailbatch_SendMailJob
                         $this->config['sender_contact_id'],
                         $mail_sending_failed,
                         'Scheduled',
-                        $details
+                        $details,
+                        $this->config['failed_activity_assignee']
                     );
                 } else {
                     // create individual activities
@@ -172,7 +173,8 @@ class CRM_Mailbatch_SendMailJob
                             $this->config['sender_contact_id'],
                             [$contact_id],
                             'Scheduled',
-                            E::ts("Error was: %1", [1 => $this->errors[$contact_id]])
+                            E::ts("Error was: %1", [1 => $this->errors[$contact_id]]),
+                            $this->config['failed_activity_assignee']
                         );
                     }
                 }
@@ -192,7 +194,7 @@ class CRM_Mailbatch_SendMailJob
      * @param integer $sender_contact_id
      * @param array $target_contact_ids
      */
-    protected function createActivity($activity_type_id, $subject, $sender_contact_id, $target_contact_ids, $status, $details = null)
+    protected function createActivity($activity_type_id, $subject, $sender_contact_id, $target_contact_ids, $status, $details = null, $assignees = '')
     {
         try {
             $activity_data = [
@@ -200,6 +202,7 @@ class CRM_Mailbatch_SendMailJob
                 'status_id'         => $status,
                 'source_contact_id' => $sender_contact_id,
                 'target_contact_id' => $target_contact_ids,
+                'assignee_id'       => empty($assignees) ? '' : explode(',', $assignees),
                 'subject'           => $subject,
                 'details'           => $details,
             ];

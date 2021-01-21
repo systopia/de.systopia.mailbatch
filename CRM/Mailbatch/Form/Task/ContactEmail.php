@@ -157,24 +157,35 @@ class CRM_Mailbatch_Form_Task_ContactEmail extends CRM_Contact_Form_Task
             false
         );
 
+        $this->addEntityRef(
+            'failed_activity_assignee',
+            E::ts('Assign to'),
+            [
+                'multiple' => TRUE,
+                'api'      => ['params' => ['is_deceased' => 0]]
+            ],
+            false
+        );
+
         // set default values
         $this->setDefaults([
-            'template_id'             => Civi::settings()->get('batchmail_template_id'),
-            'batch_size'              => Civi::settings()->get('batchmail_batch_size'),
-            'sender_email'            => Civi::settings()->get('batchmail_sender_email'),
-            'sender_cc'               => Civi::settings()->get('batchmail_sender_cc'),
-            'sender_bcc'              => Civi::settings()->get('batchmail_sender_bcc'),
-            'sender_reply_to'         => Civi::settings()->get('batchmail_sender_reply_to'),
-            'send_wo_attachment'      => Civi::settings()->get('batchmail_send_wo_attachment'),
-            'enable_smarty'           => Civi::settings()->get('batchmail_enable_smarty'),
-            'attachment1_path'        => Civi::settings()->get('batchmail_attachment1_path'),
-            'attachment1_name'        => Civi::settings()->get('batchmail_attachment1_name'),
-            'sent_activity_type_id'   => Civi::settings()->get('batchmail_sent_activity_type_id'),
-            'sent_activity_grouped'   => Civi::settings()->get('batchmail_sent_activity_grouped'),
-            'sent_activity_subject'   => Civi::settings()->get('batchmail_sent_activity_subject'),
-            'failed_activity_type_id' => Civi::settings()->get('batchmail_failed_activity_type_id'),
-            'failed_activity_subject' => Civi::settings()->get('batchmail_failed_activity_subject'),
-       ]);
+            'template_id'              => Civi::settings()->get('batchmail_template_id'),
+            'batch_size'               => Civi::settings()->get('batchmail_batch_size'),
+            'sender_email'             => Civi::settings()->get('batchmail_sender_email'),
+            'sender_cc'                => Civi::settings()->get('batchmail_sender_cc'),
+            'sender_bcc'               => Civi::settings()->get('batchmail_sender_bcc'),
+            'sender_reply_to'          => Civi::settings()->get('batchmail_sender_reply_to'),
+            'send_wo_attachment'       => Civi::settings()->get('batchmail_send_wo_attachment'),
+            'enable_smarty'            => Civi::settings()->get('batchmail_enable_smarty'),
+            'attachment1_path'         => Civi::settings()->get('batchmail_attachment1_path'),
+            'attachment1_name'         => Civi::settings()->get('batchmail_attachment1_name'),
+            'sent_activity_type_id'    => Civi::settings()->get('batchmail_sent_activity_type_id'),
+            'sent_activity_grouped'    => Civi::settings()->get('batchmail_sent_activity_grouped'),
+            'sent_activity_subject'    => Civi::settings()->get('batchmail_sent_activity_subject'),
+            'failed_activity_type_id'  => Civi::settings()->get('batchmail_failed_activity_type_id'),
+            'failed_activity_subject'  => Civi::settings()->get('batchmail_failed_activity_subject'),
+            'failed_activity_assignee' => Civi::settings()->get('batchmail_failed_activity_assignee'),
+        ]);
 
         CRM_Core_Form::addDefaultButtons(E::ts("Send %1 Emails", [1 => $contact_count - $no_email_count]));
     }
@@ -187,21 +198,22 @@ class CRM_Mailbatch_Form_Task_ContactEmail extends CRM_Contact_Form_Task
         $contact_count = count($this->_contactIds) - $this->getNoEmailCount();
 
         // store default values
-        Civi::settings()->set('batchmail_template_id',             $values['template_id']);
-        Civi::settings()->set('batchmail_sender_email',            $values['sender_email']);
-        Civi::settings()->set('batchmail_batch_size',              $values['batch_size']);
-        Civi::settings()->set('batchmail_sender_cc',               $values['sender_cc']);
-        Civi::settings()->set('batchmail_sender_bcc',              $values['sender_bcc']);
-        Civi::settings()->set('batchmail_sender_reply_to',         $values['sender_reply_to']);
-        Civi::settings()->set('batchmail_send_wo_attachment',      CRM_Utils_Array::value('send_wo_attachment', $values, 0));
-        Civi::settings()->set('batchmail_enable_smarty',           CRM_Utils_Array::value('enable_smarty', $values, 0));
-        Civi::settings()->set('batchmail_attachment1_path',        $values['attachment1_path']);
-        Civi::settings()->set('batchmail_attachment1_name',        $values['attachment1_name']);
-        Civi::settings()->set('batchmail_sent_activity_type_id',   $values['sent_activity_type_id']);
-        Civi::settings()->set('batchmail_sent_activity_subject',   $values['sent_activity_subject']);
-        Civi::settings()->set('batchmail_failed_activity_type_id', $values['failed_activity_type_id']);
-        Civi::settings()->set('batchmail_activity_grouped',        $values['activity_grouped']);
-        Civi::settings()->set('batchmail_failed_activity_subject', $values['failed_activity_subject']);
+        Civi::settings()->set('batchmail_template_id',              $values['template_id']);
+        Civi::settings()->set('batchmail_sender_email',             $values['sender_email']);
+        Civi::settings()->set('batchmail_batch_size',               $values['batch_size']);
+        Civi::settings()->set('batchmail_sender_cc',                $values['sender_cc']);
+        Civi::settings()->set('batchmail_sender_bcc',               $values['sender_bcc']);
+        Civi::settings()->set('batchmail_sender_reply_to',          $values['sender_reply_to']);
+        Civi::settings()->set('batchmail_send_wo_attachment',       CRM_Utils_Array::value('send_wo_attachment', $values, 0));
+        Civi::settings()->set('batchmail_enable_smarty',            CRM_Utils_Array::value('enable_smarty', $values, 0));
+        Civi::settings()->set('batchmail_attachment1_path',         $values['attachment1_path']);
+        Civi::settings()->set('batchmail_attachment1_name',         $values['attachment1_name']);
+        Civi::settings()->set('batchmail_sent_activity_type_id',    $values['sent_activity_type_id']);
+        Civi::settings()->set('batchmail_sent_activity_subject',    $values['sent_activity_subject']);
+        Civi::settings()->set('batchmail_failed_activity_type_id',  $values['failed_activity_type_id']);
+        Civi::settings()->set('batchmail_activity_grouped',         $values['activity_grouped']);
+        Civi::settings()->set('batchmail_failed_activity_subject',  $values['failed_activity_subject']);
+        Civi::settings()->set('batchmail_failed_activity_assignee', $values['failed_activity_assignee']);
 
         // init a queue
         $queue = CRM_Queue_Service::singleton()->create([

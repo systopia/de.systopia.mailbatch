@@ -109,6 +109,12 @@
     <div class="clear"></div>
   </div>
 
+  <div class="crm-section mailbatch-failed-section">
+    <div class="label">{$form.failed_activity_assignee.label}</div>
+    <div class="content">{$form.failed_activity_assignee.html}</div>
+    <div class="clear"></div>
+  </div>
+
   <div class="crm-section">
     <div class="label">{$form.activity_grouped.label}</div>
     <div class="content">{$form.activity_grouped.html}</div>
