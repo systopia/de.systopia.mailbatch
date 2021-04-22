@@ -109,6 +109,14 @@
     <div class="clear"></div>
   </div>
 
+  {if $form.failed_activity_subject2}
+  <div class="crm-section mailbatch-failed-section">
+    <div class="label">{$form.failed_activity_subject2.label}&nbsp;{help id="id-failed-no-email" title=$form.attachment1_path.label}</div>
+    <div class="content">{$form.failed_activity_subject2.html}</div>
+    <div class="clear"></div>
+  </div>
+  {/if}
+
   <div class="crm-section mailbatch-failed-section">
     <div class="label">{$form.failed_activity_assignee.label}</div>
     <div class="content">{$form.failed_activity_assignee.html}</div>

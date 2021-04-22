@@ -33,4 +33,9 @@
   {ts}Otherwise it will be not sent, and receive an error activity instead.{/ts}
 {/htxt}
 
+{htxt id='id-failed-no-email'}
+  {ts}You can set another subject for activities contacts that didn't have a valid email address in the first place.{/ts}
+  {ts}If you leave this empty, no activity will be created in for those contacts.{/ts}
+{/htxt}
+
 {/crmScope}
