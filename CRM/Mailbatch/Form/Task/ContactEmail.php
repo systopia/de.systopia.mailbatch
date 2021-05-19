@@ -153,9 +153,18 @@ class CRM_Mailbatch_Form_Task_ContactEmail extends CRM_Contact_Form_Task
         $this->add(
             'text',
             'failed_activity_subject',
-            E::ts('Activity Subject'),
-            false
+            E::ts('Subject (Sending Failed)'),
+            ['class' => 'huge']
         );
+
+        if (!empty($no_email_count)) {
+            $this->add(
+                'text',
+                'failed_activity_subject2',
+                E::ts('Subject (No Email)'),
+                ['class' => 'huge']
+            );
+        }
 
         $this->addEntityRef(
             'failed_activity_assignee',
@@ -184,6 +193,7 @@ class CRM_Mailbatch_Form_Task_ContactEmail extends CRM_Contact_Form_Task
             'sent_activity_subject'    => Civi::settings()->get('batchmail_sent_activity_subject'),
             'failed_activity_type_id'  => Civi::settings()->get('batchmail_failed_activity_type_id'),
             'failed_activity_subject'  => Civi::settings()->get('batchmail_failed_activity_subject'),
+            'failed_activity_subject2' => Civi::settings()->get('batchmail_failed_activity_subject2'),
             'failed_activity_assignee' => Civi::settings()->get('batchmail_failed_activity_assignee'),
         ]);
 
@@ -195,25 +205,41 @@ class CRM_Mailbatch_Form_Task_ContactEmail extends CRM_Contact_Form_Task
     {
         $values = $this->exportValues();
         $values['sender_contact_id'] = CRM_Core_Session::getLoggedInContactID();
-        $contact_count = count($this->_contactIds) - $this->getNoEmailCount();
+        $no_email_count = $this->getNoEmailCount();
+        $contact_count = count($this->_contactIds) - $no_email_count;
 
         // store default values
-        Civi::settings()->set('batchmail_template_id',              $values['template_id']);
-        Civi::settings()->set('batchmail_sender_email',             $values['sender_email']);
-        Civi::settings()->set('batchmail_batch_size',               $values['batch_size']);
-        Civi::settings()->set('batchmail_sender_cc',                $values['sender_cc']);
-        Civi::settings()->set('batchmail_sender_bcc',               $values['sender_bcc']);
-        Civi::settings()->set('batchmail_sender_reply_to',          $values['sender_reply_to']);
-        Civi::settings()->set('batchmail_send_wo_attachment',       CRM_Utils_Array::value('send_wo_attachment', $values, 0));
+        Civi::settings()->set('batchmail_template_id', $values['template_id']);
+        Civi::settings()->set('batchmail_sender_email', $values['sender_email']);
+        Civi::settings()->set('batchmail_batch_size', $values['batch_size']);
+        Civi::settings()->set('batchmail_sender_cc', $values['sender_cc']);
+        Civi::settings()->set('batchmail_sender_bcc', $values['sender_bcc']);
+        Civi::settings()->set('batchmail_sender_reply_to', $values['sender_reply_to']);
+        Civi::settings()->set('batchmail_send_wo_attachment', CRM_Utils_Array::value('send_wo_attachment', $values, 0));
         //Civi::settings()->set('batchmail_enable_smarty',            CRM_Utils_Array::value('enable_smarty', $values, 0));
-        Civi::settings()->set('batchmail_attachment1_path',         $values['attachment1_path']);
-        Civi::settings()->set('batchmail_attachment1_name',         $values['attachment1_name']);
-        Civi::settings()->set('batchmail_sent_activity_type_id',    $values['sent_activity_type_id']);
-        Civi::settings()->set('batchmail_sent_activity_subject',    $values['sent_activity_subject']);
-        Civi::settings()->set('batchmail_failed_activity_type_id',  $values['failed_activity_type_id']);
-        Civi::settings()->set('batchmail_activity_grouped',         $values['activity_grouped']);
-        Civi::settings()->set('batchmail_failed_activity_subject',  $values['failed_activity_subject']);
+        Civi::settings()->set('batchmail_attachment1_path', $values['attachment1_path']);
+        Civi::settings()->set('batchmail_attachment1_name', $values['attachment1_name']);
+        Civi::settings()->set('batchmail_sent_activity_type_id', $values['sent_activity_type_id']);
+        Civi::settings()->set('batchmail_sent_activity_subject', $values['sent_activity_subject']);
+        Civi::settings()->set('batchmail_failed_activity_type_id', $values['failed_activity_type_id']);
+        Civi::settings()->set('batchmail_activity_grouped', $values['activity_grouped']);
+        Civi::settings()->set('batchmail_failed_activity_subject', $values['failed_activity_subject']);
         Civi::settings()->set('batchmail_failed_activity_assignee', $values['failed_activity_assignee']);
+        if (isset($values['failed_activity_subject2'])) {
+            Civi::settings()->set('batchmail_failed_activity_subject2', $values['failed_activity_subject2']);
+        }
+
+        // generate no-email activities for contacts with no emails if required
+        if ($no_email_count > 0
+            && !empty($values['failed_activity_type_id'])
+            && !empty($values['failed_activity_subject2'])) {
+            $this->createNoEmailActivities(
+                $values['failed_activity_type_id'],
+                $values['failed_activity_subject2'],
+                $values['activity_grouped'],
+                $values['failed_activity_assignee']
+            );
+        }
 
         // init a queue
         $queue = CRM_Queue_Service::singleton()->create([
@@ -371,6 +397,75 @@ class CRM_Mailbatch_Form_Task_ContactEmail extends CRM_Contact_Form_Task
                    AND email.on_hold = 0
             WHERE contact.id IN ({$contact_id_list})
               AND email.id IS NULL");
+    }
+
+    /**
+     * Get the number of contacts that
+     *   do not have a viable email address
+     */
+    private function getNoEmailContacts()
+    {
+        $contacts_without_email = [];
+        $full_contact_id_list = implode(',', $this->_contactIds);
+        $contact_query = CRM_Core_DAO::executeQuery("
+            SELECT DISTINCT(contact.id) contact_id
+            FROM civicrm_contact contact
+            LEFT JOIN civicrm_email email
+                   ON email.contact_id = contact.id
+                   AND email.is_primary = 1
+                   AND email.on_hold = 0
+            WHERE contact.id IN ({$full_contact_id_list})
+              AND email.id IS NULL");
+        while ($contact_query->fetch()) {
+            $contacts_without_email[] = (int) $contact_query->contact_id;
+        }
+        return $contacts_without_email;
+    }
+
+    /**
+     * Create failed activities for contacts without valid email
+     *
+     * @param integer $activity_type_id
+     *   activity type
+     *
+     * @param string $activity_subject
+     *   subject of the activity
+     *
+     * @param boolean $activity_grouped
+     *   one activity for all contacts?
+     *
+     * @param array $assignees
+     *   list of assignees
+     *
+     */
+    protected function createNoEmailActivities($activity_type_id, $activity_subject, $activity_grouped, $assignees)
+    {
+        $contacts_without_email = $this->getNoEmailContacts();
+        if (!empty($activity_grouped)) {
+            // create one grouped activity:
+            CRM_Mailbatch_SendMailJob::createActivity(
+                $activity_type_id,
+                $activity_subject,
+                CRM_Core_Session::getLoggedInContactID(),
+                $contacts_without_email,
+                'Completed',
+                null,
+                $assignees
+            );
+        } else {
+            // create individual activities
+            foreach ($contacts_without_email as $contact_id) {
+                CRM_Mailbatch_SendMailJob::createActivity(
+                    $activity_type_id,
+                    $activity_subject,
+                    CRM_Core_Session::getLoggedInContactID(),
+                    [$contact_id],
+                    'Completed',
+                    null,
+                    $assignees
+                );
+            }
+        }
     }
 }
 

@@ -113,7 +113,7 @@ class CRM_Mailbatch_SendMailJob
             if (!empty($mail_successfully_sent) && !empty($this->config['sent_activity_type_id'])) {
                 if (!empty($this->config['activity_grouped'])) {
                     // create one grouped activity:
-                    $this->createActivity(
+                    self::createActivity(
                         $this->config['sent_activity_type_id'],
                         $this->config['sent_activity_subject'],
                         $this->config['sender_contact_id'],
@@ -123,7 +123,7 @@ class CRM_Mailbatch_SendMailJob
                 } else {
                     // create individual activities
                     foreach ($mail_successfully_sent as $contact_id) {
-                        $this->createActivity(
+                        self::createActivity(
                             $this->config['sent_activity_type_id'],
                             $this->config['sent_activity_subject'],
                             $this->config['sender_contact_id'],
@@ -149,7 +149,7 @@ class CRM_Mailbatch_SendMailJob
 
                 if (!empty($this->config['activity_grouped'])) {
                     // create one grouped activity:
-                    $this->createActivity(
+                    self::createActivity(
                         $this->config['failed_activity_type_id'],
                         $this->config['failed_activity_subject'],
                         $this->config['sender_contact_id'],
@@ -161,7 +161,7 @@ class CRM_Mailbatch_SendMailJob
                 } else {
                     // create individual activities
                     foreach ($mail_sending_failed as $contact_id) {
-                        $this->createActivity(
+                        self::createActivity(
                             $this->config['failed_activity_type_id'],
                             $this->config['failed_activity_subject'],
                             $this->config['sender_contact_id'],
@@ -188,7 +188,7 @@ class CRM_Mailbatch_SendMailJob
      * @param integer $sender_contact_id
      * @param array $target_contact_ids
      */
-    protected function createActivity($activity_type_id, $subject, $sender_contact_id, $target_contact_ids, $status, $details = null, $assignees = '')
+    public static function createActivity($activity_type_id, $subject, $sender_contact_id, $target_contact_ids, $status, $details = null, $assignees = '')
     {
         try {
             $activity_data = [
