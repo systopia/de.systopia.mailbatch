@@ -43,6 +43,13 @@ class CRM_Mailbatch_SendContributionMailJob extends CRM_Mailbatch_SendMailJob
                 'option.limit' => 0,
             ])['values'];
 
+            // derive the contact_ids
+            $_contact_ids = [];
+            foreach ($contributions as $contribution) {
+                $_contact_ids[] = $contribution['contact_id'];
+            }
+            $this->contact_ids = array_unique($_contact_ids);
+
             // load the respective contacts
             $contacts = civicrm_api3('Contact', 'get', [
                 'id'           => ['IN' => $this->contact_ids],
@@ -63,7 +70,6 @@ class CRM_Mailbatch_SendContributionMailJob extends CRM_Mailbatch_SendMailJob
             $mail_successfully_sent = [];
             $mail_sending_failed = [];
             foreach ($contributions as $contribution) {
-                $contact = $contribution['contact'];
                 try {
                     // get the related contact
                     if (empty($contacts[$contribution['contact_id']])) {
@@ -105,29 +111,31 @@ class CRM_Mailbatch_SendContributionMailJob extends CRM_Mailbatch_SendMailJob
                     civicrm_api3('MessageTemplate', 'send', $email_data);
 
                     // mark as success
-                    $mail_successfully_sent[] = $contact['id'];
+                    $mail_successfully_sent[] = $contribution['id'];
 
                 } catch (Exception $exception) {
                     // this shouldn't happen, sendMessageTo has it's own error handling
-                    $mail_sending_failed[] = $contact['id'];
-                    $this->errors[$contact['id']] = $exception->getMessage();
+                    $mail_sending_failed[] = $contribution['id'];
+                    $this->errors[$contribution['id']] = $exception->getMessage();
                 }
             }
 
             // create activities
             if (!empty($mail_successfully_sent) && !empty($this->config['sent_activity_type_id'])) {
+                // TODO: get contact IDs
+                $mail_successfully_sent_contacts = [];
                 if (!empty($this->config['activity_grouped'])) {
                     // create one grouped activity:
                     self::createActivity(
                         $this->config['sent_activity_type_id'],
                         $this->config['sent_activity_subject'],
                         $this->config['sender_contact_id'],
-                        $mail_successfully_sent,
+                        $mail_successfully_sent_contacts,
                         'Completed'
                     );
                 } else {
                     // create individual activities
-                    foreach ($mail_successfully_sent as $contact_id) {
+                    foreach ($mail_successfully_sent_contacts as $contact_id) {
                         self::createActivity(
                             $this->config['sent_activity_type_id'],
                             $this->config['sent_activity_subject'],
@@ -142,8 +150,8 @@ class CRM_Mailbatch_SendContributionMailJob extends CRM_Mailbatch_SendMailJob
             if (!empty($mail_sending_failed) && !empty($this->config['failed_activity_type_id'])) {
                 // render list of errors
                 $error_to_contact_id = [];
-                foreach ($this->errors as $contact_id => $error) {
-                    $error_to_contact_id[$error][] = $contact_id;
+                foreach ($this->errors as $contribution_id => $error) {
+                    $error_to_contact_id[$error][] = $contributions[$contribution_id]['contact_id'];
                 }
                 $details = E::ts("<p>The following errors occurred (with contact IDs):<ul>");
                 foreach ($error_to_contact_id as $error => $contact_ids) {
@@ -165,14 +173,15 @@ class CRM_Mailbatch_SendContributionMailJob extends CRM_Mailbatch_SendMailJob
                     );
                 } else {
                     // create individual activities
-                    foreach ($mail_sending_failed as $contact_id) {
+                    foreach ($mail_sending_failed as $contribution_id) {
+                        $contact_id = $contributions[$contribution_id]['contact_id'];
                         self::createActivity(
                             $this->config['failed_activity_type_id'],
                             $this->config['failed_activity_subject'],
                             $this->config['sender_contact_id'],
                             [$contact_id],
                             'Scheduled',
-                            E::ts("Error was: %1", [1 => $this->errors[$contact_id]]),
+                            E::ts("Error was: %1", [1 => $this->errors[$contribution_id]]),
                             $this->config['failed_activity_assignee']
                         );
                     }
@@ -195,18 +204,39 @@ class CRM_Mailbatch_SendContributionMailJob extends CRM_Mailbatch_SendMailJob
      *
      * @return string|null
      *   full file path or null
+     *
+     * @throws Exception
+     *   something went wrong with the invoice generation
      */
-    protected function findAttachmentFile($contact_id, $index = 0, $contribution_id = null)
+    protected function findAttachmentFile($contact_id, $index = 1, $contribution_id = null)
     {
-        return parent::findAttachmentFile($contact_id, $index);
-//        if (!empty($this->config["attachment{$index}_path"])) {
-//            $path = $this->config["attachment{$index}_path"];
-//            // replace {contact_id} token
-//            $path = preg_replace('/[{]contact_id[}]/', $contact_id, $path);
-//            if (is_readable($path) && !is_dir($path)) {
-//                return $path;
-//            }
-//        }
-//        return null;
+        $attachment_type = CRM_Utils_Array::value("attachment{$index}_type", $this->config, 'none');
+        switch ($attachment_type) {
+            case 'invoice':
+                // generate an invoice
+                $params        = ['output' => 'pdf_invoice', 'forPage' => 'confirmpage'];
+                $invoice_html  = CRM_Contribute_Form_Task_Invoice::printPDF([$contribution_id], $params, [$contact_id]);
+                $invoice_pdf   = CRM_Utils_PDF_Utils::html2pdf($invoice_html, 'invoice.pdf', TRUE);
+                $tmp_file_path = tempnam(sys_get_temp_dir(), "invoice-");
+                file_put_contents($tmp_file_path, $invoice_pdf);
+                return $tmp_file_path;
+
+            case 'file':
+                if (!empty($this->config["attachment{$index}_path"])) {
+                    $path = $this->config["attachment{$index}_path"];
+                    // replace {contact_id} and {contribution_id} token
+                    $path = preg_replace('/[{]contact_id[}]/', $contact_id, $path);
+                    $path = preg_replace('/[{]contribution_id[}]/', $contribution_id, $path);
+                    if (is_readable($path) && !is_dir($path)) {
+                        return $path;
+                    }
+                }
+                return null;
+
+            default:
+            case 'none':
+                break;
+        }
+        return null;
     }
 }

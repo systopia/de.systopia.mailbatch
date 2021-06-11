@@ -1,6 +1,6 @@
 {*-------------------------------------------------------+
 | SYSTOPIA Event Messages                                |
-| Copyright (C) 2020 SYSTOPIA                            |
+| Copyright (C) 2021 SYSTOPIA                            |
 | Author: B. Endres (endres@systopia.de)                 |
 +--------------------------------------------------------+
 | This program is released as free software under the    |

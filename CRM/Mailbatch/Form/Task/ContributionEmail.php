@@ -303,7 +303,7 @@ class CRM_Mailbatch_Form_Task_ContributionEmail extends CRM_Contribute_Form_Task
 
         // add final runner
         $queue->createItem(
-            new CRM_Mailbatch_SendMailJob(
+            new CRM_Mailbatch_SendContributionMailJob(
                 $current_batch,
                 $values,
                 E::ts("Finishing")
