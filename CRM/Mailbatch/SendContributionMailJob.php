@@ -1,0 +1,212 @@
+<?php
+/*-------------------------------------------------------+
+| SYSTOPIA Event Messages                                |
+| Copyright (C) 2021 SYSTOPIA                            |
+| Author: B. Endres (endres@systopia.de)                 |
++--------------------------------------------------------+
+| This program is released as free software under the    |
+| Affero GPL license. You can redistribute it and/or     |
+| modify it under the terms of this license which you    |
+| can read by viewing the included agpl.txt or online    |
+| at www.gnu.org/licenses/agpl.html. Removal of this     |
+| copyright header is strictly prohibited without        |
+| written permission from the original author(s).        |
++--------------------------------------------------------*/
+
+use CRM_Mailbatch_ExtensionUtil as E;
+
+/**
+ * Queue item for sending emails to contribution contacts
+ */
+class CRM_Mailbatch_SendContributionMailJob extends CRM_Mailbatch_SendMailJob
+{
+    /** @var array list of (int) contribution IDs */
+    protected $contribution_ids;
+
+    public function __construct($contribution_ids, $config, $title)
+    {
+        $this->contribution_ids = $contribution_ids;
+        parent::__construct(null, $config, $title);
+    }
+
+    /**
+     * Execute the batch of emails to be sent
+     * @return true
+     */
+    public function run(): bool
+    {
+        if (!empty($this->contribution_ids)) {
+            // load the contributions
+            $contributions = civicrm_api3('Contribution', 'get', [
+                'id'           => ['IN' => $this->contribution_ids],
+                'return'       => 'id,contact_id',
+                'option.limit' => 0,
+            ])['values'];
+
+            // load the respective contacts
+            $contacts = civicrm_api3('Contact', 'get', [
+                'id'           => ['IN' => $this->contact_ids],
+                'return'       => 'id,display_name,email',
+                'option.limit' => 0,
+                'sequential'   => 0,
+            ])['values'];
+
+            // get sender
+            $from_addresses = CRM_Core_OptionGroup::values('from_email_address');
+            if (isset($from_addresses[$this->config['sender_email']])) {
+                $sender = $from_addresses[$this->config['sender_email']];
+            } else {
+                $sender = reset($from_addresses);
+            }
+
+            // trigger sendMessageTo for each one of them
+            $mail_successfully_sent = [];
+            $mail_sending_failed = [];
+            foreach ($contributions as $contribution) {
+                $contact = $contribution['contact'];
+                try {
+                    // get the related contact
+                    if (empty($contacts[$contribution['contact_id']])) {
+                        throw new Exception(E::ts("Contribution [%1] has no valid contact.", [1 => $contribution['id']]));
+                    }
+                    $contact = $contacts[$contribution['contact_id']];
+
+                    // send email
+                    $email_data = [
+                        'id'        => $this->config['template_id'],
+                        'toName'    => $contact['display_name'],
+                        'toEmail'   => $contact['email'],
+                        'from'      => $sender,
+                        'replyTo'   => CRM_Utils_Array::value('sender_reply_to', $this->config, ''),
+                        'cc'        => CRM_Utils_Array::value('sender_cc', $this->config, ''),
+                        'bcc'       => CRM_Utils_Array::value('sender_bcc', $this->config, ''),
+                        'contactId' => $contact['id'],
+                    ];
+
+                    // add attachments
+                    $attachments = [];
+                    $attachment_file = $this->findAttachmentFile($contact['id'], 1, $contribution['id']);
+                    if ($attachment_file) {
+                        $file_name = empty($this->config['attachment1_name']) ? basename($attachment_file) : $this->config['attachment1_name'];
+                        $attachments[] = [
+                            'fullPath'  => $attachment_file,
+                            'mime_type' => $this->getMimeType($attachment_file),
+                            'cleanName' => $file_name,
+                        ];
+                        $email_data['attachments'] = $attachments;
+
+                    } elseif (empty($this->config['send_wo_attachment'])) {
+                        // no attachment -> cannot send
+                        throw new Exception(E::ts("Attachment '%1' not found.", [
+                            1 => $this->config['attachment1_path']]));
+                    }
+
+                    // send email
+                    civicrm_api3('MessageTemplate', 'send', $email_data);
+
+                    // mark as success
+                    $mail_successfully_sent[] = $contact['id'];
+
+                } catch (Exception $exception) {
+                    // this shouldn't happen, sendMessageTo has it's own error handling
+                    $mail_sending_failed[] = $contact['id'];
+                    $this->errors[$contact['id']] = $exception->getMessage();
+                }
+            }
+
+            // create activities
+            if (!empty($mail_successfully_sent) && !empty($this->config['sent_activity_type_id'])) {
+                if (!empty($this->config['activity_grouped'])) {
+                    // create one grouped activity:
+                    self::createActivity(
+                        $this->config['sent_activity_type_id'],
+                        $this->config['sent_activity_subject'],
+                        $this->config['sender_contact_id'],
+                        $mail_successfully_sent,
+                        'Completed'
+                    );
+                } else {
+                    // create individual activities
+                    foreach ($mail_successfully_sent as $contact_id) {
+                        self::createActivity(
+                            $this->config['sent_activity_type_id'],
+                            $this->config['sent_activity_subject'],
+                            $this->config['sender_contact_id'],
+                            [$contact_id],
+                            'Completed'
+                        );
+                    }
+                }
+            }
+
+            if (!empty($mail_sending_failed) && !empty($this->config['failed_activity_type_id'])) {
+                // render list of errors
+                $error_to_contact_id = [];
+                foreach ($this->errors as $contact_id => $error) {
+                    $error_to_contact_id[$error][] = $contact_id;
+                }
+                $details = E::ts("<p>The following errors occurred (with contact IDs):<ul>");
+                foreach ($error_to_contact_id as $error => $contact_ids) {
+                    $contact_id_list = implode(',', $contact_ids);
+                    $details.= E::ts("<li>%1 (%2)</li>", [1 => $error, 2 => $contact_id_list]);
+                }
+                $details.= "</ul></p>";
+
+                if (!empty($this->config['activity_grouped'])) {
+                    // create one grouped activity:
+                    self::createActivity(
+                        $this->config['failed_activity_type_id'],
+                        $this->config['failed_activity_subject'],
+                        $this->config['sender_contact_id'],
+                        $mail_sending_failed,
+                        'Scheduled',
+                        $details,
+                        $this->config['failed_activity_assignee']
+                    );
+                } else {
+                    // create individual activities
+                    foreach ($mail_sending_failed as $contact_id) {
+                        self::createActivity(
+                            $this->config['failed_activity_type_id'],
+                            $this->config['failed_activity_subject'],
+                            $this->config['sender_contact_id'],
+                            [$contact_id],
+                            'Scheduled',
+                            E::ts("Error was: %1", [1 => $this->errors[$contact_id]]),
+                            $this->config['failed_activity_assignee']
+                        );
+                    }
+                }
+            }
+
+        }
+        return true;
+    }
+
+    /**
+     * Try to find the attachment #{$index} based on the file path
+     *   and the contact
+     *
+     * @param integer $contact_id
+     *   contact ID
+     *
+     * @param integer $index
+     *   index
+     *
+     * @return string|null
+     *   full file path or null
+     */
+    protected function findAttachmentFile($contact_id, $index = 0, $contribution_id = null)
+    {
+        return parent::findAttachmentFile($contact_id, $index);
+//        if (!empty($this->config["attachment{$index}_path"])) {
+//            $path = $this->config["attachment{$index}_path"];
+//            // replace {contact_id} token
+//            $path = preg_replace('/[{]contact_id[}]/', $contact_id, $path);
+//            if (is_readable($path) && !is_dir($path)) {
+//                return $path;
+//            }
+//        }
+//        return null;
+    }
+}

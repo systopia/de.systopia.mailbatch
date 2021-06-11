@@ -26,7 +26,7 @@
 
 {htxt id='id-attachment-path'}
   {ts}This needs to specify an absolute file path that is accessible from CiviCRM.{/ts}
-  {ts}In Order to send different attachments per contact, you can use the token <code>{literal}{{/literal}contact_id{literal}}{/literal}</code> in the filename.{/ts}
+  {ts}In Order to send different attachments per contribution, you can use the token <code>{literal}{{/literal}contact_id{literal}}{/literal}</code> and/or <code>{literal}{{/literal}contribution_id{literal}}{/literal}</code> in the filename.{/ts}
 {/htxt}
 
 {htxt id='id-no-attachment'}
