@@ -87,6 +87,10 @@ class CRM_Mailbatch_SendContributionMailJob extends CRM_Mailbatch_SendMailJob
                         'cc'        => CRM_Utils_Array::value('sender_cc', $this->config, ''),
                         'bcc'       => CRM_Utils_Array::value('sender_bcc', $this->config, ''),
                         'contactId' => $contact['id'],
+                        'tplParams' => [
+                            'contact_id'      => $contact['id'],
+                            'contribution_id' => $contribution['id']
+                        ],
                     ];
 
                     // add attachments
