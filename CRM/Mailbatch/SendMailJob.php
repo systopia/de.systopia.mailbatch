@@ -68,15 +68,16 @@ class CRM_Mailbatch_SendMailJob
                 try {
                     // send email
                     $email_data = [
-                        'id'        => $this->config['template_id'],
-                        'toName'    => $contact['display_name'],
-                        'toEmail'   => $contact['email'],
-                        'from'      => $sender,
-                        'replyTo'   => CRM_Utils_Array::value('sender_reply_to', $this->config, ''),
-                        'cc'        => CRM_Utils_Array::value('sender_cc', $this->config, ''),
-                        'bcc'       => CRM_Utils_Array::value('sender_bcc', $this->config, ''),
-                        'contactId' => $contact['id'],
-                        'tplParams' => [
+                        'id'                => $this->config['template_id'],
+                        'messageTemplateID' => $this->config['template_id'],
+                        'toName'            => $contact['display_name'],
+                        'toEmail'           => $contact['email'],
+                        'from'              => $sender,
+                        'replyTo'           => CRM_Utils_Array::value('sender_reply_to', $this->config, ''),
+                        'cc'                => CRM_Utils_Array::value('sender_cc', $this->config, ''),
+                        'bcc'               => CRM_Utils_Array::value('sender_bcc', $this->config, ''),
+                        'contactId'         => $contact['id'],
+                        'tplParams'         => [
                             'contact_id' => $contact['id'],
                         ],
                     ];
