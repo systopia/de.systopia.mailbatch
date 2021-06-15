@@ -32,10 +32,6 @@ class CRM_Mailbatch_Form_Task_ContributionEmail extends CRM_Contribute_Form_Task
         // now build the form
         CRM_Utils_System::setTitle(E::ts('Send %1 Email(s) to %2 Contact(s)', [1 => $contribution_count, 2 => $contact_count]));
 
-        // calculate and add the number of contacts with no valid E-Mail
-        $no_email_count = $this->getNoEmailCount();
-        $this->assign('no_email_count', $no_email_count);
-
         $this->add(
             'select',
             'template_id',
@@ -215,7 +211,14 @@ class CRM_Mailbatch_Form_Task_ContributionEmail extends CRM_Contribute_Form_Task
         ]);
 
 
-//        CRM_Core_Form::addDefaultButtons(E::ts("Send %1 Emails", [1 => $contribution_count - $no_email_count]));
+        // calculate and add the number of contacts with no valid E-Mail
+        if (!isset($this->_submitValues['location_type_id'])) {
+            $this->_submitValues['location_type_id'] = Civi::settings()->get('batchmail_location_type_id');
+        }
+        $no_email_count = $this->getNoEmailCount();
+        $this->assign('no_email_count', $no_email_count);
+
+        // add buttons
         $this->addButtons([
               [
                   'type' => 'submit',

@@ -39,7 +39,6 @@ class CRM_Mailbatch_SendContributionMailJob extends CRM_Mailbatch_SendMailJob
      */
     public function run(): bool
     {
-        Civi::log()->debug("Processing: " , json_encode($this->contribution_contact_email_tuples));
         if (!empty($this->contribution_contact_email_tuples)) {
             // load the relevant contacts
             $contact_ids = [];
