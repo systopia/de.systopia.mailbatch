@@ -20,12 +20,16 @@ use CRM_Mailbatch_ExtensionUtil as E;
  */
 class CRM_Mailbatch_SendContributionMailJob extends CRM_Mailbatch_SendMailJob
 {
-    /** @var array list of (int) contribution IDs */
-    protected $contribution_ids;
+    const CONTRIBUTION_ID = 0;
+    const CONTACT_ID      = 1;
+    const EMAIL           = 2;
 
-    public function __construct($contribution_ids, $config, $title)
+    /** @var array list of tuples (contribution_id, contact_id, email) */
+    protected $contribution_contact_email_tuples;
+
+    public function __construct($contribution_contact_email_tuples, $config, $title)
     {
-        $this->contribution_ids = $contribution_ids;
+        $this->contribution_contact_email_tuples = $contribution_contact_email_tuples;
         parent::__construct(null, $config, $title);
     }
 
@@ -35,25 +39,17 @@ class CRM_Mailbatch_SendContributionMailJob extends CRM_Mailbatch_SendMailJob
      */
     public function run(): bool
     {
-        if (!empty($this->contribution_ids)) {
-            // load the contributions
-            $contributions = civicrm_api3('Contribution', 'get', [
-                'id'           => ['IN' => $this->contribution_ids],
-                'return'       => 'id,contact_id',
-                'option.limit' => 0,
-            ])['values'];
-
-            // derive the contact_ids
-            $_contact_ids = [];
-            foreach ($contributions as $contribution) {
-                $_contact_ids[] = $contribution['contact_id'];
+        if (!empty($this->contribution_contact_email_tuples)) {
+            $contact_ids = [];
+            foreach ($this->contribution_contact_email_tuples as $contact_email_tuple) {
+                $contact_ids[] = $contact_email_tuple[self::CONTACT_ID];
             }
-            $this->contact_ids = array_unique($_contact_ids);
+            $contact_ids = array_unique($contact_ids);
 
-            // load the respective contacts
+            // load the contacts' names
             $contacts = civicrm_api3('Contact', 'get', [
-                'id'           => ['IN' => $this->contact_ids],
-                'return'       => 'id,display_name,email',
+                'id'           => ['IN' => $contact_ids],
+                'return'       => 'id,display_name',
                 'option.limit' => 0,
                 'sequential'   => 0,
             ])['values'];
@@ -69,34 +65,32 @@ class CRM_Mailbatch_SendContributionMailJob extends CRM_Mailbatch_SendMailJob
             // trigger sendMessageTo for each one of them
             $mail_successfully_sent = [];
             $mail_sending_failed = [];
-            foreach ($contributions as $contribution) {
+            foreach ($this->contribution_contact_email_tuples as $contact_email_tuple) {
                 try {
-                    // get the related contact
-                    if (empty($contacts[$contribution['contact_id']])) {
-                        throw new Exception(E::ts("Contribution [%1] has no valid contact.", [1 => $contribution['id']]));
-                    }
-                    $contact = $contacts[$contribution['contact_id']];
+                    // unpack the values
+                    [$contribution_id, $contact_id, $email] = $contact_email_tuple;
+                    $contact = $contacts[$contact_id];
 
                     // send email
                     $email_data = [
                         'id'                => $this->config['template_id'],
                         'messageTemplateID' => $this->config['template_id'],
                         'toName'            => $contact['display_name'],
-                        'toEmail'           => $contact['email'],
+                        'toEmail'           => $email,
                         'from'              => $sender,
                         'replyTo'           => CRM_Utils_Array::value('sender_reply_to', $this->config, ''),
                         'cc'                => CRM_Utils_Array::value('sender_cc', $this->config, ''),
                         'bcc'               => CRM_Utils_Array::value('sender_bcc', $this->config, ''),
-                        'contactId'         => $contact['id'],
+                        'contactId'         => $contact_id,
                         'tplParams'         => [
-                            'contact_id'      => $contact['id'],
-                            'contribution_id' => $contribution['id']
+                            'contact_id'      => $contact_id,
+                            'contribution_id' => $contribution_id
                         ],
                     ];
 
                     // add attachments
                     $attachments = [];
-                    $attachment_file = $this->findAttachmentFile($contact['id'], 1, $contribution['id']);
+                    $attachment_file = $this->findAttachmentFile($contact_id, 1, $contribution_id);
                     if ($attachment_file) {
                         $file_name = empty($this->config['attachment1_name']) ? basename($attachment_file) : $this->config['attachment1_name'];
                         $attachments[] = [
@@ -116,21 +110,21 @@ class CRM_Mailbatch_SendContributionMailJob extends CRM_Mailbatch_SendMailJob
                     civicrm_api3('MessageTemplate', 'send', $email_data);
 
                     // mark as success
-                    $mail_successfully_sent[] = $contribution['id'];
+                    $mail_successfully_sent[] = $contribution_id;
 
                 } catch (Exception $exception) {
                     // this shouldn't happen, sendMessageTo has it's own error handling
-                    $mail_sending_failed[] = $contribution['id'];
-                    $this->errors[$contribution['id']] = $exception->getMessage();
+                    $mail_sending_failed[] = $contribution_id;
+                    $this->errors[$contribution_id] = $exception->getMessage();
                 }
             }
 
             // create activities
             if (!empty($mail_successfully_sent) && !empty($this->config['sent_activity_type_id'])) {
-                // TODO: get contact IDs
-                $mail_successfully_sent_contacts = [];
+                $mail_successfully_sent_contacts = $this->getContactIdsFromContributions($mail_successfully_sent);
+
                 if (!empty($this->config['activity_grouped'])) {
-                    // create one grouped activity:
+                    // create one grouped activity with all contacts
                     self::createActivity(
                         $this->config['sent_activity_type_id'],
                         $this->config['sent_activity_subject'],
@@ -139,14 +133,18 @@ class CRM_Mailbatch_SendContributionMailJob extends CRM_Mailbatch_SendMailJob
                         'Completed'
                     );
                 } else {
-                    // create individual activities
-                    foreach ($mail_successfully_sent_contacts as $contact_id) {
+                    // create individual activities per contribution
+                    foreach ($mail_successfully_sent_contacts as $contribution_id) {
+                        $contact_id = $this->getContactIdFromContribution($contribution_id);
                         self::createActivity(
                             $this->config['sent_activity_type_id'],
                             $this->config['sent_activity_subject'],
                             $this->config['sender_contact_id'],
                             [$contact_id],
-                            'Completed'
+                            'Completed',
+                            null,
+                            '',
+                            $contribution_id
                         );
                     }
                 }
@@ -154,14 +152,13 @@ class CRM_Mailbatch_SendContributionMailJob extends CRM_Mailbatch_SendMailJob
 
             if (!empty($mail_sending_failed) && !empty($this->config['failed_activity_type_id'])) {
                 // render list of errors
-                $error_to_contact_id = [];
+                $details = E::ts("<p>The following errors occurred (with contact/contribution IDs):<ul>");
                 foreach ($this->errors as $contribution_id => $error) {
-                    $error_to_contact_id[$error][] = $contributions[$contribution_id]['contact_id'];
-                }
-                $details = E::ts("<p>The following errors occurred (with contact IDs):<ul>");
-                foreach ($error_to_contact_id as $error => $contact_ids) {
-                    $contact_id_list = implode(',', $contact_ids);
-                    $details.= E::ts("<li>%1 (%2)</li>", [1 => $error, 2 => $contact_id_list]);
+                    $contact_id = $this->getContactIdFromContribution($contribution_id);
+                    $details.= E::ts("<li>Contribution [%1] (Contact [%2]): %3</li>", [
+                        1 => $contribution_id,
+                        2 => $contact_id,
+                        3 => $error]);
                 }
                 $details.= "</ul></p>";
 
@@ -179,7 +176,7 @@ class CRM_Mailbatch_SendContributionMailJob extends CRM_Mailbatch_SendMailJob
                 } else {
                     // create individual activities
                     foreach ($mail_sending_failed as $contribution_id) {
-                        $contact_id = $contributions[$contribution_id]['contact_id'];
+                        $contact_id = $this->getContactIdFromContribution($contribution_id);
                         self::createActivity(
                             $this->config['failed_activity_type_id'],
                             $this->config['failed_activity_subject'],
@@ -195,6 +192,49 @@ class CRM_Mailbatch_SendContributionMailJob extends CRM_Mailbatch_SendMailJob
 
         }
         return true;
+    }
+
+    /**
+     * Get the distinct contact IDs of the contacts by the given contributions
+     *
+     * @param array $contribution_ids
+     *   list of contribution IDs
+     *
+     * @return array
+     *   list of contact IDs
+     */
+    protected function getContactIdsFromContributions($contribution_ids)
+    {
+        $contact_ids = [];
+        foreach ($contribution_ids as $contribution_id) {
+            $contact_ids[] = $this->getContactIdFromContribution($contribution_id);
+        }
+        return array_unique($contact_ids);
+    }
+
+    /**
+     * Get the contact ID of the contact assigned to the given contribution
+     *
+     * @param integer $contribution_id
+     *   contribution ID
+     *
+     * @return integer
+     *   contact ID
+     */
+    protected function getContactIdFromContribution($contribution_id)
+    {
+        $contribution_id = (int) $contribution_id;
+        if (empty($contribution_id)) return null;
+
+        // get from the given list
+        foreach ($this->contribution_contact_email_tuples as $contact_email_tuple) {
+            if ($contact_email_tuple[self::CONTRIBUTION_ID] == $contribution_id) {
+                return $contact_email_tuple[self::CONTACT_ID];
+            }
+        }
+
+        // we shouldn't even get here...
+        return CRM_Core_DAO::singleValueQuery("SELECT contact_id FROM civicrm_contribution WHERE id = {$contribution_id}");
     }
 
     /**

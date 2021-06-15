@@ -298,10 +298,12 @@ class CRM_Mailbatch_Form_Task_ContributionEmail extends CRM_Contribute_Form_Task
         // run query to get all contacts
         $contribution_list = implode(',', $this->_contributionIds);
         $EMAIL_SELECTOR_CRITERIA = $this->getSQLEmailSelectorCriteria();
+        CRM_Core_DAO::disableFullGroupByMode();
         $contact_query = CRM_Core_DAO::executeQuery("
             SELECT 
                    contribution.id AS contribution_id,
-                   contact.id      AS contact_id     
+                   contact.id      AS contact_id,
+                   email.email     AS email
             FROM civicrm_contribution contribution
             LEFT JOIN civicrm_contact contact
                    ON contact.id = contribution.contact_id
@@ -310,13 +312,15 @@ class CRM_Mailbatch_Form_Task_ContributionEmail extends CRM_Contribute_Form_Task
                    AND {$EMAIL_SELECTOR_CRITERIA}
                    AND email.on_hold = 0
             WHERE contribution.id IN ({$contribution_list})
-              AND email.id IS NOT NULL");
+              AND email.id IS NOT NULL
+            GROUP BY contribution.id");
+        CRM_Core_DAO::reenableFullGroupByMode();
 
         // batch the contacts into bite-sized jobs
         $current_batch = [];
         $next_offset = $values['batch_size'];
         while ($contact_query->fetch()) {
-            $current_batch[] = $contact_query->contribution_id;
+            $current_batch[] = [$contact_query->contribution_id, $contact_query->contact_id, $contact_query->email];
             if (count($current_batch) >= $values['batch_size']) {
                 $queue->createItem(
                     new CRM_Mailbatch_SendContributionMailJob(
