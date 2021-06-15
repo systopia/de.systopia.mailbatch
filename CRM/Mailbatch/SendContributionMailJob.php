@@ -136,7 +136,8 @@ class CRM_Mailbatch_SendContributionMailJob extends CRM_Mailbatch_SendMailJob
                     );
                 } else {
                     // create individual activities per contribution
-                    foreach ($mail_successfully_sent_contacts as $contact_id) {
+                    foreach ($mail_successfully_sent as $contribution_id) {
+                        $contact_id = $this->getContactIdFromContribution($contribution_id);
                         self::createActivity(
                             $this->config['sent_activity_type_id'],
                             $this->config['sent_activity_subject'],
