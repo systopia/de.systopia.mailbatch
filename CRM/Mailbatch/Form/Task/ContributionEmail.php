@@ -201,7 +201,7 @@ class CRM_Mailbatch_Form_Task_ContributionEmail extends CRM_Contribute_Form_Task
             'sender_bcc'               => Civi::settings()->get('batchmail_sender_bcc'),
             'sender_reply_to'          => Civi::settings()->get('batchmail_sender_reply_to'),
             'send_wo_attachment'       => Civi::settings()->get('batchmail_send_wo_attachment'),
-            //'enable_smarty'            => Civi::settings()->get('batchmail_enable_smarty'),
+            'location_type_id'         => Civi::settings()->get('batchmail_location_type_id'),
             'attachment1_path'         => Civi::settings()->get('batchmail_attachment1_path'),
             'attachment1_name'         => Civi::settings()->get('batchmail_attachment1_name'),
             'attachment1_type'         => Civi::settings()->get('batchmail_attachment1_type'),
@@ -247,7 +247,7 @@ class CRM_Mailbatch_Form_Task_ContributionEmail extends CRM_Contribute_Form_Task
         Civi::settings()->set('batchmail_sender_bcc', $values['sender_bcc']);
         Civi::settings()->set('batchmail_sender_reply_to', $values['sender_reply_to']);
         Civi::settings()->set('batchmail_send_wo_attachment', CRM_Utils_Array::value('send_wo_attachment', $values, 0));
-        //Civi::settings()->set('batchmail_enable_smarty',            CRM_Utils_Array::value('enable_smarty', $values, 0));
+        Civi::settings()->set('batchmail_location_type_id', CRM_Utils_Array::value('location_type_id', $values, 0));
         Civi::settings()->set('batchmail_attachment1_path', $values['attachment1_path']);
         Civi::settings()->set('batchmail_attachment1_name', $values['attachment1_name']);
         Civi::settings()->set('batchmail_attachment1_type', $values['attachment1_type']);
