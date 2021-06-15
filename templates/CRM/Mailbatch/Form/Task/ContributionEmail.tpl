@@ -183,7 +183,7 @@
 
     // add logic to location type change: submit to update stats
     cj("[name=location_type_id]").change(function() {
-      cj("input[name=_qf_ContributionEmail_refresh]").click();
+      cj("[id^=_qf_ContributionEmail_refresh]").click();
     });
   });
 </script>
