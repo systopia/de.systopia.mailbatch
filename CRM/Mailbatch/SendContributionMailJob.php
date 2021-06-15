@@ -39,7 +39,9 @@ class CRM_Mailbatch_SendContributionMailJob extends CRM_Mailbatch_SendMailJob
      */
     public function run(): bool
     {
+        Civi::log()->debug("Processing: " , json_encode($this->contribution_contact_email_tuples));
         if (!empty($this->contribution_contact_email_tuples)) {
+            // load the relevant contacts
             $contact_ids = [];
             foreach ($this->contribution_contact_email_tuples as $contact_email_tuple) {
                 $contact_ids[] = $contact_email_tuple[self::CONTACT_ID];
@@ -73,8 +75,8 @@ class CRM_Mailbatch_SendContributionMailJob extends CRM_Mailbatch_SendMailJob
 
                     // send email
                     $email_data = [
-                        'id'                => $this->config['template_id'],
-                        'messageTemplateID' => $this->config['template_id'],
+                        'id'                => (int) $this->config['template_id'],
+                        'messageTemplateID' => (int) $this->config['template_id'],
                         'toName'            => $contact['display_name'],
                         'toEmail'           => $email,
                         'from'              => $sender,
@@ -134,8 +136,7 @@ class CRM_Mailbatch_SendContributionMailJob extends CRM_Mailbatch_SendMailJob
                     );
                 } else {
                     // create individual activities per contribution
-                    foreach ($mail_successfully_sent_contacts as $contribution_id) {
-                        $contact_id = $this->getContactIdFromContribution($contribution_id);
+                    foreach ($mail_successfully_sent_contacts as $contact_id) {
                         self::createActivity(
                             $this->config['sent_activity_type_id'],
                             $this->config['sent_activity_subject'],
