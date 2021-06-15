@@ -16,7 +16,6 @@
 {if $no_email_count}
   <div id="help">{ts 1=$no_email_count}<b>Warning:</b> %1 contribution(s) belong to a contact that has no viable email address, an email will not be sent for those contributions{/ts}</div>
 {/if}
-
   <h3>{ts}Mailing Properties{/ts}</h3><br/>
 
   <div class="crm-section">
@@ -49,6 +48,12 @@
     <div class="clear"></div>
   </div>
 
+  <div class="crm-section">
+    <div class="label">{$form.location_type_id.label}</div>
+    <div class="content">{$form.location_type_id.html}</div>
+    <div class="clear"></div>
+  </div>
+
 
   <h3>{ts}Content{/ts}</h3><br/>
 
@@ -57,12 +62,6 @@
     <div class="content">{$form.template_id.html}</div>
     <div class="clear"></div>
   </div>
-
-{*  <div class="crm-section">*}
-{*    <div class="label">{$form.enable_smarty.label}&nbsp;{help id="id-smarty" title=$form.enable_smarty.label}</div>*}
-{*    <div class="content">{$form.enable_smarty.html}</div>*}
-{*    <div class="clear"></div>*}
-{*  </div>*}
 
   <div class="crm-section">
     <div class="label">{$form.send_wo_attachment.label}&nbsp;{help id="id-no-attachment" title=$form.send_wo_attachment.label}</div>
@@ -136,6 +135,9 @@
   </div>
 
   <br>
+{if $no_email_count}
+  <div id="help">{ts 1=$no_email_count}<b>Warning:</b> %1 contribution(s) belong to a contact that has no viable email address, an email will not be sent for those contributions{/ts}</div>
+{/if}
   <div class="crm-submit-buttons">
       {include file="CRM/common/formButtons.tpl" location="bottom"}
   </div>
@@ -179,6 +181,10 @@
     });
     cj("[name=attachment1_type]").change();
 
+    // add logic to location type change: submit to update stats
+    cj("[name=location_type_id]").change(function() {
+      cj("input[name=_qf_ContributionEmail_refresh]").click();
+    });
   });
 </script>
 {/literal}

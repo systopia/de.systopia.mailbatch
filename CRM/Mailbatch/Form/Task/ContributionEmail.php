@@ -88,6 +88,15 @@ class CRM_Mailbatch_Form_Task_ContributionEmail extends CRM_Contribute_Form_Task
         );
 
         $this->add(
+            'select',
+            'location_type_id',
+            E::ts('E-Mail Type'),
+            $this->getEmailTypes(),
+            false,
+            ['class' => 'crm-select2']
+        );
+
+        $this->add(
             'checkbox',
             'send_wo_attachment',
             E::ts('Send if attachment not found?')
@@ -205,7 +214,21 @@ class CRM_Mailbatch_Form_Task_ContributionEmail extends CRM_Contribute_Form_Task
             'failed_activity_assignee' => Civi::settings()->get('batchmail_failed_activity_assignee'),
         ]);
 
-        CRM_Core_Form::addDefaultButtons(E::ts("Send %1 Emails", [1 => $contribution_count - $no_email_count]));
+
+//        CRM_Core_Form::addDefaultButtons(E::ts("Send %1 Emails", [1 => $contribution_count - $no_email_count]));
+        $this->addButtons([
+              [
+                  'type' => 'submit',
+                  'name' => E::ts("Send %1 Emails", [1 => $contribution_count - $no_email_count]),
+                  'isDefault' => true,
+              ],
+              [
+                  'type' => 'refresh',
+                  'name' => E::ts('Refresh'),
+                  'isDefault' => false,
+              ],
+          ]);
+
     }
 
 
@@ -238,6 +261,13 @@ class CRM_Mailbatch_Form_Task_ContributionEmail extends CRM_Contribute_Form_Task
             Civi::settings()->set('batchmail_failed_activity_subject2', $values['failed_activity_subject2']);
         }
 
+        // if this is just a refresh, don't go any further
+        if ($this->controller->_actionName[1] == 'refresh') {
+            parent::postProcess();
+            return;
+        }
+
+
         // generate no-email activities for contacts with no emails if required
         if ($no_email_count > 0
             && !empty($values['failed_activity_type_id'])
@@ -257,7 +287,7 @@ class CRM_Mailbatch_Form_Task_ContributionEmail extends CRM_Contribute_Form_Task
             'reset' => true,
         ]);
         // add a dummy item to display the 'upcoming' message
-        $queue->createItem(new CRM_Mailbatch_SendMailJob(
+        $queue->createItem(new CRM_Mailbatch_SendContributionMailJob(
             [],
             $values['template_id'],
             E::ts("Sending Emails %1 - %2", [
@@ -267,6 +297,7 @@ class CRM_Mailbatch_Form_Task_ContributionEmail extends CRM_Contribute_Form_Task
 
         // run query to get all contacts
         $contribution_list = implode(',', $this->_contributionIds);
+        $EMAIL_SELECTOR_CRITERIA = $this->getSQLEmailSelectorCriteria();
         $contact_query = CRM_Core_DAO::executeQuery("
             SELECT 
                    contribution.id AS contribution_id,
@@ -276,7 +307,7 @@ class CRM_Mailbatch_Form_Task_ContributionEmail extends CRM_Contribute_Form_Task
                    ON contact.id = contribution.contact_id
             LEFT JOIN civicrm_email email
                    ON email.contact_id = contact.id
-                   AND email.is_primary = 1
+                   AND {$EMAIL_SELECTOR_CRITERIA}
                    AND email.on_hold = 0
             WHERE contribution.id IN ({$contribution_list})
               AND email.id IS NOT NULL");
@@ -401,6 +432,7 @@ class CRM_Mailbatch_Form_Task_ContributionEmail extends CRM_Contribute_Form_Task
     private function getNoEmailCount()
     {
         $contribution_id_list = implode(',', $this->_contributionIds);
+        $EMAIL_SELECTOR_CRITERIA = $this->getSQLEmailSelectorCriteria();
         return CRM_Core_DAO::singleValueQuery("
             SELECT COUNT(DISTINCT(contribution.id))
             FROM civicrm_contribution contribution
@@ -408,15 +440,14 @@ class CRM_Mailbatch_Form_Task_ContributionEmail extends CRM_Contribute_Form_Task
                    ON contact.id = contribution.contact_id
             LEFT JOIN civicrm_email email
                    ON email.contact_id = contact.id
-                   AND email.is_primary = 1
+                   AND {$EMAIL_SELECTOR_CRITERIA}
                    AND email.on_hold = 0
             WHERE contribution.id IN ({$contribution_id_list})
               AND email.id IS NULL");
     }
 
     /**
-     * Get the number of contacts that
-     *   do not have a viable email address
+     * Get the number of contacts belong to the selected emails
      */
     private function getContactCount()
     {
@@ -426,12 +457,7 @@ class CRM_Mailbatch_Form_Task_ContributionEmail extends CRM_Contribute_Form_Task
             FROM civicrm_contribution contribution
             LEFT JOIN civicrm_contact contact
                    ON contact.id = contribution.contact_id
-            LEFT JOIN civicrm_email email
-                   ON email.contact_id = contact.id
-                   AND email.is_primary = 1
-                   AND email.on_hold = 0
-            WHERE contribution.id IN ({$contribution_id_list})
-              AND email.id IS NULL");
+            WHERE contribution.id IN ({$contribution_id_list})");
     }
 
     /**
@@ -441,15 +467,18 @@ class CRM_Mailbatch_Form_Task_ContributionEmail extends CRM_Contribute_Form_Task
     private function getNoEmailContacts()
     {
         $contacts_without_email = [];
-        $full_contact_id_list = implode(',', $this->_contactIds);
+        $EMAIL_SELECTOR_CRITERIA = $this->getSQLEmailSelectorCriteria();
+        $contribution_id_list = implode(',', $this->_contributionIds);
         $contact_query = CRM_Core_DAO::executeQuery("
-            SELECT DISTINCT(contact.id) contact_id
-            FROM civicrm_contact contact
-            LEFT JOIN civicrm_email email
+            SELECT COUNT(DISTINCT(contact.id)) AS contact_id
+            FROM civicrm_contribution contribution
+            LEFT JOIN civicrm_contact contact
+                   ON contact.id = contribution.contact_id
+            INNER JOIN civicrm_email email
                    ON email.contact_id = contact.id
-                   AND email.is_primary = 1
+                   AND {$EMAIL_SELECTOR_CRITERIA}
                    AND email.on_hold = 0
-            WHERE contact.id IN ({$full_contact_id_list})
+            WHERE contribution.id IN ({$contribution_id_list})
               AND email.id IS NULL");
         while ($contact_query->fetch()) {
             $contacts_without_email[] = (int) $contact_query->contact_id;
@@ -500,6 +529,58 @@ class CRM_Mailbatch_Form_Task_ContributionEmail extends CRM_Contribute_Form_Task
                     $assignees
                 );
             }
+        }
+    }
+
+    /**
+     * get the list of email types
+     *
+     * @return array
+     *  list of id => display name
+     */
+    private function getEmailTypes()
+    {
+        $location_types = [
+            'P' => E::ts("primary"),
+            'B' => E::ts("billing (flag)"),
+        ];
+
+        // add the specific ones
+        $system_location_type_query = civicrm_api3('LocationType', 'get', [
+            'option.limit' => 0,
+            'is_active'    => 1,
+            'sequential'   => 0,
+            'return'       => 'id,display_name',
+        ]);
+        foreach ($system_location_type_query['values'] as $location_type) {
+            $location_types[$location_type['id']] = $location_type['display_name'];
+        }
+
+        return $location_types;
+    }
+
+    /**
+     * Generate the selective term for the email
+     *
+     * @param string $table_name
+     *   the table name currently used for the email entity
+     *
+     * @return string
+     *   a (safe) SQL clause (as long as $table_name is safe)
+     */
+    private function getSQLEmailSelectorCriteria($table_name = "email")
+    {
+        $location_type_id = CRM_Utils_Array::value('location_type_id', $this->_submitValues);
+        switch ($location_type_id) {
+            case 'P': // primary
+                return "{$table_name}.is_primary";
+
+            case 'B': // billing
+                return "{$table_name}.is_billing";
+
+            default:  // location type
+                $location_type_id = (int) $location_type_id;
+                return "{$table_name}.location_type_id = {$location_type_id}";
         }
     }
 }
