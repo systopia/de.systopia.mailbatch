@@ -68,14 +68,18 @@ class CRM_Mailbatch_SendMailJob
                 try {
                     // send email
                     $email_data = [
-                        'id'        => $this->config['template_id'],
-                        'toName'    => $contact['display_name'],
-                        'toEmail'   => $contact['email'],
-                        'from'      => $sender,
-                        'replyTo'   => CRM_Utils_Array::value('sender_reply_to', $this->config, ''),
-                        'cc'        => CRM_Utils_Array::value('sender_cc', $this->config, ''),
-                        'bcc'       => CRM_Utils_Array::value('sender_bcc', $this->config, ''),
-                        'contactId' => $contact['id'],
+                        'id'                => $this->config['template_id'],
+                        'messageTemplateID' => $this->config['template_id'],
+                        'toName'            => $contact['display_name'],
+                        'toEmail'           => $contact['email'],
+                        'from'              => $sender,
+                        'replyTo'           => CRM_Utils_Array::value('sender_reply_to', $this->config, ''),
+                        'cc'                => CRM_Utils_Array::value('sender_cc', $this->config, ''),
+                        'bcc'               => CRM_Utils_Array::value('sender_bcc', $this->config, ''),
+                        'contactId'         => $contact['id'],
+                        'tplParams'         => [
+                            'contact_id' => $contact['id'],
+                        ],
                     ];
 
                     // add attachments
@@ -186,9 +190,10 @@ class CRM_Mailbatch_SendMailJob
      * @param string $status
      * @param string $details
      * @param integer $sender_contact_id
+     * @param integer $source_record_id
      * @param array $target_contact_ids
      */
-    public static function createActivity($activity_type_id, $subject, $sender_contact_id, $target_contact_ids, $status, $details = null, $assignees = '')
+    public static function createActivity($activity_type_id, $subject, $sender_contact_id, $target_contact_ids, $status, $details = null, $assignees = '', $source_record_id = null)
     {
         try {
             $activity_data = [
@@ -199,6 +204,7 @@ class CRM_Mailbatch_SendMailJob
                 'assignee_id'       => empty($assignees) ? '' : explode(',', $assignees),
                 'subject'           => $subject,
                 'details'           => $details,
+                'source_record_id'  => $source_record_id,
             ];
             civicrm_api3('Activity', 'create', $activity_data);
         } catch (CiviCRM_API3_Exception $ex) {

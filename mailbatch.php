@@ -186,5 +186,15 @@ function mailbatch_civicrm_searchTasks($objectType, &$tasks)
             'class' => 'CRM_Mailbatch_Form_Task_ContactEmail',
             'result' => false
         ];
+        return;
+    }
+
+    // add "Send E-Mail" task to contact search result
+    if ($objectType == 'contribution') {
+        $tasks[] = [
+            'title' => E::ts('Send Emails (via MailBatch)'),
+            'class' => 'CRM_Mailbatch_Form_Task_ContributionEmail',
+            'result' => false
+        ];
     }
 }
