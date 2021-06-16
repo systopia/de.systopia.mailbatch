@@ -69,7 +69,7 @@ class CRM_Mailbatch_SendContributionMailJob extends CRM_Mailbatch_SendMailJob
             foreach ($this->contribution_contact_email_tuples as $contact_email_tuple) {
                 try {
                     // unpack the values
-                    [$contribution_id, $contact_id, $email] = $contact_email_tuple;
+                    list($contribution_id, $contact_id, $email) = $contact_email_tuple;
                     $contact = $contacts[$contact_id];
 
                     // send email
