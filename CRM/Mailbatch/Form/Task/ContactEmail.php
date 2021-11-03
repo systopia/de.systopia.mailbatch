@@ -15,12 +15,15 @@
 +--------------------------------------------------------*/
 
 use CRM_Mailbatch_ExtensionUtil as E;
+use Civi\Mailbatch\Form\Task\AttachmentsTrait;
 
 /**
  * Send E-Mail to contacts task
  */
 class CRM_Mailbatch_Form_Task_ContactEmail extends CRM_Contact_Form_Task
 {
+    use AttachmentsTrait;
+
     /**
      * Compile task form
      */
@@ -97,6 +100,8 @@ class CRM_Mailbatch_Form_Task_ContactEmail extends CRM_Contact_Form_Task
             'send_wo_attachment',
             E::ts('Send if attachment not found?')
         );
+
+        $this->addAttachmentElements();
 
         $this->add(
             'text',
