@@ -24,70 +24,53 @@ use CRM_Mailbatch_ExtensionUtil as E;
 trait AttachmentsTrait
 {
     /**
-     * @var array $attachments
-     */
-    protected $attachments = [];
-
-    /**
-     * @return array
-     */
-    public function getAttachments()
-    {
-        return $this->attachments;
-    }
-
-    public function addAttachment($id, $settings = NULL) {
-        $this->attachments[$id] = $settings;
-    }
-
-    /**
      * @var string
      */
     protected $_ajax_action;
 
     public function addAttachmentElements()
     {
-        $attachment_count = 0;
         $attachment_elements = [];
+        $attachments = $this->get('attachments');
 
-        // Get all current attachment fields when adding via Ajax.
-        if (
-            ($this->_ajax_action = \CRM_Utils_Request::retrieve('ajax_action', 'String', $this))
-            && $this->_ajax_action == 'add_attachment'
-        ) {
-            while (true) {
-                $attachment_count++;
-                // TODO: Retrieve type for each attachment and retrieve settings depending on type from separate fields.
-                $current_attachment = \CRM_Utils_Request::retrieve(
-                    'attachments--' . $attachment_count,
-                    'Json',
-                    $this
-                );
-                $this->addAttachment($attachment_count, $current_attachment);
-                if (is_null($current_attachment)) {
-                    break;
-                }
-            }
+        $ajax_action = \CRM_Utils_Request::retrieve('ajax_action', 'String');
+        if ($ajax_action == 'remove_attachment') {
+            $attachment_id = \CRM_Utils_Request::retrieve('ajax_attachment_id', 'String');
+            unset($attachments[$attachment_id]);
         }
+        if ($ajax_action == 'add_attachment') {
+            $attachments[] = NULL;
+        }
+        $this->set('attachments', $attachments);
 
-        $attachment_count = 0;
-        foreach ($this->getAttachments() as $attachment_settings) {
-            $attachment_count++;
+        foreach ($attachments as $attachment_id => $attachment) {
             // TODO: Add type element.
 
             // TODO: Add settings elements depending on type.
             $this->add(
                 'textarea',
-                'attachments--' . $attachment_count,
+                'attachments--' . $attachment_id,
                 E::ts('Attachment settings'),
                 [
                     'rows' => 3,
                     'cols' => 80,
                 ]
             );
-            $attachment_elements[$attachment_count] = 'attachments--' . $attachment_count;
+            $this->add(
+                'button',
+                'attachments--' . $attachment_id . '_remove',
+                E::ts('Remove attachment'),
+                [
+                    'data-attachment_id' => $attachment_id,
+                    'class' => 'crm-mailbatch-attachment-remove'
+                ]
+            );
+            $attachment_elements[$attachment_id] = [
+                'attachments--' . $attachment_id,
+                'attachments--' . $attachment_id . '_remove',
+            ];
         }
-        $this->assign('attachment_elements', $attachment_elements);
+        $this->assign('attachments', $attachment_elements);
 
         $this->add(
             'button',

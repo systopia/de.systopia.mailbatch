@@ -21,8 +21,13 @@
     return (results !== null) ? results[1] || 0 : false;
   };
 
-  $(document).ready(function() {
-    var $form = $('form.crm-mailbatch-attachments-form');
+  var mailbatchBehavior = function() {
+    if (this == document) {
+      var $form = $(this).find('form.crm-mailbatch-attachments-form');
+    }
+    else {
+      var $form = $(this).closest('form.crm-mailbatch-attachments-form');
+    }
     var $attachmentsWrapper = $form.find('#crm-mailbatch-attachments-wrapper');
     $attachmentsWrapper
       .css('position', 'relative')
@@ -50,16 +55,18 @@
               })
           )
       );
-    $('#attachments_more')
+
+    $('#attachments_more', $attachmentsWrapper)
       .on('click', function() {
         var urlSearchparams = new URLSearchParams(window.location.search);
         urlSearchparams.append('ajax_action', 'add_attachment');
         var postValues = {
           qfKey: $form.find('[name="qfKey"]').val(),
+          ajax_context: 'attachments',
           ajax_action: 'add_attachment',
           snippet: 6
         };
-        var $currentAttachments = $form.find('[name^="attachments--"]');
+        var $currentAttachments = $attachmentsWrapper.find('[name^="attachments--"]');
         $currentAttachments.each(function() {
           postValues[$(this).attr('name')] = $(this).val();
         });
@@ -75,14 +82,50 @@
           postValues,
           function(data) {
             $attachmentsWrapper
-              .find('.crm-mailbatch-attachments-table tbody')
-              .append($(data.content)
-                .find('#crm-mailbatch-attachments-wrapper table.crm-mailbatch-attachments-table tr.crm-mailbatch-attachment').last()
+              .replaceWith($(data.content)
+                .find('#crm-mailbatch-attachments-wrapper')
+                .each(mailbatchBehavior)
               );
-            $attachmentsWrapper.find('.loading-overlay').hide();
           }
         );
       });
-  });
+
+    $('.crm-mailbatch-attachment-remove', $attachmentsWrapper)
+      .on('click', function() {
+        var urlSearchparams = new URLSearchParams(window.location.search);
+        urlSearchparams.append('ajax_action', 'remove_attachment');
+        var postValues = {
+          qfKey: $form.find('[name="qfKey"]').val(),
+          ajax_context: 'attachments',
+          ajax_action: 'remove_attachment',
+          ajax_attachment_id: $(this).data('attachment_id'),
+          snippet: 6
+        };
+        var $currentAttachments = $attachmentsWrapper.find('[name^="attachments--"]');
+        $currentAttachments.each(function() {
+          postValues[$(this).attr('name')] = $(this).val();
+        });
+
+        $attachmentsWrapper.find('.loading-overlay').show();
+
+        // Retrieve the form with another attachment field.
+        $.post(
+          CRM.url(
+            location.pathname.substr(1),
+            location.search.substr(1)
+          ),
+          postValues,
+          function(data) {
+            $attachmentsWrapper
+              .replaceWith($(data.content)
+                .find('#crm-mailbatch-attachments-wrapper')
+                .each(mailbatchBehavior)
+              );
+          }
+        );
+      });
+  };
+
+  $(document).ready(mailbatchBehavior);
 
 })(CRM.$ || cj);

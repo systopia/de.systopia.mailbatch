@@ -17,15 +17,17 @@
 
       <table class="crm-mailbatch-attachments-table row-highlight">
           <tbody>
-          {foreach from=$attachment_elements item=attachment_element}
+          {foreach from=$attachments item="attachment_elements"}
             <tr class="crm-mailbatch-attachment">
-              <td>
-                <div class="crm-section">
-                  <div class="label">{$form.$attachment_element.label}</div>
-                  <div class="content">{$form.$attachment_element.html}</div>
-                  <div class="clear"></div>
-                </div>
-              </td>
+              {foreach from=$attachment_elements item="attachment_element"}
+                <td>
+                  <div class="crm-section">
+                    <div class="label">{$form.$attachment_element.label}</div>
+                    <div class="content">{$form.$attachment_element.html}</div>
+                    <div class="clear"></div>
+                  </div>
+                </td>
+              {/foreach}
             </tr>
           {/foreach}
           </tbody>
