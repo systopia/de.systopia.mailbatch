@@ -17,22 +17,34 @@
 
       <table class="crm-mailbatch-attachments-table row-highlight">
           <tbody>
-          {foreach from=$attachments item="attachment_elements"}
+          {foreach from=$attachments item="attachment_elements" key="attachment_id"}
             <tr class="crm-mailbatch-attachment">
-              {foreach from=$attachment_elements item="attachment_element"}
-                <td>
-                  <div class="crm-section">
-                    <div class="label">{$form.$attachment_element.label}</div>
-                    <div class="content">{$form.$attachment_element.html}</div>
-                    <div class="clear"></div>
-                  </div>
-                </td>
-              {/foreach}
+
+              <td>
+                  {foreach from=$attachment_elements key="attachment_element" item="attachment_element_type"}
+                    <div class="crm-section">
+                      <div class="label">
+                          {$form.$attachment_element.label}
+                          {capture assign="help_id"}id-{$attachment_element_type}{/capture}
+                          {help id=$help_id title=$form.$attachment_element.label}
+                      </div>
+                      <div class="content">{$form.$attachment_element.html}</div>
+                      <div class="clear"></div>
+                    </div>
+                  {/foreach}
+              </td>
+
+              <td>
+                  {capture assign="attachment_remove_button_name"}attachments--{$attachment_id}_remove{/capture}
+                  {$form.$attachment_remove_button_name.html}
+              </td>
+
             </tr>
           {/foreach}
           </tbody>
       </table>
 
+      {$form.attachments_more_type.html}
       {$form.attachments_more.html}
   </div>
 {/crmScope}

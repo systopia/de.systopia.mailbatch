@@ -91,6 +91,7 @@ class CRM_Mailbatch_SendContributionMailJob extends CRM_Mailbatch_SendMailJob
 
                     // add attachments
                     $attachments = [];
+                    // TODO: refactor to use pluggable attachment system.
                     $attachment_file = $this->findAttachmentFile($contact_id, 1, $contribution_id);
                     if ($attachment_file) {
                         $file_name = empty($this->config['attachment1_name']) ? basename($attachment_file) : $this->config['attachment1_name'];

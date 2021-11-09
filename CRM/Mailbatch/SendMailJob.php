@@ -82,22 +82,22 @@ class CRM_Mailbatch_SendMailJob
                         ],
                     ];
 
-                    // add attachments
-                    $attachments = [];
-                    $attachment_file = $this->findAttachmentFile($contact['id'], 1);
-                    if ($attachment_file) {
-                        $file_name = empty($this->config['attachment1_name']) ? basename($attachment_file) : $this->config['attachment1_name'];
-                        $attachments[] = [
-                            'fullPath'  => $attachment_file,
-                            'mime_type' => $this->getMimeType($attachment_file),
-                            'cleanName' => $file_name,
-                        ];
-                        $email_data['attachments'] = $attachments;
-
-                    } elseif (empty($this->config['send_wo_attachment'])) {
-                        // no attachment -> cannot send
-                        throw new Exception(E::ts("Attachment '%1' not found.", [
-                            1 => $this->config['attachment1_path']]));
+                    // Add attachments.
+                    $attachment_types = \Civi\Mailbatch\Form\Task\AttachmentsTrait::attachmentTypes();
+                    foreach ($this->config['attachments'] as $attachment_id => $attachment_values) {
+                        $attachment_type = $attachment_types[$attachment_values['type']];
+                        if (
+                            !($attachment = $attachment_type['controller']::buildAttachment(['contact' => $contact], $attachment_values))
+                            && empty($this->config['send_wo_attachment'])
+                        ) {
+                            // no attachment -> cannot send
+                            throw new Exception(
+                                E::ts("Attachment '%1' could not be generated or found.", [
+                                    1 => $attachment_id,
+                                ])
+                            );
+                        }
+                        $email_data['attachments'][] = $attachment;
                     }
 
                     // send email

@@ -16,6 +16,8 @@
 
 namespace Civi\Mailbatch\Form\Task;
 
+use Civi\Core\Event\GenericHookEvent;
+use Civi\FormProcessor\API\Exception;
 use CRM_Mailbatch_ExtensionUtil as E;
 
 /**
@@ -23,14 +25,11 @@ use CRM_Mailbatch_ExtensionUtil as E;
  */
 trait AttachmentsTrait
 {
-    /**
-     * @var string
-     */
-    protected $_ajax_action;
 
     public function addAttachmentElements()
     {
         $attachment_elements = [];
+        $attachment_types = self::attachmentTypes();
         $attachments = $this->get('attachments');
 
         $ajax_action = \CRM_Utils_Request::retrieve('ajax_action', 'String');
@@ -39,22 +38,18 @@ trait AttachmentsTrait
             unset($attachments[$attachment_id]);
         }
         if ($ajax_action == 'add_attachment') {
-            $attachments[] = NULL;
+            $attachment_type = \CRM_Utils_Request::retrieve('ajax_attachment_type', 'String');
+            $attachments[] = ['type' => $attachment_type];
         }
         $this->set('attachments', $attachments);
 
         foreach ($attachments as $attachment_id => $attachment) {
-            // TODO: Add type element.
-
-            // TODO: Add settings elements depending on type.
-            $this->add(
-                'textarea',
-                'attachments--' . $attachment_id,
-                E::ts('Attachment settings'),
-                [
-                    'rows' => 3,
-                    'cols' => 80,
-                ]
+            if (!$attachment_type = $attachment_types[$attachment['type']] ?? null) {
+                throw new Exception(E::ts('Unregistered attachment type %1', [1 => $attachment['type']]));
+            }
+            $attachment_elements[$attachment_id] = $attachment_type['controller']::buildAttachmentForm(
+                $this,
+                $attachment_id
             );
             $this->add(
                 'button',
@@ -62,16 +57,20 @@ trait AttachmentsTrait
                 E::ts('Remove attachment'),
                 [
                     'data-attachment_id' => $attachment_id,
-                    'class' => 'crm-mailbatch-attachment-remove'
+                    'class' => 'crm-mailbatch-attachment-remove',
                 ]
             );
-            $attachment_elements[$attachment_id] = [
-                'attachments--' . $attachment_id,
-                'attachments--' . $attachment_id . '_remove',
-            ];
         }
         $this->assign('attachments', $attachment_elements);
 
+        $this->add(
+            'select',
+            'attachments_more_type',
+            E::ts('Attachment type'),
+            array_map(function ($attachment_type) {
+                return $attachment_type['label'];
+            }, $attachment_types)
+        );
         $this->add(
             'button',
             'attachments_more',
@@ -79,6 +78,46 @@ trait AttachmentsTrait
         );
         \CRM_Core_Resources::singleton()->addScriptFile(E::LONG_NAME, 'js/attachments.js', 1, 'html-header');
         $this->addClass('crm-mailbatch-attachments-form');
+    }
+
+    public function processAttachments()
+    {
+        $attachment_values = [];
+        $attachments = $this->get('attachments');
+        $attachment_types = self::attachmentTypes();
+        foreach ($attachments as $attachment_id => $attachment) {
+            if (!$attachment_type = $attachment_types[$attachment['type']] ?? null) {
+                throw new Exception(E::ts('Unregistered attachment type %1', [1 => $attachment['type']]));
+            }
+            $attachment_values[$attachment_id] = $attachment_type['controller']::processAttachmentForm(
+                $this,
+                $attachment_id
+            ) + ['type' => $attachment['type']];
+        }
+        // TODO: Is this setting even necessary?
+        \Civi::settings()->set('batchmail_attachments', $attachment_values);
+        return $attachment_values;
+    }
+
+    /**
+     * Builds a list of registered attachment types.
+     *
+     * @return array
+     *   The list of registered attachment types, indexed by their internal name.
+     *
+     */
+    public static function attachmentTypes()
+    {
+        $attachment_types = [];
+
+        $attachment_types['generic'] = [
+            'label' => E::ts('Generic'),
+            'controller' => '\Civi\Mailbatch\AttachmentType\Generic',
+        ];
+
+        $event = GenericHookEvent::create(['attachment_types' => &$attachment_types]);
+        \Civi::dispatcher()->dispatch('civi.mailbatch.attachmentTypes', $event);
+        return $attachment_types;
     }
 
 }

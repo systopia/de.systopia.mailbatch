@@ -64,6 +64,7 @@
           qfKey: $form.find('[name="qfKey"]').val(),
           ajax_context: 'attachments',
           ajax_action: 'add_attachment',
+          ajax_attachment_type: $attachmentsWrapper.find('[name="attachments_more_type"]').val(),
           snippet: 6
         };
         var $currentAttachments = $attachmentsWrapper.find('[name^="attachments--"]');
