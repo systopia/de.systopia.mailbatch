@@ -16,6 +16,7 @@
 
 namespace Civi\Mailbatch\AttachmentType;
 
+use Civi\Mailbatch\Form\Task\AttachmentsTrait;
 use CRM_Mailbatch_ExtensionUtil as E;
 
 class Generic implements AttachmentTypeInterface
@@ -67,7 +68,7 @@ class Generic implements AttachmentTypeInterface
             $file_name = empty($attachment_values['name']) ? basename($attachment_file) : $attachment_values['name'];
             $attachment = [
                 'fullPath' => $attachment_file,
-                'mime_type' => self::getMimeType($attachment_file),
+                'mime_type' => AttachmentsTrait::getMimeType($attachment_file),
                 'cleanName' => $file_name,
             ];
         }
@@ -97,22 +98,6 @@ class Generic implements AttachmentTypeInterface
             }
         }
         return null;
-    }
-
-    /**
-     * get the mime type of the given file
-     *
-     * @param string $path
-     *
-     * @return string mime type
-     */
-    protected static function getMimeType($path)
-    {
-        static $known_files = [];
-        if (!isset($known_files[$path])) {
-            $known_files[$path] = mime_content_type($path);
-        }
-        return $known_files[$path];
     }
 
 }

@@ -120,4 +120,20 @@ trait AttachmentsTrait
         return $attachment_types;
     }
 
+    /**
+     * get the mime type of the given file
+     *
+     * @param string $path
+     *
+     * @return string mime type
+     */
+    public static function getMimeType($path)
+    {
+        static $known_files = [];
+        if (!isset($known_files[$path])) {
+            $known_files[$path] = mime_content_type($path);
+        }
+        return $known_files[$path];
+    }
+
 }
