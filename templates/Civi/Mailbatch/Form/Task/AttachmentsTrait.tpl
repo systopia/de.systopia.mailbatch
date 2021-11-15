@@ -20,7 +20,7 @@
           {foreach from=$attachments item="attachment_elements" key="attachment_id"}
             <tr class="crm-mailbatch-attachment">
 
-              <td>
+              <td style="width: 100%;">
                   {foreach from=$attachment_elements key="attachment_element" item="attachment_element_type"}
                     <div class="crm-section">
                       <div class="label">
