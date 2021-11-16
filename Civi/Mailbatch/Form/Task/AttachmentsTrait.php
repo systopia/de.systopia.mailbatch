@@ -21,15 +21,18 @@ use Civi\FormProcessor\API\Exception;
 use CRM_Mailbatch_ExtensionUtil as E;
 
 /**
- * For use in classes extending CRM_Core_Form_Task.
+ * For use in classes extending CRM_Core_Form.
  */
+// TODO: Rename trait to denote being for forms
 trait AttachmentsTrait
 {
 
-    public function addAttachmentElements()
+    public function addAttachmentElements($context = [])
     {
         $attachment_elements = [];
-        $attachment_types = self::attachmentTypes();
+        $attachment_types = self::attachmentTypes($context);
+        // TODO: As default values, load from settings, which attachments used to be there the last time the form was built.
+        $defaults = \Civi::settings()->get('batchmail_attachments');
         $attachments = $this->get('attachments');
 
         $ajax_action = \CRM_Utils_Request::retrieve('ajax_action', 'String');
@@ -106,18 +109,35 @@ trait AttachmentsTrait
      *   The list of registered attachment types, indexed by their internal name.
      *
      */
-    public static function attachmentTypes()
+    public static function attachmentTypes($context = [])
     {
         $attachment_types = [];
 
+        // TODO: Rename "Generic" to "File on Server".
         $attachment_types['generic'] = [
             'label' => E::ts('Generic'),
             'controller' => '\Civi\Mailbatch\AttachmentType\Generic',
+            'context' => [
+                'entity_types' => ['contact', 'contribution'],
+            ],
         ];
+        // TODO: Implement "invoice" attachment type.
+//        $attachment_types['invoice'] = [
+//            'label' => E::ts('Contribution Invoice'),
+//            'controller' => '\Civi\Mailbatch\AttachmentType\ContributionInvoice',
+//            'context' => [
+//                'entity_types' => ['contribution'],
+//            ],
+//        ];
 
+        // TODO: Add supported entity types to context for not allowing e.g. generating invoices for contacts.
         $event = GenericHookEvent::create(['attachment_types' => &$attachment_types]);
         \Civi::dispatcher()->dispatch('civi.mailbatch.attachmentTypes', $event);
-        return $attachment_types;
+
+        // TODO: array_diff $context['entity_types'] with the attachment types' contexts for deciding whether they match.
+        return !empty($context['entity_type']) ? array_filter($attachment_types, function($attachment_type) use ($context) {
+            return in_array($context['entity_type'], $attachment_type['context']['entity_types']);
+        }) : $attachment_types;
     }
 
     /**

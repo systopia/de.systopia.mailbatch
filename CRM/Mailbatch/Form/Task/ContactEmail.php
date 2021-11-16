@@ -101,7 +101,7 @@ class CRM_Mailbatch_Form_Task_ContactEmail extends CRM_Contact_Form_Task
             E::ts('Send if attachment not found?')
         );
 
-        $this->addAttachmentElements();
+        $this->addAttachmentElements(['entity_type' => 'contact']);
 
         $activity_types = $this->getActivityTypes();
         $this->add(
@@ -197,6 +197,7 @@ class CRM_Mailbatch_Form_Task_ContactEmail extends CRM_Contact_Form_Task
         $contact_count = count($this->_contactIds) - $no_email_count;
 
         // store default values
+        // TODO: Use contactSettings().
         Civi::settings()->set('batchmail_template_id', $values['template_id']);
         Civi::settings()->set('batchmail_sender_email', $values['sender_email']);
         Civi::settings()->set('batchmail_batch_size', $values['batch_size']);
