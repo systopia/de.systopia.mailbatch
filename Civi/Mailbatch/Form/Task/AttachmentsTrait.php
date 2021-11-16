@@ -134,9 +134,10 @@ trait AttachmentsTrait
         $event = GenericHookEvent::create(['attachment_types' => &$attachment_types]);
         \Civi::dispatcher()->dispatch('civi.mailbatch.attachmentTypes', $event);
 
-        // TODO: array_diff $context['entity_types'] with the attachment types' contexts for deciding whether they match.
         return !empty($context['entity_type']) ? array_filter($attachment_types, function($attachment_type) use ($context) {
-            return in_array($context['entity_type'], $attachment_type['context']['entity_types']);
+            return
+                empty($attachment_type['context']['entity_types'])
+                || in_array($context['entity_type'], $attachment_type['context']['entity_types']);
         }) : $attachment_types;
     }
 
