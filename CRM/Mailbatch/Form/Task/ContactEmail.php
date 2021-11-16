@@ -103,22 +103,6 @@ class CRM_Mailbatch_Form_Task_ContactEmail extends CRM_Contact_Form_Task
 
         $this->addAttachmentElements();
 
-        $this->add(
-            'text',
-            'attachment1_path',
-            E::ts('Attachment Path/URL'),
-            ['class' => 'huge'],
-            false
-        );
-
-        $this->add(
-            'text',
-            'attachment1_name',
-            E::ts('Attachment Name'),
-            ['class' => 'huge'],
-            false
-        );
-
         $activity_types = $this->getActivityTypes();
         $this->add(
             'select',
