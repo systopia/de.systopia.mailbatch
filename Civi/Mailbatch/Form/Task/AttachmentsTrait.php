@@ -29,8 +29,14 @@ trait AttachmentsTrait
 
     public function addAttachmentElements($context = [])
     {
-        $attachment_elements = [];
+        $attachment_forms = [];
         $attachment_types = self::attachmentTypes($context);
+        foreach ($attachment_types as &$attachment_type) {
+            if (is_callable([$attachment_type['controller'], 'getAttachmentFormTemplate'])) {
+                $attachment_type['form_template'] = $attachment_type['controller']::getAttachmentFormTemplate();
+            }
+        }
+        unset($attachment_type);
         // TODO: As default values, load from settings, which attachments used to be there the last time the form was built.
         $defaults = \Civi::settings()->get('batchmail_attachments');
         $attachments = $this->get('attachments');
@@ -50,10 +56,11 @@ trait AttachmentsTrait
             if (!$attachment_type = $attachment_types[$attachment['type']] ?? null) {
                 throw new Exception(E::ts('Unregistered attachment type %1', [1 => $attachment['type']]));
             }
-            $attachment_elements[$attachment_id] = $attachment_type['controller']::buildAttachmentForm(
+            $attachment_forms[$attachment_id]['elements'] = $attachment_type['controller']::buildAttachmentForm(
                 $this,
                 $attachment_id
             );
+            $attachment_forms[$attachment_id]['form_template'] = $attachment_type['form_template'] ?? NULL;
             $this->add(
                 'button',
                 'attachments--' . $attachment_id . '_remove',
@@ -64,7 +71,7 @@ trait AttachmentsTrait
                 ]
             );
         }
-        $this->assign('attachments', $attachment_elements);
+        $this->assign('attachment_forms', $attachment_forms);
 
         $this->add(
             'select',

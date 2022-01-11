@@ -17,21 +17,25 @@
 
       <table class="crm-mailbatch-attachments-table row-highlight">
           <tbody>
-          {foreach from=$attachments item="attachment_elements" key="attachment_id"}
+          {foreach from=$attachment_forms item="attachment" key="attachment_id"}
             <tr class="crm-mailbatch-attachment">
 
               <td style="width: 100%;">
-                  {foreach from=$attachment_elements key="attachment_element" item="attachment_element_type"}
-                    <div class="crm-section">
-                      <div class="label">
-                          {$form.$attachment_element.label}
-                          {capture assign="help_id"}id-{$attachment_element_type}{/capture}
-                          {help id=$help_id title=$form.$attachment_element.label}
-                      </div>
-                      <div class="content">{$form.$attachment_element.html}</div>
-                      <div class="clear"></div>
-                    </div>
-                  {/foreach}
+                  {if $attachment.form_template}
+                      {include file=$attachment.form_template}
+                  {else}
+                      {foreach from=$attachment.elements key="attachment_element" item="attachment_element_type"}
+                        <div class="crm-section">
+                          <div class="label">
+                              {$form.$attachment_element.label}
+                              {capture assign="help_id"}id-{$attachment_element_type}{/capture}
+                              {help id=$help_id title=$form.$attachment_element.label}
+                          </div>
+                          <div class="content">{$form.$attachment_element.html}</div>
+                          <div class="clear"></div>
+                        </div>
+                      {/foreach}
+                  {/if}
               </td>
 
               <td>
