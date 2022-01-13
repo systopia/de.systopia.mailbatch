@@ -120,10 +120,9 @@ trait AttachmentsTrait
     {
         $attachment_types = [];
 
-        // TODO: Rename "Generic" to "File on Server".
-        $attachment_types['generic'] = [
-            'label' => E::ts('Generic'),
-            'controller' => '\Civi\Mailbatch\AttachmentType\Generic',
+        $attachment_types['file_on_server'] = [
+            'label' => E::ts('File on Server'),
+            'controller' => '\Civi\Mailbatch\AttachmentType\FileOnServer',
             'context' => [
                 'entity_types' => ['contact', 'contribution'],
             ],

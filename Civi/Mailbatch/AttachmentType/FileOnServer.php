@@ -19,7 +19,7 @@ namespace Civi\Mailbatch\AttachmentType;
 use Civi\Mailbatch\Form\Task\AttachmentsTrait;
 use CRM_Mailbatch_ExtensionUtil as E;
 
-class Generic implements AttachmentTypeInterface
+class FileOnServer implements AttachmentTypeInterface
 {
 
     /**
@@ -47,8 +47,8 @@ class Generic implements AttachmentTypeInterface
             false
         );
         return [
-            'attachments--' . $attachment_id . '--path' => 'attachment-generic-path',
-            'attachments--' . $attachment_id . '--name' => 'attachment-generic-name',
+            'attachments--' . $attachment_id . '--path' => 'attachment-file_on_server-path',
+            'attachments--' . $attachment_id . '--name' => 'attachment-file_on_server-name',
         ];
     }
 
