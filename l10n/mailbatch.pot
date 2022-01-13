@@ -214,7 +214,7 @@ msgstr ""
 msgid "If you leave this empty, no activity will be created in for those contacts."
 msgstr ""
 
-#: ./templates/CRM/Mailbatch/Form/Task/ContactEmail.tpl
+#: ./templates/CRM/Mailbatch/Form/Task/ContactEmail.tpl ./templates/CRM/Mailbatch/Form/Task/ContributionEmail.tpl
 msgid "Warning:"
 msgstr ""
 
@@ -239,6 +239,6 @@ msgid "Activities"
 msgstr ""
 
 #: ./templates/CRM/Mailbatch/Form/Task/ContributionEmail.tpl
-msgid "<b>Warning:</b> %1 contribution(s) belong to a contact that has no viable email address, an email will not be sent for those contributions"
+msgid "%1 contribution(s) belong to a contact that has no viable email address, an email will not be sent for those contributions"
 msgstr ""
 
