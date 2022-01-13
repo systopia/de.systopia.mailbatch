@@ -289,6 +289,7 @@ msgstr ""
 "Kontakte angelegt."
 
 #: templates/CRM/Mailbatch/Form/Task/ContactEmail.tpl
+#: templates/CRM/Mailbatch/Form/Task/ContributionEmail.tpl
 msgid "Warning:"
 msgstr "Warnung:"
 
@@ -321,8 +322,8 @@ msgstr "Aktivitäten"
 
 #: templates/CRM/Mailbatch/Form/Task/ContributionEmail.tpl
 msgid ""
-"<b>Warning:</b> %1 contribution(s) belong to a contact that has no viable "
-"email address, an email will not be sent for those contributions"
+"%1 contribution(s) belong to a contact that has no viable email address, an "
+"email will not be sent for those contributions"
 msgstr ""
-"<b>Warnung:</b> Bei %1 Zuwendungen hat der zugehörige Kontakt keine (aktive) "
-"E-Mail-Adresse; diesen Kontakten wird keine E-Mail geschickt."
+"Bei %1 Zuwendungen hat der zugehörige Kontakt keine (aktive) E-Mail-Adresse; "
+"diesen Kontakten wird keine E-Mail geschickt."
