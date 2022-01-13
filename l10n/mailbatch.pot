@@ -102,7 +102,7 @@ msgstr ""
 msgid "Type"
 msgstr ""
 
-#: ./CRM/Mailbatch/Form/Task/ContributionEmail.php
+#: ./CRM/Mailbatch/Form/Task/ContributionEmail.php ./Civi/Mailbatch/Form/Task/AttachmentsTrait.php
 msgid "File on Server"
 msgstr ""
 
@@ -110,11 +110,11 @@ msgstr ""
 msgid "Invoice"
 msgstr ""
 
-#: ./CRM/Mailbatch/Form/Task/ContributionEmail.php ./Civi/Mailbatch/AttachmentType/Generic.php
+#: ./CRM/Mailbatch/Form/Task/ContributionEmail.php ./Civi/Mailbatch/AttachmentType/FileOnServer.php
 msgid "Attachment Path/URL"
 msgstr ""
 
-#: ./CRM/Mailbatch/Form/Task/ContributionEmail.php ./Civi/Mailbatch/AttachmentType/Generic.php
+#: ./CRM/Mailbatch/Form/Task/ContributionEmail.php ./Civi/Mailbatch/AttachmentType/FileOnServer.php
 msgid "Attachment Name"
 msgstr ""
 
@@ -174,10 +174,6 @@ msgstr ""
 msgid "Add attachment"
 msgstr ""
 
-#: ./Civi/Mailbatch/Form/Task/AttachmentsTrait.php
-msgid "Generic"
-msgstr ""
-
 #: ./mailbatch.php
 msgid "Send Emails (via MailBatch)"
 msgstr ""
@@ -219,7 +215,11 @@ msgid "If you leave this empty, no activity will be created in for those contact
 msgstr ""
 
 #: ./templates/CRM/Mailbatch/Form/Task/ContactEmail.tpl
-msgid "\n            <b>Warning:</b>\n            %1 contact(s) have no viable email address, an email will not be sent to them"
+msgid "Warning:"
+msgstr ""
+
+#: ./templates/CRM/Mailbatch/Form/Task/ContactEmail.tpl
+msgid "%1 contact(s) have no viable email address, an email will not be sent to them."
 msgstr ""
 
 #: ./templates/CRM/Mailbatch/Form/Task/ContactEmail.tpl ./templates/CRM/Mailbatch/Form/Task/ContributionEmail.tpl
