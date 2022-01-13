@@ -256,6 +256,14 @@ msgstr ""
 "CiviCRM Zugriff haben muss."
 
 #: templates/CRM/Mailbatch/Form/Task/ContactEmail.hlp
+msgid ""
+"In Order to send different attachments per contact, you can use the token %1 "
+"in the filename."
+msgstr ""
+"Um je Kontakt unterschiedliche Anhänge zu senden, können Sie den Platzhalter "
+"%1 im Dateinamen verwenden."
+
+#: templates/CRM/Mailbatch/Form/Task/ContactEmail.hlp
 #: templates/CRM/Mailbatch/Form/Task/ContributionEmail.hlp
 msgid ""
 "If this is checked, the email will be sent, even if the attachment is not "
@@ -319,6 +327,14 @@ msgstr "Dateianhänge"
 #: templates/CRM/Mailbatch/Form/Task/ContributionEmail.tpl
 msgid "Activities"
 msgstr "Aktivitäten"
+
+#: templates/CRM/Mailbatch/Form/Task/ContributionEmail.hlp
+msgid ""
+"In Order to send different attachments per contribution, you can use the "
+"token %1 and/or %2 in the filename."
+msgstr ""
+"Um je Zuwendung unterschiedliche Anhänge zu senden, können Sie die "
+"Platzhalter %1 und/oder %2 im Dateinamen verwenden."
 
 #: templates/CRM/Mailbatch/Form/Task/ContributionEmail.tpl
 msgid ""
