@@ -198,6 +198,10 @@ msgstr ""
 msgid "This needs to specify an absolute file path that is accessible from CiviCRM."
 msgstr ""
 
+#: ./templates/CRM/Mailbatch/Form/Task/ContactEmail.hlp
+msgid "In Order to send different attachments per contact, you can use the token %1 in the filename."
+msgstr ""
+
 #: ./templates/CRM/Mailbatch/Form/Task/ContactEmail.hlp ./templates/CRM/Mailbatch/Form/Task/ContributionEmail.hlp
 msgid "If this is checked, the email will be sent, even if the attachment is not found."
 msgstr ""
@@ -236,6 +240,10 @@ msgstr ""
 
 #: ./templates/CRM/Mailbatch/Form/Task/ContactEmail.tpl ./templates/CRM/Mailbatch/Form/Task/ContributionEmail.tpl
 msgid "Activities"
+msgstr ""
+
+#: ./templates/CRM/Mailbatch/Form/Task/ContributionEmail.hlp
+msgid "In Order to send different attachments per contribution, you can use the token %1 and/or %2 in the filename."
 msgstr ""
 
 #: ./templates/CRM/Mailbatch/Form/Task/ContributionEmail.tpl
