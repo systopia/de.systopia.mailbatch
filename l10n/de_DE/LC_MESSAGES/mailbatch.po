@@ -143,6 +143,7 @@ msgid "Type"
 msgstr "Art"
 
 #: CRM/Mailbatch/Form/Task/ContributionEmail.php
+#: Civi/Mailbatch/Form/Task/AttachmentsTrait.php
 msgid "File on Server"
 msgstr "Datei auf dem Server"
 
@@ -151,12 +152,12 @@ msgid "Invoice"
 msgstr "Rechnung"
 
 #: CRM/Mailbatch/Form/Task/ContributionEmail.php
-#: Civi/Mailbatch/AttachmentType/Generic.php
+#: Civi/Mailbatch/AttachmentType/FileOnServer.php
 msgid "Attachment Path/URL"
 msgstr "Dateianhang Pfad/URL"
 
 #: CRM/Mailbatch/Form/Task/ContributionEmail.php
-#: Civi/Mailbatch/AttachmentType/Generic.php
+#: Civi/Mailbatch/AttachmentType/FileOnServer.php
 msgid "Attachment Name"
 msgstr "Dateianhang Name"
 
@@ -216,10 +217,6 @@ msgstr "Dateianhangstyp"
 #: Civi/Mailbatch/Form/Task/AttachmentsTrait.php
 msgid "Add attachment"
 msgstr "Anhang hinzufügen"
-
-#: Civi/Mailbatch/Form/Task/AttachmentsTrait.php
-msgid "Generic"
-msgstr ""
 
 #: mailbatch.php
 msgid "Send Emails (via MailBatch)"
@@ -292,18 +289,16 @@ msgstr ""
 "Kontakte angelegt."
 
 #: templates/CRM/Mailbatch/Form/Task/ContactEmail.tpl
-#, fuzzy
-#| msgid ""
-#| "<b>Warning:</b> %1 contact(s) have no viable email address, an email will "
-#| "not be sent to them"
+msgid "Warning:"
+msgstr "Warnung:"
+
+#: templates/CRM/Mailbatch/Form/Task/ContactEmail.tpl
 msgid ""
-"\n"
-"            <b>Warning:</b>\n"
-"            %1 contact(s) have no viable email address, an email will not be "
-"sent to them"
+"%1 contact(s) have no viable email address, an email will not be sent to "
+"them."
 msgstr ""
-"<b>Warnung:</b> %1 Kontakte haben keine (aktive) E-Mail-Adresse; diesen "
-"Kontakten wird keine E-Mail geschickt."
+"%1 Kontakte haben keine (aktive) E-Mail-Adresse; diesen Kontakten wird keine "
+"E-Mail geschickt."
 
 #: templates/CRM/Mailbatch/Form/Task/ContactEmail.tpl
 #: templates/CRM/Mailbatch/Form/Task/ContributionEmail.tpl
