@@ -14,7 +14,10 @@
 
 {crmScope extensionKey='de.systopia.mailbatch'}
 {if $no_email_count}
-  <div id="help">{ts 1=$no_email_count}<b>Warning:</b> %1 contribution(s) belong to a contact that has no viable email address, an email will not be sent for those contributions{/ts}</div>
+  <div id="help">
+    <strong>{ts}Warning:{/ts}</strong>
+      {ts 1=$no_email_count}%1 contribution(s) belong to a contact that has no viable email address, an email will not be sent for those contributions{/ts}
+  </div>
 {/if}
   <h3>{ts}Mailing Properties{/ts}</h3><br/>
 
@@ -136,7 +139,10 @@
 
   <br>
 {if $no_email_count}
-  <div id="help">{ts 1=$no_email_count}<b>Warning:</b> %1 contribution(s) belong to a contact that has no viable email address, an email will not be sent for those contributions{/ts}</div>
+  <div id="help">
+    <strong>{ts}Warning:{/ts}</strong>
+      {ts 1=$no_email_count}%1 contribution(s) belong to a contact that has no viable email address, an email will not be sent for those contributions{/ts}
+  </div>
 {/if}
   <div class="crm-submit-buttons">
       {include file="CRM/common/formButtons.tpl" location="bottom"}
