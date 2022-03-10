@@ -76,10 +76,7 @@
 
         // Retrieve the form with another attachment field.
         $.post(
-          CRM.url(
-            location.pathname.substr(1),
-            location.search.substr(1)
-          ),
+          location.href,
           postValues,
           function(data) {
             $attachmentsWrapper
@@ -111,10 +108,7 @@
 
         // Retrieve the form with another attachment field.
         $.post(
-          CRM.url(
-            location.pathname.substr(1),
-            location.search.substr(1)
-          ),
+          location.href,
           postValues,
           function(data) {
             $attachmentsWrapper
