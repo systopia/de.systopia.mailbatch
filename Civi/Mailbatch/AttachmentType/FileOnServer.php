@@ -63,7 +63,7 @@ class FileOnServer implements AttachmentTypeInterface
 
     public static function buildAttachment($context, $attachment_values)
     {
-        $attachment_file = self::findAttachmentFile($context['contact']['id'], 1, $attachment_values['path']);
+        $attachment_file = self::findAttachmentFile($context['entity_id'], $attachment_values['path']);
         if ($attachment_file) {
             $file_name = empty($attachment_values['name']) ? basename($attachment_file) : $attachment_values['name'];
             $attachment = [
@@ -82,13 +82,12 @@ class FileOnServer implements AttachmentTypeInterface
      * @param integer $contact_id
      *   contact ID
      *
-     * @param integer $index
      *   index
      *
      * @return string|null
      *   full file path or null
      */
-    protected static function findAttachmentFile($contact_id, $index = 1, $path)
+    protected static function findAttachmentFile($contact_id, $path)
     {
         if (!empty($path)) {
             // replace {contact_id} token

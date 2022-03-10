@@ -90,8 +90,17 @@ class CRM_Mailbatch_SendMailJob
                     // Add attachments.
                     foreach ($this->config['attachments'] as $attachment_id => $attachment_values) {
                         $attachment_type = $attachment_types[$attachment_values['type']];
+                        /* @var \Civi\Mailbatch\AttachmentType\AttachmentTypeInterface $controller */
+                        $controller = $attachment_type['controller'];
                         if (
-                            !($attachment = $attachment_type['controller']::buildAttachment(['contact' => $contact], $attachment_values))
+                            !($attachment = $controller::buildAttachment(
+                                [
+                                    'entity_type' => 'contact',
+                                    'entity_id' => $contact['id'],
+                                    'entity' => $contact,
+                                ],
+                                $attachment_values)
+                            )
                             && empty($this->config['send_wo_attachment'])
                         ) {
                             // no attachment -> cannot send

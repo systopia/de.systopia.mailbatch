@@ -32,8 +32,10 @@ trait AttachmentsTrait
         $attachment_forms = [];
         $attachment_types = self::attachmentTypes($context);
         foreach ($attachment_types as &$attachment_type) {
-            if (is_callable([$attachment_type['controller'], 'getAttachmentFormTemplate'])) {
-                $attachment_type['form_template'] = $attachment_type['controller']::getAttachmentFormTemplate();
+            /* @var \Civi\Mailbatch\AttachmentType\AttachmentTypeInterface $controller */
+            $controller = $attachment_type['controller'];
+            if (is_callable([$controller, 'getAttachmentFormTemplate'])) {
+                $attachment_type['form_template'] = $controller::getAttachmentFormTemplate();
             }
         }
         unset($attachment_type);
