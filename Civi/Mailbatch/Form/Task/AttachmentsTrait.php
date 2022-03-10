@@ -129,14 +129,13 @@ trait AttachmentsTrait
                 'entity_types' => ['contact', 'contribution'],
             ],
         ];
-        // TODO: Implement "invoice" attachment type.
-//        $attachment_types['invoice'] = [
-//            'label' => E::ts('Contribution Invoice'),
-//            'controller' => '\Civi\Mailbatch\AttachmentType\ContributionInvoice',
-//            'context' => [
-//                'entity_types' => ['contribution'],
-//            ],
-//        ];
+        $attachment_types['invoice'] = [
+            'label' => E::ts('Contribution Invoice'),
+            'controller' => '\Civi\Mailbatch\AttachmentType\ContributionInvoice',
+            'context' => [
+                'entity_types' => ['contribution'],
+            ],
+        ];
 
         // TODO: Add supported entity types to context for not allowing e.g. generating invoices for contacts.
         $event = GenericHookEvent::create(['attachment_types' => &$attachment_types]);

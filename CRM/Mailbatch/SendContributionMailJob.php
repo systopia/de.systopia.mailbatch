@@ -13,6 +13,7 @@
 | written permission from the original author(s).        |
 +--------------------------------------------------------*/
 
+use Civi\Mailbatch\Form\Task\AttachmentsTrait;
 use CRM_Mailbatch_ExtensionUtil as E;
 
 /**
@@ -66,10 +67,15 @@ class CRM_Mailbatch_SendContributionMailJob extends CRM_Mailbatch_SendMailJob
             // trigger sendMessageTo for each one of them
             $mail_successfully_sent = [];
             $mail_sending_failed = [];
+            $attachment_types = AttachmentsTrait::attachmentTypes(['entity_type' => 'contribution']);
+            // TODO: Pre-cache attachments for all contacts in the batch, wrapped in try...catch.
+//            foreach ($this->config['attachments'] as $attachment_id => $attachment_values) {
+//                $attachment_type['controller']::preCacheAttachments(['contacts' => $contacts['values']], $attachment_values);
+//            }
             foreach ($this->contribution_contact_email_tuples as $contact_email_tuple) {
                 try {
                     // unpack the values
-                    list($contribution_id, $contact_id, $email) = $contact_email_tuple;
+                    [$contribution_id, $contact_id, $email] = $contact_email_tuple;
                     $contact = $contacts[$contact_id];
 
                     // send email
@@ -89,23 +95,30 @@ class CRM_Mailbatch_SendContributionMailJob extends CRM_Mailbatch_SendMailJob
                         ],
                     ];
 
-                    // add attachments
-                    $attachments = [];
-                    // TODO: refactor to use pluggable attachment system.
-                    $attachment_file = $this->findAttachmentFile($contact_id, 1, $contribution_id);
-                    if ($attachment_file) {
-                        $file_name = empty($this->config['attachment1_name']) ? basename($attachment_file) : $this->config['attachment1_name'];
-                        $attachments[] = [
-                            'fullPath'  => $attachment_file,
-                            'mime_type' => $this->getMimeType($attachment_file),
-                            'cleanName' => $file_name,
-                        ];
-                        $email_data['attachments'] = $attachments;
-
-                    } elseif (empty($this->config['send_wo_attachment'])) {
-                        // no attachment -> cannot send
-                        throw new Exception(E::ts("Attachment '%1' not found.", [
-                            1 => $this->config['attachment1_path']]));
+                    // Add attachments.
+                    foreach ($this->config['attachments'] as $attachment_id => $attachment_values) {
+                        $attachment_type = $attachment_types[$attachment_values['type']];
+                        /* @var \Civi\Mailbatch\AttachmentType\AttachmentTypeInterface $controller */
+                        $controller = $attachment_type['controller'];
+                        if (
+                            !($attachment = $controller::buildAttachment(
+                                [
+                                    'entity_type' => 'contribution',
+                                    'entity_id' => $contribution_id,
+                                    'extra' => ['contact_id' => $contact_id],
+                                ],
+                                $attachment_values)
+                            )
+                            && empty($this->config['send_wo_attachment'])
+                        ) {
+                            // no attachment -> cannot send
+                            throw new Exception(
+                                E::ts("Attachment '%1' could not be generated or found.", [
+                                    1 => $attachment_id,
+                                ])
+                            );
+                        }
+                        $email_data['attachments'][] = $attachment;
                     }
 
                     // send email

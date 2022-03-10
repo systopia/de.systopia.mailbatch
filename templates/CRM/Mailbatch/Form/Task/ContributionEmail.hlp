@@ -14,7 +14,11 @@
 
 {crmScope extensionKey='de.systopia.mailbatch'}
 
-{htxt id='id-attachment-name'}
+{htxt id='id-attachment-file_on_server-name'}
+  {ts}This the the name the recipient will receive the attachment under.{/ts}
+  {ts}Leave empty to go with the original name.{/ts}
+{/htxt}
+{htxt id='id-attachment-contribution_invoice-name'}
   {ts}This the the name the recipient will receive the attachment under.{/ts}
   {ts}Leave empty to go with the original name.{/ts}
 {/htxt}
@@ -26,7 +30,7 @@
 
 {capture assign="token_contact_id"}<code>{literal}{contact_id}{/literal}</code>{/capture}
 {capture assign="token_contribution_id"}<code>{literal}{contribution_id}{/literal}</code>{/capture}
-{htxt id='id-attachment-path'}
+{htxt id='id-attachment-file_on_server-path'}
   {ts}This needs to specify an absolute file path that is accessible from CiviCRM.{/ts}
   {ts 1=$token_contact_id 2=$token_contribution_id}In Order to send different attachments per contribution, you can use the token %1 and/or %2 in the filename.{/ts}
 {/htxt}
