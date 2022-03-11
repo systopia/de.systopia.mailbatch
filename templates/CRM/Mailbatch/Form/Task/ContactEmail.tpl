@@ -77,21 +77,23 @@
       </div>
     </div>
 
-    <div class="crm-accordion-wrapper">
-      <div class="crm-accordion-header">{ts}Attachments{/ts}</div>
-      <div class="crm-accordion-body">
+    {if !empty($supports_attachments)}
+      <div class="crm-accordion-wrapper">
+        <div class="crm-accordion-header">{ts}Attachments{/ts}</div>
+        <div class="crm-accordion-body">
 
-        <div class="crm-section">
-          <div class="label">{$form.send_wo_attachment.label}
-            &nbsp;{help id="id-no-attachment" title=$form.send_wo_attachment.label}</div>
-          <div class="content">{$form.send_wo_attachment.html}</div>
-          <div class="clear"></div>
+          <div class="crm-section">
+            <div class="label">{$form.send_wo_attachment.label}
+              &nbsp;{help id="id-no-attachment" title=$form.send_wo_attachment.label}</div>
+            <div class="content">{$form.send_wo_attachment.html}</div>
+            <div class="clear"></div>
+          </div>
+
+            {include file="Civi/Mailattachment/Form/Task/AttachmentsTrait.tpl"}
+
         </div>
-
-        {include file="Civi/Mailbatch/Form/Task/AttachmentsTrait.tpl"}
-
       </div>
-    </div>
+    {/if}
 
     <div class="crm-accordion-wrapper">
       <div class="crm-accordion-header">{ts}Activities{/ts}</div>

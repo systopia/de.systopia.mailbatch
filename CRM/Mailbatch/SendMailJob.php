@@ -64,7 +64,7 @@ class CRM_Mailbatch_SendMailJob
             // trigger sendMessageTo for each one of them
             $mail_successfully_sent = [];
             $mail_sending_failed = [];
-            $attachment_types = \Civi\Mailbatch\Form\Task\AttachmentsTrait::attachmentTypes();
+            $attachment_types = \Civi\Mailattachment\Form\Task\AttachmentsTrait::attachmentTypes();
             // TODO: Pre-cache attachments for all contacts in the batch, wrapped in try...catch.
 //            foreach ($this->config['attachments'] as $attachment_id => $attachment_values) {
 //                $attachment_type['controller']::preCacheAttachments(['contacts' => $contacts['values']], $attachment_values);
@@ -90,7 +90,7 @@ class CRM_Mailbatch_SendMailJob
                     // Add attachments.
                     foreach ($this->config['attachments'] as $attachment_id => $attachment_values) {
                         $attachment_type = $attachment_types[$attachment_values['type']];
-                        /* @var \Civi\Mailbatch\AttachmentType\AttachmentTypeInterface $controller */
+                        /* @var \Civi\Mailattachment\AttachmentType\AttachmentTypeInterface $controller */
                         $controller = $attachment_type['controller'];
                         if (
                             !($attachment = $controller::buildAttachment(

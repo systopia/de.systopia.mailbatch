@@ -15,15 +15,12 @@
 +--------------------------------------------------------*/
 
 use CRM_Mailbatch_ExtensionUtil as E;
-use Civi\Mailbatch\Form\Task\AttachmentsTrait;
 
 /**
  * Send E-Mail to contacts task
  */
 class CRM_Mailbatch_Form_Task_ContactEmail extends CRM_Contact_Form_Task
 {
-    use AttachmentsTrait;
-
     /**
      * Compile task form
      */
@@ -95,13 +92,15 @@ class CRM_Mailbatch_Form_Task_ContactEmail extends CRM_Contact_Form_Task
             ['class' => 'crm-select2']
         );
 
-        $this->add(
-            'checkbox',
-            'send_wo_attachment',
-            E::ts('Send if attachment not found?')
-        );
+        if (is_a($this, 'CRM_Mailbatch_Form_Task_ContactEmailAttachments')) {
+            $this->add(
+                'checkbox',
+                'send_wo_attachment',
+                E::ts('Send if attachment not found?')
+            );
 
-        $this->addAttachmentElements(['entity_type' => 'contact']);
+            $this->addAttachmentElements(['entity_type' => 'contact']);
+        }
 
         $activity_types = $this->getActivityTypes();
         $this->add(
@@ -166,16 +165,14 @@ class CRM_Mailbatch_Form_Task_ContactEmail extends CRM_Contact_Form_Task
         );
 
         // set default values
-        $this->setDefaults([
+        $defaults = [
             'template_id'              => Civi::settings()->get('batchmail_template_id'),
             'batch_size'               => Civi::settings()->get('batchmail_batch_size'),
             'sender_email'             => Civi::settings()->get('batchmail_sender_email'),
             'sender_cc'                => Civi::settings()->get('batchmail_sender_cc'),
             'sender_bcc'               => Civi::settings()->get('batchmail_sender_bcc'),
             'sender_reply_to'          => Civi::settings()->get('batchmail_sender_reply_to'),
-            'send_wo_attachment'       => Civi::settings()->get('batchmail_send_wo_attachment'),
             //'enable_smarty'            => Civi::settings()->get('batchmail_enable_smarty'),
-            // TODO: Set default values for attachments?
             'sent_activity_type_id'    => Civi::settings()->get('batchmail_sent_activity_type_id'),
             'sent_activity_grouped'    => Civi::settings()->get('batchmail_sent_activity_grouped'),
             'sent_activity_subject'    => Civi::settings()->get('batchmail_sent_activity_subject'),
@@ -183,7 +180,12 @@ class CRM_Mailbatch_Form_Task_ContactEmail extends CRM_Contact_Form_Task
             'failed_activity_subject'  => Civi::settings()->get('batchmail_failed_activity_subject'),
             'failed_activity_subject2' => Civi::settings()->get('batchmail_failed_activity_subject2'),
             'failed_activity_assignee' => Civi::settings()->get('batchmail_failed_activity_assignee'),
-        ]);
+        ];
+        if (is_a($this, 'CRM_Mailbatch_Form_Task_ContactEmailAttachments')) {
+            $defaults['send_wo_attachment'] = Civi::settings()->get('batchmail_send_wo_attachment');
+            // TODO: Set default values for attachments?
+        }
+        $this->setDefaults($defaults);
 
         CRM_Core_Form::addDefaultButtons(E::ts("Send %1 Emails", [1 => $contact_count - $no_email_count]));
     }
@@ -204,7 +206,6 @@ class CRM_Mailbatch_Form_Task_ContactEmail extends CRM_Contact_Form_Task
         Civi::settings()->set('batchmail_sender_cc', $values['sender_cc']);
         Civi::settings()->set('batchmail_sender_bcc', $values['sender_bcc']);
         Civi::settings()->set('batchmail_sender_reply_to', $values['sender_reply_to']);
-        Civi::settings()->set('batchmail_send_wo_attachment', CRM_Utils_Array::value('send_wo_attachment', $values, 0));
         //Civi::settings()->set('batchmail_enable_smarty',            CRM_Utils_Array::value('enable_smarty', $values, 0));
         Civi::settings()->set('batchmail_sent_activity_type_id', $values['sent_activity_type_id']);
         Civi::settings()->set('batchmail_sent_activity_subject', $values['sent_activity_subject']);
@@ -216,7 +217,10 @@ class CRM_Mailbatch_Form_Task_ContactEmail extends CRM_Contact_Form_Task
             Civi::settings()->set('batchmail_failed_activity_subject2', $values['failed_activity_subject2']);
         }
 
-        $values['attachments'] = $this->processAttachments();
+        if (is_a($this, 'CRM_Mailbatch_Form_Task_ContactEmailAttachments')) {
+            Civi::settings()->set('batchmail_send_wo_attachment', CRM_Utils_Array::value('send_wo_attachment', $values, 0));
+            $values['attachments'] = $this->processAttachments();
+        }
 
         // generate no-email activities for contacts with no emails if required
         if ($no_email_count > 0
