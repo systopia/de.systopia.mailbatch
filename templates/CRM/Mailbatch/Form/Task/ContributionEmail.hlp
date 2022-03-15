@@ -14,6 +14,11 @@
 
 {crmScope extensionKey='de.systopia.mailbatch'}
 
+{htxt id='id-no-attachment'}
+  {ts}If this is checked, the email will be sent, even if the attachment is not found.{/ts}
+  {ts}Otherwise it will be not sent, and receive an error activity instead.{/ts}
+{/htxt}
+
 {htxt id='id-smarty'}
   {ts}SMARTY is a template language to provide highly personalised content. Only turn this on, if you know what you're doing.{/ts}
   {ts}SMARTY can negatively interact with inline html styling or font declarations, so if you don't have straightforward HTML content, you might run into issues using SMARTY as well.{/ts}
@@ -23,7 +28,5 @@
   {ts}You can set another subject for activities contacts that didn't have a valid email address in the first place.{/ts}
   {ts}If you leave this empty, no activity will be created in for those contacts.{/ts}
 {/htxt}
-
-{include file="Civi/Mailattachment/Form/Task/AttachmentsTrait.hlp"}
 
 {/crmScope}
