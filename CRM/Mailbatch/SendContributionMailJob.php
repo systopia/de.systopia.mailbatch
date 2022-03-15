@@ -13,7 +13,6 @@
 | written permission from the original author(s).        |
 +--------------------------------------------------------*/
 
-use Civi\Mailbatch\Form\Task\AttachmentsTrait;
 use CRM_Mailbatch_ExtensionUtil as E;
 
 /**
@@ -67,11 +66,13 @@ class CRM_Mailbatch_SendContributionMailJob extends CRM_Mailbatch_SendMailJob
             // trigger sendMessageTo for each one of them
             $mail_successfully_sent = [];
             $mail_sending_failed = [];
-            $attachment_types = AttachmentsTrait::attachmentTypes(['entity_type' => 'contribution']);
-            // TODO: Pre-cache attachments for all contacts in the batch, wrapped in try...catch.
-//            foreach ($this->config['attachments'] as $attachment_id => $attachment_values) {
-//                $attachment_type['controller']::preCacheAttachments(['contacts' => $contacts['values']], $attachment_values);
-//            }
+            if (trait_exists('Civi\Mailattachment\Form\Task\AttachmentsTrait')) {
+                $attachment_types = \Civi\Mailattachment\Form\Task\AttachmentsTrait::attachmentTypes();
+                // TODO: Pre-cache attachments for all contacts in the batch, wrapped in try...catch.
+//                foreach ($this->config['attachments'] as $attachment_id => $attachment_values) {
+//                  $attachment_type['controller']::preCacheAttachments(['contacts' => $contacts['values']], $attachment_values)
+//                }
+            }
             foreach ($this->contribution_contact_email_tuples as $contact_email_tuple) {
                 try {
                     // unpack the values
@@ -96,29 +97,31 @@ class CRM_Mailbatch_SendContributionMailJob extends CRM_Mailbatch_SendMailJob
                     ];
 
                     // Add attachments.
-                    foreach ($this->config['attachments'] as $attachment_id => $attachment_values) {
-                        $attachment_type = $attachment_types[$attachment_values['type']];
-                        /* @var \Civi\Mailbatch\AttachmentType\AttachmentTypeInterface $controller */
-                        $controller = $attachment_type['controller'];
-                        if (
-                            !($attachment = $controller::buildAttachment(
-                                [
-                                    'entity_type' => 'contribution',
-                                    'entity_id' => $contribution_id,
-                                    'extra' => ['contact_id' => $contact_id],
-                                ],
-                                $attachment_values)
-                            )
-                            && empty($this->config['send_wo_attachment'])
-                        ) {
-                            // no attachment -> cannot send
-                            throw new Exception(
-                                E::ts("Attachment '%1' could not be generated or found.", [
-                                    1 => $attachment_id,
-                                ])
-                            );
+                    if (trait_exists('Civi\Mailattachment\Form\Task\AttachmentsTrait')) {
+                        foreach ($this->config['attachments'] as $attachment_id => $attachment_values) {
+                            $attachment_type = $attachment_types[$attachment_values['type']];
+                            /* @var \Civi\Mailattachment\AttachmentType\AttachmentTypeInterface $controller */
+                            $controller = $attachment_type['controller'];
+                            if (
+                                !($attachment = $controller::buildAttachment(
+                                    [
+                                        'entity_type' => 'contribution',
+                                        'entity_id' => $contribution_id,
+                                        'extra' => ['contact_id' => $contact_id],
+                                    ],
+                                    $attachment_values)
+                                )
+                                && empty($this->config['send_wo_attachment'])
+                            ) {
+                                // no attachment -> cannot send
+                                throw new Exception(
+                                    E::ts("Attachment '%1' could not be generated or found.", [
+                                        1 => $attachment_id,
+                                    ])
+                                );
+                            }
+                            $email_data['attachments'][] = $attachment;
                         }
-                        $email_data['attachments'][] = $attachment;
                     }
 
                     // send email
@@ -250,53 +253,5 @@ class CRM_Mailbatch_SendContributionMailJob extends CRM_Mailbatch_SendMailJob
 
         // we shouldn't even get here...
         return CRM_Core_DAO::singleValueQuery("SELECT contact_id FROM civicrm_contribution WHERE id = {$contribution_id}");
-    }
-
-    /**
-     * Try to find the attachment #{$index} based on the file path
-     *   and the contact
-     *
-     * @param integer $contact_id
-     *   contact ID
-     *
-     * @param integer $index
-     *   index
-     *
-     * @return string|null
-     *   full file path or null
-     *
-     * @throws Exception
-     *   something went wrong with the invoice generation
-     */
-    protected function findAttachmentFile($contact_id, $index = 1, $contribution_id = null)
-    {
-        $attachment_type = CRM_Utils_Array::value("attachment{$index}_type", $this->config, 'none');
-        switch ($attachment_type) {
-            case 'invoice':
-                // generate an invoice
-                $params        = ['output' => 'pdf_invoice', 'forPage' => 'confirmpage'];
-                $invoice_html  = CRM_Contribute_Form_Task_Invoice::printPDF([$contribution_id], $params, [$contact_id]);
-                $invoice_pdf   = CRM_Utils_PDF_Utils::html2pdf($invoice_html, 'invoice.pdf', TRUE);
-                $tmp_file_path = tempnam(sys_get_temp_dir(), "invoice-");
-                file_put_contents($tmp_file_path, $invoice_pdf);
-                return $tmp_file_path;
-
-            case 'file':
-                if (!empty($this->config["attachment{$index}_path"])) {
-                    $path = $this->config["attachment{$index}_path"];
-                    // replace {contact_id} and {contribution_id} token
-                    $path = preg_replace('/[{]contact_id[}]/', $contact_id, $path);
-                    $path = preg_replace('/[{]contribution_id[}]/', $contribution_id, $path);
-                    if (is_readable($path) && !is_dir($path)) {
-                        return $path;
-                    }
-                }
-                return null;
-
-            default:
-            case 'none':
-                break;
-        }
-        return null;
     }
 }

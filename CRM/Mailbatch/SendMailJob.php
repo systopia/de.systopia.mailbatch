@@ -64,11 +64,14 @@ class CRM_Mailbatch_SendMailJob
             // trigger sendMessageTo for each one of them
             $mail_successfully_sent = [];
             $mail_sending_failed = [];
-            $attachment_types = \Civi\Mailattachment\Form\Task\AttachmentsTrait::attachmentTypes();
-            // TODO: Pre-cache attachments for all contacts in the batch, wrapped in try...catch.
-//            foreach ($this->config['attachments'] as $attachment_id => $attachment_values) {
-//                $attachment_type['controller']::preCacheAttachments(['contacts' => $contacts['values']], $attachment_values);
-//            }
+            if (trait_exists('Civi\Mailattachment\Form\Task\AttachmentsTrait')) {
+                $attachment_types = \Civi\Mailattachment\Form\Task\AttachmentsTrait::attachmentTypes();
+                // TODO: Pre-cache attachments for all contacts in the batch, wrapped in try...catch.
+//                foreach ($this->config['attachments'] as $attachment_id => $attachment_values) {
+//                    $attachment_type['controller']::preCacheAttachments(['contacts' => $contacts['values']], $attachment_values);
+//                }
+            }
+
             foreach ($contacts['values'] as $contact) {
                 try {
                     // send email
@@ -88,29 +91,31 @@ class CRM_Mailbatch_SendMailJob
                     ];
 
                     // Add attachments.
-                    foreach ($this->config['attachments'] as $attachment_id => $attachment_values) {
-                        $attachment_type = $attachment_types[$attachment_values['type']];
-                        /* @var \Civi\Mailattachment\AttachmentType\AttachmentTypeInterface $controller */
-                        $controller = $attachment_type['controller'];
-                        if (
-                            !($attachment = $controller::buildAttachment(
-                                [
-                                    'entity_type' => 'contact',
-                                    'entity_id' => $contact['id'],
-                                    'entity' => $contact,
-                                ],
-                                $attachment_values)
-                            )
-                            && empty($this->config['send_wo_attachment'])
-                        ) {
-                            // no attachment -> cannot send
-                            throw new Exception(
-                                E::ts("Attachment '%1' could not be generated or found.", [
-                                    1 => $attachment_id,
-                                ])
-                            );
+                    if (trait_exists('Civi\Mailattachment\Form\Task\AttachmentsTrait')) {
+                        foreach ($this->config['attachments'] as $attachment_id => $attachment_values) {
+                            $attachment_type = $attachment_types[$attachment_values['type']];
+                            /* @var \Civi\Mailattachment\AttachmentType\AttachmentTypeInterface $controller */
+                            $controller = $attachment_type['controller'];
+                            if (
+                                !($attachment = $controller::buildAttachment(
+                                    [
+                                        'entity_type' => 'contact',
+                                        'entity_id' => $contact['id'],
+                                        'entity' => $contact,
+                                    ],
+                                    $attachment_values)
+                                )
+                                && empty($this->config['send_wo_attachment'])
+                            ) {
+                                // no attachment -> cannot send
+                                throw new Exception(
+                                    E::ts("Attachment '%1' could not be generated or found.", [
+                                        1 => $attachment_id,
+                                    ])
+                                );
+                            }
+                            $email_data['attachments'][] = $attachment;
                         }
-                        $email_data['attachments'][] = $attachment;
                     }
 
                     // send email
@@ -223,46 +228,5 @@ class CRM_Mailbatch_SendMailJob
         } catch (CiviCRM_API3_Exception $ex) {
             Civi::log()->debug("Couldn't create activity: " . json_encode($activity_data) . ' - error was: ' . $ex->getMessage());
         }
-    }
-
-    /**
-     * Try to find the attachment #{$index} based on the file path
-     *   and the contact
-     *
-     * @param integer $contact_id
-     *   contact ID
-     *
-     * @param integer $index
-     *   index
-     *
-     * @return string|null
-     *   full file path or null
-     */
-    protected function findAttachmentFile($contact_id, $index = 1)
-    {
-        if (!empty($this->config["attachment{$index}_path"])) {
-            $path = $this->config["attachment{$index}_path"];
-            // replace {contact_id} token
-            $path = preg_replace('/[{]contact_id[}]/', $contact_id, $path);
-            if (is_readable($path) && !is_dir($path)) {
-                return $path;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * get the mime type of the given file
-     *
-     * @param string $path
-     * @return string mime type
-     */
-    protected function getMimeType($path)
-    {
-        static $known_files = [];
-        if (!isset($known_files[$path])) {
-            $known_files[$path] = mime_content_type($path);
-        }
-        return $known_files[$path];
     }
 }
