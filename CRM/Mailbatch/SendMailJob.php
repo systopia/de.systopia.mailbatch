@@ -102,6 +102,7 @@ class CRM_Mailbatch_SendMailJob
                                         'entity_type' => 'contact',
                                         'entity_id' => $contact['id'],
                                         'entity' => $contact,
+                                        'entity_ids' => $this->contact_ids,
                                     ],
                                     $attachment_values)
                                 )

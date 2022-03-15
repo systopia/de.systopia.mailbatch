@@ -107,6 +107,7 @@ class CRM_Mailbatch_SendContributionMailJob extends CRM_Mailbatch_SendMailJob
                                     [
                                         'entity_type' => 'contribution',
                                         'entity_id' => $contribution_id,
+                                        'entity_ids' => array_column($this->contribution_contact_email_tuples, 0),
                                         'extra' => ['contact_id' => $contact_id],
                                     ],
                                     $attachment_values)
