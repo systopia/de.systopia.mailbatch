@@ -15,15 +15,12 @@
 +--------------------------------------------------------*/
 
 use CRM_Mailbatch_ExtensionUtil as E;
-use Civi\Mailattachment\Form\Task\AttachmentsTrait;
 
 /**
  * Send E-Mail to contacts based on contributions task
  */
 class CRM_Mailbatch_Form_Task_ContributionEmail extends CRM_Contribute_Form_Task
 {
-    use AttachmentsTrait;
-
     /**
      * Compile task form
      */
