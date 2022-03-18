@@ -183,7 +183,7 @@ function mailbatch_civicrm_searchTasks($objectType, &$tasks)
     if ($objectType == 'contact') {
         $tasks[] = [
             'title' => E::ts('Send Emails (via MailBatch)'),
-            'class' => trait_exists('Civi\Mailattachment\Form\Task\AttachmentsTrait') ? 'CRM_Mailbatch_Form_Task_ContactEmailAttachments' : 'CRM_Mailbatch_Form_Task_ContactEmail',
+            'class' => 'CRM_Mailbatch_Form_Task_ContactEmail',
             'result' => false
         ];
         return;
@@ -193,7 +193,7 @@ function mailbatch_civicrm_searchTasks($objectType, &$tasks)
     if ($objectType == 'contribution') {
         $tasks[] = [
             'title' => E::ts('Send Emails (via MailBatch)'),
-            'class' => trait_exists('Civi\Mailattachment\Form\Task\AttachmentsTrait') ? 'CRM_Mailbatch_Form_Task_ContributionEmailAttachments' : 'CRM_Mailbatch_Form_Task_ContributionEmail',
+            'class' => 'CRM_Mailbatch_Form_Task_ContributionEmail',
             'result' => false
         ];
     }

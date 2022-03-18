@@ -89,7 +89,7 @@
             <div class="clear"></div>
           </div>
 
-            {include file="Civi/Mailattachment/Form/Task/AttachmentsTrait.tpl"}
+            {include file="Civi/Mailattachment/Form/Attachments.tpl"}
 
         </div>
       </div>

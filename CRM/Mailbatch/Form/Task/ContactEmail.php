@@ -92,14 +92,14 @@ class CRM_Mailbatch_Form_Task_ContactEmail extends CRM_Contact_Form_Task
             ['class' => 'crm-select2']
         );
 
-        if (is_a($this, 'CRM_Mailbatch_Form_Task_ContactEmailAttachments')) {
+        if (class_exists('Civi\Mailattachment\Form\Attachments')) {
             $this->add(
                 'checkbox',
                 'send_wo_attachment',
                 E::ts('Send if attachment not found?')
             );
 
-            $this->addAttachmentElements(['entity_type' => 'contact']);
+            \Civi\Mailattachment\Form\Attachments::addAttachmentElements($this, ['entity_type' => 'contact']);
         }
 
         $activity_types = $this->getActivityTypes();
@@ -181,7 +181,7 @@ class CRM_Mailbatch_Form_Task_ContactEmail extends CRM_Contact_Form_Task
             'failed_activity_subject2' => Civi::settings()->get('batchmail_failed_activity_subject2'),
             'failed_activity_assignee' => Civi::settings()->get('batchmail_failed_activity_assignee'),
         ];
-        if (is_a($this, 'CRM_Mailbatch_Form_Task_ContactEmailAttachments')) {
+        if (class_exists('Civi\Mailattachment\Form\Attachments')) {
             $defaults['send_wo_attachment'] = Civi::settings()->get('batchmail_send_wo_attachment');
             // TODO: Set default values for attachments?
         }
@@ -217,9 +217,9 @@ class CRM_Mailbatch_Form_Task_ContactEmail extends CRM_Contact_Form_Task
             Civi::settings()->set('batchmail_failed_activity_subject2', $values['failed_activity_subject2']);
         }
 
-        if (is_a($this, 'CRM_Mailbatch_Form_Task_ContactEmailAttachments')) {
+        if (class_exists('Civi\Mailattachment\Form\Attachments')) {
             Civi::settings()->set('batchmail_send_wo_attachment', CRM_Utils_Array::value('send_wo_attachment', $values, 0));
-            $values['attachments'] = $this->processAttachments();
+            $values['attachments'] = \Civi\Mailattachment\Form\Attachments::processAttachments($this);
         }
 
         // generate no-email activities for contacts with no emails if required
