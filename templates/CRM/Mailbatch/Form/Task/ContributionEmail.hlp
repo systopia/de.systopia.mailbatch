@@ -14,26 +14,14 @@
 
 {crmScope extensionKey='de.systopia.mailbatch'}
 
-{htxt id='id-attachment-name'}
-  {ts}This the the name the recipient will receive the attachment under.{/ts}
-  {ts}Leave empty to go with the original name.{/ts}
+{htxt id='id-no-attachment'}
+  {ts}If this is checked, the email will be sent, even if the attachment is not found.{/ts}
+  {ts}Otherwise it will be not sent, and receive an error activity instead.{/ts}
 {/htxt}
 
 {htxt id='id-smarty'}
   {ts}SMARTY is a template language to provide highly personalised content. Only turn this on, if you know what you're doing.{/ts}
   {ts}SMARTY can negatively interact with inline html styling or font declarations, so if you don't have straightforward HTML content, you might run into issues using SMARTY as well.{/ts}
-{/htxt}
-
-{capture assign="token_contact_id"}<code>{literal}{contact_id}{/literal}</code>{/capture}
-{capture assign="token_contribution_id"}<code>{literal}{contribution_id}{/literal}</code>{/capture}
-{htxt id='id-attachment-path'}
-  {ts}This needs to specify an absolute file path that is accessible from CiviCRM.{/ts}
-  {ts 1=$token_contact_id 2=$token_contribution_id}In Order to send different attachments per contribution, you can use the token %1 and/or %2 in the filename.{/ts}
-{/htxt}
-
-{htxt id='id-no-attachment'}
-  {ts}If this is checked, the email will be sent, even if the attachment is not found.{/ts}
-  {ts}Otherwise it will be not sent, and receive an error activity instead.{/ts}
 {/htxt}
 
 {htxt id='id-failed-no-email'}

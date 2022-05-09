@@ -77,21 +77,29 @@
       </div>
     </div>
 
-    <div class="crm-accordion-wrapper">
-      <div class="crm-accordion-header">{ts}Attachments{/ts}</div>
-      <div class="crm-accordion-body">
+    {if !empty($supports_attachments)}
+      <div class="crm-accordion-wrapper">
+        <div class="crm-accordion-header">{ts}Attachments{/ts}</div>
+        <div class="crm-accordion-body">
 
-        <div class="crm-section">
-          <div class="label">{$form.send_wo_attachment.label}
-            &nbsp;{help id="id-no-attachment" title=$form.send_wo_attachment.label}</div>
-          <div class="content">{$form.send_wo_attachment.html}</div>
-          <div class="clear"></div>
+          <div class="crm-section">
+            <div class="label">{$form.send_wo_attachment.label}
+              &nbsp;{help id="id-no-attachment" title=$form.send_wo_attachment.label}</div>
+            <div class="content">{$form.send_wo_attachment.html}</div>
+            <div class="clear"></div>
+          </div>
+
+            {include file="Civi/Mailattachment/Form/Attachments.tpl"}
+
         </div>
-
-        {include file="Civi/Mailbatch/Form/Task/AttachmentsTrait.tpl"}
-
       </div>
-    </div>
+    {else}
+      <div class="help">
+          {capture assign="mailattachment_link"}<a href="https://github.com/systopia/de.systopia.mailattachment">Mail Attachments</a>{/capture}
+        <p>{ts 1=$mailattachment_link}If you would like to add file attachments to e-mails, consider installing the %1 extension which provides a framework for different attachment types.{/ts}</p>
+        <p>{ts}This includes e.g. attaching existing files per contact.{/ts}</p>
+      </div>
+    {/if}
 
     <div class="crm-accordion-wrapper">
       <div class="crm-accordion-header">{ts}Activities{/ts}</div>

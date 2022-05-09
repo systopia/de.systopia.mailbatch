@@ -92,39 +92,15 @@ class CRM_Mailbatch_Form_Task_ContributionEmail extends CRM_Contribute_Form_Task
             ['class' => 'crm-select2']
         );
 
-        $this->add(
-            'checkbox',
-            'send_wo_attachment',
-            E::ts('Send if attachment not found?')
-        );
+        if (class_exists('Civi\Mailattachment\Form\Attachments')) {
+            $this->add(
+                'checkbox',
+                'send_wo_attachment',
+                E::ts('Send if attachment not found?')
+            );
 
-        $this->add(
-            'select',
-            'attachment1_type',
-            E::ts('Type'),
-            [
-                'file'         => E::ts("File on Server"),
-                'invoice'      => E::ts("Invoice"),
-            ],
-            true,
-            ['class' => 'crm-select2']
-        );
-
-        $this->add(
-            'text',
-            'attachment1_path',
-            E::ts('Attachment Path/URL'),
-            ['class' => 'huge'],
-            false
-        );
-
-        $this->add(
-            'text',
-            'attachment1_name',
-            E::ts('Attachment Name'),
-            ['class' => 'huge'],
-            false
-        );
+            \Civi\Mailattachment\Form\Attachments::addAttachmentElements($this, ['entity_type' => 'contribution']);
+        }
 
         $activity_types = $this->getActivityTypes();
         $this->add(
@@ -189,18 +165,14 @@ class CRM_Mailbatch_Form_Task_ContributionEmail extends CRM_Contribute_Form_Task
         );
 
         // set default values
-        $this->setDefaults([
+        $defaults = [
             'template_id'              => Civi::settings()->get('batchmail_template_id'),
             'batch_size'               => Civi::settings()->get('batchmail_batch_size'),
             'sender_email'             => Civi::settings()->get('batchmail_sender_email'),
             'sender_cc'                => Civi::settings()->get('batchmail_sender_cc'),
             'sender_bcc'               => Civi::settings()->get('batchmail_sender_bcc'),
             'sender_reply_to'          => Civi::settings()->get('batchmail_sender_reply_to'),
-            'send_wo_attachment'       => Civi::settings()->get('batchmail_send_wo_attachment'),
             'location_type_id'         => Civi::settings()->get('batchmail_location_type_id'),
-            'attachment1_path'         => Civi::settings()->get('batchmail_attachment1_path'),
-            'attachment1_name'         => Civi::settings()->get('batchmail_attachment1_name'),
-            'attachment1_type'         => Civi::settings()->get('batchmail_attachment1_type'),
             'sent_activity_type_id'    => Civi::settings()->get('batchmail_sent_activity_type_id'),
             'sent_activity_grouped'    => Civi::settings()->get('batchmail_sent_activity_grouped'),
             'sent_activity_subject'    => Civi::settings()->get('batchmail_sent_activity_subject'),
@@ -208,7 +180,12 @@ class CRM_Mailbatch_Form_Task_ContributionEmail extends CRM_Contribute_Form_Task
             'failed_activity_subject'  => Civi::settings()->get('batchmail_failed_activity_subject'),
             'failed_activity_subject2' => Civi::settings()->get('batchmail_failed_activity_subject2'),
             'failed_activity_assignee' => Civi::settings()->get('batchmail_failed_activity_assignee'),
-        ]);
+        ];
+        if (class_exists('Civi\Mailattachment\Form\Attachments')) {
+            $defaults['send_wo_attachment'] = Civi::settings()->get('batchmail_send_wo_attachment');
+            // TODO: Set default values for attachments?
+        }
+        $this->setDefaults($defaults);
 
 
         // calculate and add the number of contacts with no valid E-Mail
@@ -243,17 +220,14 @@ class CRM_Mailbatch_Form_Task_ContributionEmail extends CRM_Contribute_Form_Task
         $contribution_count = count($this->_contributionIds) - $no_email_count;
 
         // store default values
+        // TODO: Use contactSettings().
         Civi::settings()->set('batchmail_template_id', $values['template_id']);
         Civi::settings()->set('batchmail_sender_email', $values['sender_email']);
         Civi::settings()->set('batchmail_batch_size', $values['batch_size']);
         Civi::settings()->set('batchmail_sender_cc', $values['sender_cc']);
         Civi::settings()->set('batchmail_sender_bcc', $values['sender_bcc']);
         Civi::settings()->set('batchmail_sender_reply_to', $values['sender_reply_to']);
-        Civi::settings()->set('batchmail_send_wo_attachment', CRM_Utils_Array::value('send_wo_attachment', $values, 0));
         Civi::settings()->set('batchmail_location_type_id', CRM_Utils_Array::value('location_type_id', $values, 0));
-        Civi::settings()->set('batchmail_attachment1_path', $values['attachment1_path']);
-        Civi::settings()->set('batchmail_attachment1_name', $values['attachment1_name']);
-        Civi::settings()->set('batchmail_attachment1_type', $values['attachment1_type']);
         Civi::settings()->set('batchmail_sent_activity_type_id', $values['sent_activity_type_id']);
         Civi::settings()->set('batchmail_sent_activity_subject', $values['sent_activity_subject']);
         Civi::settings()->set('batchmail_failed_activity_type_id', $values['failed_activity_type_id']);
@@ -262,6 +236,11 @@ class CRM_Mailbatch_Form_Task_ContributionEmail extends CRM_Contribute_Form_Task
         Civi::settings()->set('batchmail_failed_activity_assignee', $values['failed_activity_assignee']);
         if (isset($values['failed_activity_subject2'])) {
             Civi::settings()->set('batchmail_failed_activity_subject2', $values['failed_activity_subject2']);
+        }
+
+        if (class_exists('Civi\Mailattachment\Form\Attachments')) {
+            Civi::settings()->set('batchmail_send_wo_attachment', CRM_Utils_Array::value('send_wo_attachment', $values, 0));
+            $values['attachments'] = \Civi\Mailattachment\Form\Attachments::processAttachments($this);
         }
 
         // if this is just a refresh, don't go any further
