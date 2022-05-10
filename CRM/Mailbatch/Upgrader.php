@@ -22,7 +22,7 @@ use CRM_Mailbatch_ExtensionUtil as E;
 class CRM_Mailbatch_Upgrader extends CRM_Mailbatch_Upgrader_Base
 {
     /**
-     * Added notification for existing users.
+     * Inform existing users about changes in attachment handling.
      *
      * @return TRUE on success
      * @throws Exception
@@ -30,7 +30,10 @@ class CRM_Mailbatch_Upgrader extends CRM_Mailbatch_Upgrader_Base
     public function upgrade_0001(): bool
     {
         CRM_Core_Session::setStatus(
-            E::ts("There has been changes to the way attachments are handled in the MailBatch extension. If you were using attachments you should install the <a href=\"https://github.com/systopia/de.systopia.mailattachment\">Mail-Attachment</a> extension."),
+            E::ts(
+                'There have been changes to the way attachments are handled in the MailBatch extension. If you were using attachments you should install the %1 extension.',
+                [1 => '<a href="https://github.com/systopia/de.systopia.mailattachment">Mail-Attachment</a>']
+            ),
             E::ts("MailBatch: Changes to attachments"),
             'info',
             ['expires' => 0]
