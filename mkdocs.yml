@@ -1,5 +1,6 @@
 site_name: Mailbatch
 repo_url: https://github.com/systopia/de.systopia.mailbatch
+edit_uri: https://github.com/systopia/de.systopia.mailbatch
 site_description: 'Documentation for the Mailbatch Extension (de.systopia.mailbatch)'
 site_author: 'SYSTOPIA'
 theme:
