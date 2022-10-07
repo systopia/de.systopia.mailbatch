@@ -9,6 +9,7 @@ theme:
 
 nav:
   - Start: index.md
+  - Features: features.md
   - Introduction: basics.md
   - Installation: installation.md
   - Usage: usage.md
