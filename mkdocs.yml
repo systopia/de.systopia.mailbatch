@@ -8,9 +8,8 @@ theme:
     material
 
 nav:
-  - Start: index.md
+  - Introduction: index.md
   - Features: features.md
-  - Introduction: basics.md
   - Installation: installation.md
   - Usage: usage.md
   
