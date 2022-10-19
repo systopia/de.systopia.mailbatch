@@ -16,5 +16,5 @@ CiviCRM documents the sending of mails analogous to other activities of the syst
 
 
 ## Documentation
-- https://docs.civicrm.org/mailbatch/en/latest
-- https://docs.civicrm.org/mailbatch/de/latest
+- [English Documentation on civicrm.org](https://docs.civicrm.org/mailbatch/en/latest)
+- [German Documentation on civicrm.org](https://docs.civicrm.org/mailbatch/de/latest)
