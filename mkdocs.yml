@@ -8,8 +8,6 @@ theme:
 
 nav:
   - Introduction: index.md
-  - Features: features.md
-  - Installation: installation.md
   - Usage: usage.md
   
 markdown_extensions:
