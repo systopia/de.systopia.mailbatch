@@ -11,6 +11,7 @@
   <urls>
     <url desc="Main Extension Page">https://github.com/systopia/de.systopia.mailbatch</url>
     <url desc="Documentation">https://docs.civicrm.org/mailbatch/en/latest</url>
+    <url desc="Documentation DE">https://docs.civicrm.org/mailbatch/de/latest/</url>
     <url desc="Support">https://github.com/systopia/de.systopia.mailbatch/issues</url>
     <url desc="Licensing">http://www.gnu.org/licenses/agpl-3.0.html</url>
   </urls>
