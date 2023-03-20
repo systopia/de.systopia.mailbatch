@@ -19,7 +19,7 @@ use CRM_Mailbatch_ExtensionUtil as E;
 /**
  * Collection of upgrade steps.
  */
-class CRM_Mailbatch_Upgrader extends CRM_Mailbatch_Upgrader_Base
+class CRM_Mailbatch_Upgrader extends CRM_Extension_Upgrader_Base
 {
     /**
      * Inform existing users about changes in attachment handling.

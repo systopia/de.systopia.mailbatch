@@ -18,14 +18,19 @@
   <version>2.0-dev</version>
   <develStage>dev</develStage>
   <compatibility>
-    <ver>5.0</ver>
+    <ver>5.38</ver>
   </compatibility>
   <comments>A simple CiviCRM extension to send out batches of mails, with a couple of features that CiviMail doesn't cover.</comments>
   <classloader>
     <psr4 prefix="Civi\" path="Civi"/>
+    <psr0 prefix="CRM_" path="."/>
   </classloader>
   <civix>
     <namespace>CRM/Mailbatch</namespace>
-    <format>22.05.2</format>
+    <format>23.02.1</format>
   </civix>
+  <upgrader>CRM_Mailbatch_Upgrader</upgrader>
+  <mixins>
+    <mixin>smarty-v2@1.0.1</mixin>
+  </mixins>
 </extension>
