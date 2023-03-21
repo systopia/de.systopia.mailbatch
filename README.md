@@ -19,9 +19,12 @@ addresses and set the desired batch size. Some settings are mandatory fields.
 In addition, in MailBatch you normally use one of the message templates that you
 have previously created in CiviCRM.
 
-The MailBatch extension is closely related to the *Mail Attachments* extension
-which allows files be attached to a mail. Different attachment types are
-distinguished: File On Server, CiviOffice Document, Contribution Invoice.
+The MailBatch extension is closely related to the [*Mail
+Attachments* extension](https://github.com/systopia/de.systopia.mailattachment)
+which allows files be attached to an e-mail message, e. g. a static file on the
+local server (optionally with token replacement in file names), a contribution
+invoice, or a  *[CiviOffice](https://github.com/systopia/de.systopia.civioffice)
+Document*.
 
 CiviCRM documents the sending of e-mail analogous to other activities of the
 system. You can determine whether the sent mail is recorded as an individual
