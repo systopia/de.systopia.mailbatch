@@ -17,7 +17,7 @@
       {if $no_email_count}
         <div id="help">
           <strong>{ts}Warning:{/ts}</strong>
-            {ts 1=$no_email_count}%1 contribution(s) belong to a contact that has no viable email address, an email will not be sent for those contributions{/ts}
+            {ts 1=$no_email_count}%1 contribution(s) belong to a contact that has no viable e-mail address, e-mail will not be sent for those contributions.{/ts}
         </div>
       {/if}
 
@@ -129,7 +129,7 @@
           <div class="clear"></div>
         </div>
 
-          {if $form.failed_activity_subject2}
+          {if !empty($form.failed_activity_subject2)}
             <div class="crm-section mailbatch-failed-section">
               <div class="label">{$form.failed_activity_subject2.label}
                 &nbsp;{help id="id-failed-no-email" title=$form.attachment1_path.label}</div>
@@ -156,7 +156,7 @@
       {if $no_email_count}
         <div id="help">
           <strong>{ts}Warning:{/ts}</strong>
-            {ts 1=$no_email_count}%1 contribution(s) belong to a contact that has no viable email address, an email will not be sent for those contributions{/ts}
+            {ts 1=$no_email_count}%1 contribution(s) belong to a contact that has no viable e-mail address, e-mail will not be sent for those contributions.{/ts}
         </div>
       {/if}
     <div class="crm-submit-buttons">

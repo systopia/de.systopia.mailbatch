@@ -129,7 +129,7 @@
           <div class="clear"></div>
         </div>
 
-          {if $form.failed_activity_subject2}
+          {if !empty($form.failed_activity_subject2)}
             <div class="crm-section mailbatch-failed-section">
               <div class="label">{$form.failed_activity_subject2.label}
                 &nbsp;{help id="id-failed-no-email" title=$form.attachment1_path.label}</div>

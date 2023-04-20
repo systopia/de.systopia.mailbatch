@@ -163,12 +163,12 @@ class CRM_Mailbatch_SendMailJob
                 foreach ($this->errors as $contact_id => $error) {
                     $error_to_contact_id[$error][] = $contact_id;
                 }
-                $details = E::ts("<p>The following errors occurred (with contact IDs):<ul>");
+                $details = '<p>' . E::ts("The following errors occurred (with contact IDs):") . '</p><ul>';
                 foreach ($error_to_contact_id as $error => $contact_ids) {
                     $contact_id_list = implode(',', $contact_ids);
-                    $details.= E::ts("<li>%1 (%2)</li>", [1 => $error, 2 => $contact_id_list]);
+                    $details.= '<li>' . E::ts("%1 (%2)", [1 => $error, 2 => $contact_id_list]) . '</li>';
                 }
-                $details.= "</ul></p>";
+                $details.= "</ul>";
 
                 if (!empty($this->config['activity_grouped'])) {
                     // create one grouped activity:
