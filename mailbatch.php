@@ -57,21 +57,30 @@ function mailbatch_civicrm_enable()
  */
 function mailbatch_civicrm_searchTasks($objectType, &$tasks)
 {
-    // add "Send E-Mail" task to contact search result
+    // Add "Send E-Mail" task to contact search result.
     if ($objectType == 'contact') {
         $tasks[] = [
-            'title' => E::ts('Send Emails (via MailBatch)'),
+            'title' => E::ts('Send E-Mail (via MailBatch)'),
             'class' => 'CRM_Mailbatch_Form_Task_ContactEmail',
             'result' => false
         ];
         return;
     }
 
-    // add "Send E-Mail" task to contact search result
+    // Add "Send E-Mail" task to contribution search result.
     if ($objectType == 'contribution') {
         $tasks[] = [
-            'title' => E::ts('Send Emails (via MailBatch)'),
+            'title' => E::ts('Send E-Mail (via MailBatch)'),
             'class' => 'CRM_Mailbatch_Form_Task_ContributionEmail',
+            'result' => false
+        ];
+    }
+
+    // Add "Send E-Mail" task to membership search result
+    if ($objectType == 'membership') {
+        $tasks[] = [
+            'title' => E::ts('Send E-Mail (via MailBatch)'),
+            'class' => 'CRM_Mailbatch_Form_Task_MembershipEmail',
             'result' => false
         ];
     }
