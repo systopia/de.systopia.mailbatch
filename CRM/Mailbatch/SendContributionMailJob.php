@@ -171,15 +171,15 @@ class CRM_Mailbatch_SendContributionMailJob extends CRM_Mailbatch_SendMailJob
 
             if (!empty($mail_sending_failed) && !empty($this->config['failed_activity_type_id'])) {
                 // render list of errors
-                $details = E::ts("<p>The following errors occurred (with contact/contribution IDs):<ul>");
+                $details = '<p>' . E::ts("The following errors occurred (with contact/contribution IDs):") . '</p><ul>';
                 foreach ($this->errors as $contribution_id => $error) {
                     $contact_id = $this->getContactIdFromContribution($contribution_id);
-                    $details.= E::ts("<li>Contribution [%1] (Contact [%2]): %3</li>", [
+                    $details.= '<li>' . E::ts("Contribution [%1] (Contact [%2]): %3", [
                         1 => $contribution_id,
                         2 => $contact_id,
-                        3 => $error]);
+                        3 => $error]) . '</li>';
                 }
-                $details.= "</ul></p>";
+                $details.= "</ul>";
 
                 if (!empty($this->config['activity_grouped'])) {
                     // create one grouped activity:

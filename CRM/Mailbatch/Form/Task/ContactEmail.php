@@ -29,7 +29,7 @@ class CRM_Mailbatch_Form_Task_ContactEmail extends CRM_Contact_Form_Task
         $contact_count = count($this->_contactIds);
 
         // now build the form
-        CRM_Utils_System::setTitle(E::ts('Send Email to %1 Contacts', [1 => $contact_count]));
+        CRM_Utils_System::setTitle(E::ts('Send e-mail to %1 contacts', [1 => $contact_count]));
 
         // calculate and add the number of contacts with no valid E-Mail
         $no_email_count = $this->getNoEmailCount();

@@ -17,251 +17,217 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: CRM/Mailbatch/Form/Task/ContactEmail.php
-msgid "Send Email to %1 Contacts"
-msgstr "E-Mails an %1 Kontakte versenden"
+msgid "Send e-mail to %1 contacts"
+msgstr "E-Mail an %1 Kontakte versenden"
 
 #: CRM/Mailbatch/Form/Task/ContactEmail.php
 #: CRM/Mailbatch/Form/Task/ContributionEmail.php
+#: CRM/Mailbatch/Form/Task/MembershipEmail.php
 msgid "Message Template"
 msgstr "Nachrichtenvorlage"
 
 #: CRM/Mailbatch/Form/Task/ContactEmail.php
 #: CRM/Mailbatch/Form/Task/ContributionEmail.php
+#: CRM/Mailbatch/Form/Task/MembershipEmail.php
 msgid "Sender"
 msgstr "Absender"
 
 #: CRM/Mailbatch/Form/Task/ContactEmail.php
 #: CRM/Mailbatch/Form/Task/ContributionEmail.php
+#: CRM/Mailbatch/Form/Task/MembershipEmail.php
 msgid "CC"
 msgstr "CC"
 
 #: CRM/Mailbatch/Form/Task/ContactEmail.php
 #: CRM/Mailbatch/Form/Task/ContributionEmail.php
+#: CRM/Mailbatch/Form/Task/MembershipEmail.php
 msgid "BCC"
 msgstr "BCC"
 
 #: CRM/Mailbatch/Form/Task/ContactEmail.php
 #: CRM/Mailbatch/Form/Task/ContributionEmail.php
+#: CRM/Mailbatch/Form/Task/MembershipEmail.php
 msgid "Reply-To"
 msgstr "Antwort An"
 
 #: CRM/Mailbatch/Form/Task/ContactEmail.php
 #: CRM/Mailbatch/Form/Task/ContributionEmail.php
+#: CRM/Mailbatch/Form/Task/MembershipEmail.php
 msgid "Batch Size"
 msgstr "Chargengröße"
 
 #: CRM/Mailbatch/Form/Task/ContactEmail.php
 #: CRM/Mailbatch/Form/Task/ContributionEmail.php
+#: CRM/Mailbatch/Form/Task/MembershipEmail.php
 msgid "Send if attachment not found?"
 msgstr "Auch verschicken wenn der Dateianhang nicht gefunden wurde?"
 
 #: CRM/Mailbatch/Form/Task/ContactEmail.php
 #: CRM/Mailbatch/Form/Task/ContributionEmail.php
+#: CRM/Mailbatch/Form/Task/MembershipEmail.php
 msgid "Activity (when sent)"
 msgstr "Aktivität (Versand erfolgreich)"
 
 #: CRM/Mailbatch/Form/Task/ContactEmail.php
 #: CRM/Mailbatch/Form/Task/ContributionEmail.php
+#: CRM/Mailbatch/Form/Task/MembershipEmail.php
 msgid "Activity Subject"
 msgstr "Aktivität Titel"
 
 #: CRM/Mailbatch/Form/Task/ContactEmail.php
 #: CRM/Mailbatch/Form/Task/ContributionEmail.php
+#: CRM/Mailbatch/Form/Task/MembershipEmail.php
 msgid "Activity (when failed)"
 msgstr "Aktivität (Versand fehlgeschlage)"
 
 #: CRM/Mailbatch/Form/Task/ContactEmail.php
 #: CRM/Mailbatch/Form/Task/ContributionEmail.php
+#: CRM/Mailbatch/Form/Task/MembershipEmail.php
 msgid "Activity Style"
 msgstr "Struktur der Aktivität"
 
 #: CRM/Mailbatch/Form/Task/ContactEmail.php
 #: CRM/Mailbatch/Form/Task/ContributionEmail.php
+#: CRM/Mailbatch/Form/Task/MembershipEmail.php
 msgid "Individual"
 msgstr "Einzeln"
 
 #: CRM/Mailbatch/Form/Task/ContactEmail.php
 #: CRM/Mailbatch/Form/Task/ContributionEmail.php
+#: CRM/Mailbatch/Form/Task/MembershipEmail.php
 msgid "Grouped"
 msgstr "Gruppiert"
 
 #: CRM/Mailbatch/Form/Task/ContactEmail.php
 #: CRM/Mailbatch/Form/Task/ContributionEmail.php
+#: CRM/Mailbatch/Form/Task/MembershipEmail.php
 msgid "Subject (Sending Failed)"
 msgstr "Titel (Versand Fehlgeschalgen)"
 
 #: CRM/Mailbatch/Form/Task/ContactEmail.php
 #: CRM/Mailbatch/Form/Task/ContributionEmail.php
+#: CRM/Mailbatch/Form/Task/MembershipEmail.php
 msgid "Subject (No Email)"
 msgstr "Titel (Keine E-Mail Adresse)"
 
 #: CRM/Mailbatch/Form/Task/ContactEmail.php
 #: CRM/Mailbatch/Form/Task/ContributionEmail.php
+#: CRM/Mailbatch/Form/Task/MembershipEmail.php
 msgid "Assign to"
 msgstr "Zuweisen an"
 
 #: CRM/Mailbatch/Form/Task/ContactEmail.php
 #: CRM/Mailbatch/Form/Task/ContributionEmail.php
+#: CRM/Mailbatch/Form/Task/MembershipEmail.php
 msgid "Send %1 Emails"
 msgstr "%1 E-Mails Verschicken"
 
 #: CRM/Mailbatch/Form/Task/ContactEmail.php
 #: CRM/Mailbatch/Form/Task/ContributionEmail.php
+#: CRM/Mailbatch/Form/Task/MembershipEmail.php
 msgid "Sending Emails %1 - %2"
 msgstr "Send E-Mails %1 - %2"
 
 #: CRM/Mailbatch/Form/Task/ContactEmail.php
 #: CRM/Mailbatch/Form/Task/ContributionEmail.php
+#: CRM/Mailbatch/Form/Task/MembershipEmail.php
 msgid "Finishing"
 msgstr "Abschließen"
 
 #: CRM/Mailbatch/Form/Task/ContactEmail.php
 #: CRM/Mailbatch/Form/Task/ContributionEmail.php
+#: CRM/Mailbatch/Form/Task/MembershipEmail.php
 msgid "Sending %1 Event Emails"
 msgstr "Versende %1 E-Mails"
 
 #: CRM/Mailbatch/Form/Task/ContactEmail.php
 #: CRM/Mailbatch/Form/Task/ContributionEmail.php
+#: CRM/Mailbatch/Form/Task/MembershipEmail.php
 msgid "%1 E-Mails per Batch"
 msgstr "%1 E-Mails pro Charge"
 
 #: CRM/Mailbatch/Form/Task/ContactEmail.php
 #: CRM/Mailbatch/Form/Task/ContributionEmail.php
+#: CRM/Mailbatch/Form/Task/MembershipEmail.php
 msgid "--disabled--"
 msgstr "--deaktiviert--"
 
 #: CRM/Mailbatch/Form/Task/ContributionEmail.php
+#: CRM/Mailbatch/Form/Task/MembershipEmail.php
 msgid "Send %1 Email(s) to %2 Contact(s)"
 msgstr "%1 E-Mails an %2 Kontakte versenden"
 
 #: CRM/Mailbatch/Form/Task/ContributionEmail.php
+#: CRM/Mailbatch/Form/Task/MembershipEmail.php
 msgid "E-Mail Type"
 msgstr "E-Mail Kategorie"
 
 #: CRM/Mailbatch/Form/Task/ContributionEmail.php
-msgid "Type"
-msgstr "Art"
-
-#: CRM/Mailbatch/Form/Task/ContributionEmail.php
-#: Civi/Mailbatch/Form/Task/AttachmentsTrait.php
-msgid "File on Server"
-msgstr "Datei auf dem Server"
-
-#: CRM/Mailbatch/Form/Task/ContributionEmail.php
-msgid "Invoice"
-msgstr "Rechnung"
-
-#: CRM/Mailbatch/Form/Task/ContributionEmail.php
-#: Civi/Mailbatch/AttachmentType/FileOnServer.php
-msgid "Attachment Path/URL"
-msgstr "Dateianhang Pfad/URL"
-
-#: CRM/Mailbatch/Form/Task/ContributionEmail.php
-#: Civi/Mailbatch/AttachmentType/FileOnServer.php
-msgid "Attachment Name"
-msgstr "Dateianhang Name"
-
-#: CRM/Mailbatch/Form/Task/ContributionEmail.php
+#: CRM/Mailbatch/Form/Task/MembershipEmail.php
 msgid "Refresh"
 msgstr "Aktualisieren"
 
 #: CRM/Mailbatch/Form/Task/ContributionEmail.php
+#: CRM/Mailbatch/Form/Task/MembershipEmail.php
 msgid "primary"
 msgstr "primär"
 
 #: CRM/Mailbatch/Form/Task/ContributionEmail.php
+#: CRM/Mailbatch/Form/Task/MembershipEmail.php
 msgid "billing (flag)"
 msgstr "Rechnung (Marker)"
 
-#: CRM/Mailbatch/SendContributionMailJob.php
-msgid "Attachment '%1' not found."
-msgstr "Dateianhang '%1' nicht gefunden."
+#: CRM/Mailbatch/SendContributionMailJob.php CRM/Mailbatch/SendMailJob.php
+#: CRM/Mailbatch/SendMembershipMailJob.php
+msgid "Attachment '%1' could not be generated or found."
+msgstr "Dateianhang '%1' konnte nicht gefunden oder generiert werden."
 
 #: CRM/Mailbatch/SendContributionMailJob.php
-msgid "<p>The following errors occurred (with contact/contribution IDs):<ul>"
-msgstr ""
-"<p>Die folgenden Fehler sind aufgetreten (nach Kontakt-/Zuwendungs-IDs):<ul>"
+msgid "The following errors occurred (with contact/contribution IDs):"
+msgstr "Die folgenden Fehler sind aufgetreten (nach Kontakt-/Zuwendungs-IDs):"
 
 #: CRM/Mailbatch/SendContributionMailJob.php
-msgid "<li>Contribution [%1] (Contact [%2]): %3</li>"
-msgstr "<li>Zuwendung [%1] (Kontakt [%2]): %3</li>"
+msgid "Contribution [%1] (Contact [%2]): %3"
+msgstr "Zuwendung [%1] (Kontakt [%2]): %3"
 
 #: CRM/Mailbatch/SendContributionMailJob.php CRM/Mailbatch/SendMailJob.php
+#: CRM/Mailbatch/SendMembershipMailJob.php
 msgid "Error was: %1"
 msgstr "Fehler war: %1"
 
 #: CRM/Mailbatch/SendMailJob.php
-msgid "Attachment '%1' could not be generated or found."
-msgstr "Dateianhang '%1' konnte nicht gefunden oder generiert werden."
+msgid "The following errors occurred (with contact IDs):"
+msgstr "Die folgenden Fehler sind aufgetreten (nach Kontakt-IDs):"
 
 #: CRM/Mailbatch/SendMailJob.php
-msgid "<p>The following errors occurred (with contact IDs):<ul>"
-msgstr "<p>Die folgenden Fehler sind aufgetreten (nach Kontakt-IDs):<ul>"
+msgid "%1 (%2)"
+msgstr "%1 (%2)"
 
-#: CRM/Mailbatch/SendMailJob.php
-msgid "<li>%1 (%2)</li>"
-msgstr "<li>%1 (%2)</li>"
+#: CRM/Mailbatch/SendMembershipMailJob.php
+msgid "The following errors occurred (with contact/membership IDs):"
+msgstr ""
+"Die folgenden Fehler sind aufgetreten (mit Kontakt-/Mitgliedschafts-IDs):"
 
-#: Civi/Mailbatch/Form/Task/AttachmentsTrait.php
-msgid "Unregistered attachment type %1"
-msgstr "Nicht registrierter Dateianhangstyp %1"
+#: CRM/Mailbatch/SendMembershipMailJob.php
+msgid "Membership [%1] (Contact [%2]): %3"
+msgstr "Mitgliedschaft [%1] (Kontakt [%2]): %3"
 
-#: Civi/Mailbatch/Form/Task/AttachmentsTrait.php
-msgid "Remove attachment"
-msgstr "Anhang entfernen"
+#: CRM/Mailbatch/Upgrader.php
+msgid ""
+"There have been changes to the way attachments are handled in the MailBatch "
+"extension. If you were using attachments you should install the %1 extension."
+msgstr ""
+"Die Verarbeitung von E-Mail-Anhängen in der MailBatch-Erweiterung wurde "
+"verändert. Wenn Sie zuvor E-Mail-Anhänge verwendet haben, sollten Sie die "
+"Erweiterung %1 installieren."
 
-#: Civi/Mailbatch/Form/Task/AttachmentsTrait.php
-msgid "Attachment type"
-msgstr "Dateianhangstyp"
-
-#: Civi/Mailbatch/Form/Task/AttachmentsTrait.php
-msgid "Add attachment"
-msgstr "Anhang hinzufügen"
+#: CRM/Mailbatch/Upgrader.php
+msgid "MailBatch: Changes to attachments"
+msgstr "MailBatch: Änderungen bei E-Mail-Anhängen"
 
 #: mailbatch.php
-msgid "Send Emails (via MailBatch)"
-msgstr "E-Mails Versenden (via MailBatch)"
-
-#: templates/CRM/Mailbatch/Form/Task/ContactEmail.hlp
-#: templates/CRM/Mailbatch/Form/Task/ContributionEmail.hlp
-msgid "This the the name the recipient will receive the attachment under."
-msgstr "Der Empfänger wird den Dateianhang unter diesem Namen erhalten."
-
-#: templates/CRM/Mailbatch/Form/Task/ContactEmail.hlp
-#: templates/CRM/Mailbatch/Form/Task/ContributionEmail.hlp
-msgid "Leave empty to go with the original name."
-msgstr "Leer lassen, um den ursprünglichen Namen zu verwenden."
-
-#: templates/CRM/Mailbatch/Form/Task/ContactEmail.hlp
-#: templates/CRM/Mailbatch/Form/Task/ContributionEmail.hlp
-msgid ""
-"SMARTY is a template language to provide highly personalised content. Only "
-"turn this on, if you know what you're doing."
-msgstr ""
-
-#: templates/CRM/Mailbatch/Form/Task/ContactEmail.hlp
-#: templates/CRM/Mailbatch/Form/Task/ContributionEmail.hlp
-msgid ""
-"SMARTY can negatively interact with inline html styling or font "
-"declarations, so if you don't have straightforward HTML content, you might "
-"run into issues using SMARTY as well."
-msgstr ""
-
-#: templates/CRM/Mailbatch/Form/Task/ContactEmail.hlp
-#: templates/CRM/Mailbatch/Form/Task/ContributionEmail.hlp
-msgid ""
-"This needs to specify an absolute file path that is accessible from CiviCRM."
-msgstr ""
-"Hier wird ein absoluter Dateipfad auf dem CiviCRM Server benötigt, auf den "
-"CiviCRM Zugriff haben muss."
-
-#: templates/CRM/Mailbatch/Form/Task/ContactEmail.hlp
-msgid ""
-"In Order to send different attachments per contact, you can use the token %1 "
-"in the filename."
-msgstr ""
-"Um je Kontakt unterschiedliche Anhänge zu senden, können Sie den Platzhalter "
-"%1 im Dateinamen verwenden."
+msgid "Send E-Mail (via MailBatch)"
+msgstr "E-Mail versenden (via MailBatch)"
 
 #: templates/CRM/Mailbatch/Form/Task/ContactEmail.hlp
 #: templates/CRM/Mailbatch/Form/Task/ContributionEmail.hlp
@@ -278,6 +244,27 @@ msgid "Otherwise it will be not sent, and receive an error activity instead."
 msgstr ""
 "Andernfalls wird gar keine E-Mail versandt, und stattdessen eine "
 "Fehleraktivität angelegt."
+
+#: templates/CRM/Mailbatch/Form/Task/ContactEmail.hlp
+#: templates/CRM/Mailbatch/Form/Task/ContributionEmail.hlp
+msgid ""
+"SMARTY is a template language to provide highly personalised content. Only "
+"turn this on, if you know what you're doing."
+msgstr ""
+"SMARTY ist eine Vorlagensprache für personalisierte Inhalte. Schalten Sie "
+"dies nur ein, wenn Sie wissen, was Sie tun."
+
+#: templates/CRM/Mailbatch/Form/Task/ContactEmail.hlp
+#: templates/CRM/Mailbatch/Form/Task/ContributionEmail.hlp
+msgid ""
+"SMARTY can negatively interact with inline html styling or font "
+"declarations, so if you don't have straightforward HTML content, you might "
+"run into issues using SMARTY as well."
+msgstr ""
+"SMARTY kann sich negativ auf Inline-HTML-Styling oder "
+"Schriftartendeklarationen auswirken. Wenn Sie also keinen einfachen HTML-"
+"Inhalt haben, könnten Sie auch bei der Verwendung von SMARTY auf Probleme "
+"stoßen."
 
 #: templates/CRM/Mailbatch/Form/Task/ContactEmail.hlp
 #: templates/CRM/Mailbatch/Form/Task/ContributionEmail.hlp
@@ -320,26 +307,102 @@ msgid "Content"
 msgstr "Inhalt"
 
 #: templates/CRM/Mailbatch/Form/Task/ContactEmail.tpl
+#: templates/CRM/Mailbatch/Form/Task/ContributionEmail.tpl
 msgid "Attachments"
 msgstr "Dateianhänge"
+
+#: templates/CRM/Mailbatch/Form/Task/ContactEmail.tpl
+#: templates/CRM/Mailbatch/Form/Task/ContributionEmail.tpl
+msgid ""
+"If you would like to add file attachments to e-mails, consider installing "
+"the %1 extension which provides a framework for different attachment types."
+msgstr ""
+"Wenn Sie Dateianhänge zu E-Mail-Nachrichten hinzufügen möchten, sollten Sie "
+"die Installation der Erweiterung %1, die Rahmenfunktionalität für "
+"verschiedene Dateianhangtypen zur Verfügung stellt, in Betracht ziehen."
+
+#: templates/CRM/Mailbatch/Form/Task/ContactEmail.tpl
+msgid "This includes e.g. attaching existing files per contact."
+msgstr "Dies beinhaltet z. B. das Anhängen bestehender Dateien pro Kontakt."
 
 #: templates/CRM/Mailbatch/Form/Task/ContactEmail.tpl
 #: templates/CRM/Mailbatch/Form/Task/ContributionEmail.tpl
 msgid "Activities"
 msgstr "Aktivitäten"
 
-#: templates/CRM/Mailbatch/Form/Task/ContributionEmail.hlp
-msgid ""
-"In Order to send different attachments per contribution, you can use the "
-"token %1 and/or %2 in the filename."
-msgstr ""
-"Um je Zuwendung unterschiedliche Anhänge zu senden, können Sie die "
-"Platzhalter %1 und/oder %2 im Dateinamen verwenden."
-
 #: templates/CRM/Mailbatch/Form/Task/ContributionEmail.tpl
+#, fuzzy
+#| msgid ""
+#| "%1 contribution(s) belong to a contact that has no viable email address, "
+#| "an email will not be sent for those contributions"
 msgid ""
-"%1 contribution(s) belong to a contact that has no viable email address, an "
-"email will not be sent for those contributions"
+"%1 contribution(s) belong to a contact that has no viable e-mail address, e-"
+"mail will not be sent for those contributions."
 msgstr ""
 "Bei %1 Zuwendungen hat der zugehörige Kontakt keine (aktive) E-Mail-Adresse; "
 "diesen Kontakten wird keine E-Mail geschickt."
+
+#: templates/CRM/Mailbatch/Form/Task/ContributionEmail.tpl
+msgid ""
+"This includes e.g. attaching existing files per contact or contribution and "
+"CiviCRM invoices."
+msgstr ""
+"Dies beinhaltet z. B. das Anhängen bestehender Dateien pro Kontakt oder "
+"Zuwendung, und CiviCRM-Rechnungen."
+
+#~ msgid "Type"
+#~ msgstr "Art"
+
+#~ msgid "File on Server"
+#~ msgstr "Datei auf dem Server"
+
+#~ msgid "Invoice"
+#~ msgstr "Rechnung"
+
+#~ msgid "Attachment Path/URL"
+#~ msgstr "Dateianhang Pfad/URL"
+
+#~ msgid "Attachment Name"
+#~ msgstr "Dateianhang Name"
+
+#~ msgid "Attachment '%1' not found."
+#~ msgstr "Dateianhang '%1' nicht gefunden."
+
+#~ msgid "Unregistered attachment type %1"
+#~ msgstr "Nicht registrierter Dateianhangstyp %1"
+
+#~ msgid "Remove attachment"
+#~ msgstr "Anhang entfernen"
+
+#~ msgid "Attachment type"
+#~ msgstr "Dateianhangstyp"
+
+#~ msgid "Add attachment"
+#~ msgstr "Anhang hinzufügen"
+
+#~ msgid "This the the name the recipient will receive the attachment under."
+#~ msgstr "Der Empfänger wird den Dateianhang unter diesem Namen erhalten."
+
+#~ msgid "Leave empty to go with the original name."
+#~ msgstr "Leer lassen, um den ursprünglichen Namen zu verwenden."
+
+#~ msgid ""
+#~ "This needs to specify an absolute file path that is accessible from "
+#~ "CiviCRM."
+#~ msgstr ""
+#~ "Hier wird ein absoluter Dateipfad auf dem CiviCRM Server benötigt, auf "
+#~ "den CiviCRM Zugriff haben muss."
+
+#~ msgid ""
+#~ "In Order to send different attachments per contact, you can use the token "
+#~ "%1 in the filename."
+#~ msgstr ""
+#~ "Um je Kontakt unterschiedliche Anhänge zu senden, können Sie den "
+#~ "Platzhalter %1 im Dateinamen verwenden."
+
+#~ msgid ""
+#~ "In Order to send different attachments per contribution, you can use the "
+#~ "token %1 and/or %2 in the filename."
+#~ msgstr ""
+#~ "Um je Zuwendung unterschiedliche Anhänge zu senden, können Sie die "
+#~ "Platzhalter %1 und/oder %2 im Dateinamen verwenden."

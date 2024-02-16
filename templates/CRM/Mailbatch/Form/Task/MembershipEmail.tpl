@@ -1,7 +1,7 @@
 {*-------------------------------------------------------+
-| SYSTOPIA Event Messages                                |
-| Copyright (C) 2020 SYSTOPIA                            |
-| Author: B. Endres (endres@systopia.de)                 |
+| SYSTOPIA MailBatch Extension                           |
+| Copyright (C) 2023 SYSTOPIA                            |
+| Author: J. Schuppe (schuppe@systopia.de)               |
 +--------------------------------------------------------+
 | This program is released as free software under the    |
 | Affero GPL license. You can redistribute it and/or     |
@@ -16,8 +16,8 @@
   <div class="crm-block crm-form-block">
       {if $no_email_count}
         <div id="help">
-            <strong>{ts}Warning:{/ts}</strong>
-            {ts 1=$no_email_count}%1 contact(s) have no viable email address, an email will not be sent to them.{/ts}
+          <strong>{ts}Warning:{/ts}</strong>
+            {ts 1=$no_email_count}%1 membership(s) belong to a contact that has no viable e-mail address, e-mail will not be sent for those memberships.{/ts}
         </div>
       {/if}
 
@@ -55,6 +55,12 @@
           <div class="clear"></div>
         </div>
 
+        <div class="crm-section">
+          <div class="label">{$form.location_type_id.label}</div>
+          <div class="content">{$form.location_type_id.html}</div>
+          <div class="clear"></div>
+        </div>
+
       </div>
     </div>
 
@@ -67,12 +73,6 @@
           <div class="content">{$form.template_id.html}</div>
           <div class="clear"></div>
         </div>
-
-          {*  <div class="crm-section">*}
-          {*    <div class="label">{$form.enable_smarty.label}&nbsp;{help id="id-smarty" title=$form.enable_smarty.label}</div>*}
-          {*    <div class="content">{$form.enable_smarty.html}</div>*}
-          {*    <div class="clear"></div>*}
-          {*  </div>*}
 
       </div>
     </div>
@@ -97,7 +97,7 @@
       <div class="help">
           {capture assign="mailattachment_link"}<a href="https://github.com/systopia/de.systopia.mailattachment">Mail Attachments</a>{/capture}
         <p>{ts 1=$mailattachment_link}If you would like to add file attachments to e-mails, consider installing the %1 extension which provides a framework for different attachment types.{/ts}</p>
-        <p>{ts}This includes e.g. attaching existing files per contact.{/ts}</p>
+        <p>{ts}This includes e.g. attaching existing files per contact or membership.{/ts}</p>
       </div>
     {/if}
 
@@ -153,6 +153,12 @@
       </div>
     </div>
 
+      {if $no_email_count}
+        <div id="help">
+          <strong>{ts}Warning:{/ts}</strong>
+            {ts 1=$no_email_count}%1 membership(s) belong to a contact that has no viable e-mail address, e-mail will not be sent for those memberships.{/ts}
+        </div>
+      {/if}
     <div class="crm-submit-buttons">
         {include file="CRM/common/formButtons.tpl" location="bottom"}
     </div>
@@ -185,6 +191,11 @@
         }
       });
       cj("[name=failed_activity_type_id]").change();
+
+      // add logic to location type change: submit to update stats
+      cj("[name=location_type_id]").change(function () {
+        cj("[id^=_qf_MembershipEmail_refresh]").click();
+      });
     });
   </script>
 {/literal}
