@@ -13,6 +13,7 @@
 | written permission from the original author(s).        |
 +--------------------------------------------------------*/
 
+use Civi\Mailbatch\MailUtils;
 use CRM_Mailbatch_ExtensionUtil as E;
 
 /**
@@ -56,7 +57,7 @@ class CRM_Mailbatch_SendContributionMailJob extends CRM_Mailbatch_SendMailJob
             ])['values'];
 
             // get sender
-            $from_addresses = CRM_Core_OptionGroup::values('from_email_address');
+            $from_addresses = MailUtils::getSenderOptions(FALSE);
             if (isset($from_addresses[$this->config['sender_email']])) {
                 $sender = $from_addresses[$this->config['sender_email']];
             } else {
