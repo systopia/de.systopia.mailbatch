@@ -14,6 +14,7 @@
 | written permission from the original author(s).        |
 +--------------------------------------------------------*/
 
+use Civi\Mailbatch\MailUtils;
 use CRM_Mailbatch_ExtensionUtil as E;
 
 /**
@@ -47,7 +48,7 @@ class CRM_Mailbatch_Form_Task_MembershipEmail extends CRM_Member_Form_Task {
       'select',
       'sender_email',
       E::ts('Sender'),
-      $this->getSenderOptions(),
+      MailUtils::getSenderEmails(),
       TRUE,
       ['class' => 'crm-select2 huge']
     );
@@ -393,21 +394,6 @@ class CRM_Mailbatch_Form_Task_MembershipEmail extends CRM_Member_Form_Task {
     }
 
     return $list;
-  }
-
-  /**
-   * Retrieves a list of the available/allowed sender e-mail addresses.
-   *
-   * @return array
-   *   A list of sender e-mail addresses, keyed by their IDs.
-   */
-  protected function getSenderOptions() {
-    $dropdown_list = [];
-    $from_email_addresses = CRM_Core_OptionGroup::values('from_email_address');
-    foreach ($from_email_addresses as $key => $from_email_address) {
-      $dropdown_list[$key] = htmlentities($from_email_address);
-    }
-    return $dropdown_list;
   }
 
   /**
