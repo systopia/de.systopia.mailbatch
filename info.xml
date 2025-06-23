@@ -28,10 +28,10 @@
   </classloader>
   <civix>
     <namespace>CRM/Mailbatch</namespace>
-    <format>23.02.1</format>
+    <format>25.01.1</format>
   </civix>
-  <upgrader>CRM_Mailbatch_Upgrader</upgrader>
+  <upgrader>CiviMix\Schema\Mailbatch\AutomaticUpgrader</upgrader>
   <mixins>
-    <mixin>smarty-v2@1.0.1</mixin>
+    <mixin>smarty-v2@1.0.3</mixin>
   </mixins>
 </extension>
