@@ -545,7 +545,7 @@ class CRM_Mailbatch_Form_Task_ContributionEmail extends CRM_Contribute_Form_Task
      */
     private function getSQLEmailSelectorCriteria($table_name = "email")
     {
-        $location_type_id = CRM_Utils_Array::value('location_type_id', $this->_submitValues);
+        $location_type_id = $this->_submitValues['location_type_id'] ?? NULL;
         switch ($location_type_id) {
             case 'P': // primary
                 return "{$table_name}.is_primary";
