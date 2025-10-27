@@ -576,7 +576,7 @@ class CRM_Mailbatch_Form_Task_MembershipEmail extends CRM_Member_Form_Task {
    *   A (safe) SQL clause (as long as $table_name is safe).
    */
   private function getSQLEmailSelectorCriteria($table_name = "email") {
-    $location_type_id = CRM_Utils_Array::value('location_type_id', $this->_submitValues);
+    $location_type_id = $this->_submitValues['location_type_id'] ?? NULL;
     switch ($location_type_id) {
       case 'P': // primary
         return "{$table_name}.is_primary";
