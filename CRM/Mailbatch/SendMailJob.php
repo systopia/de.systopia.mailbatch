@@ -227,7 +227,7 @@ class CRM_Mailbatch_SendMailJob
                 'source_record_id'  => $source_record_id,
             ];
             civicrm_api3('Activity', 'create', $activity_data);
-        } catch (CiviCRM_API3_Exception $ex) {
+        } catch (CRM_Core_Exception $ex) {
             Civi::log()->debug("Couldn't create activity: " . json_encode($activity_data) . ' - error was: ' . $ex->getMessage());
         }
     }
