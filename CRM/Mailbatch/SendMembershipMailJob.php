@@ -13,6 +13,8 @@
 | written permission from the original author(s).        |
 +--------------------------------------------------------*/
 
+declare(strict_types = 1);
+
 use Civi\Mailbatch\MailUtils;
 use CRM_Mailbatch_ExtensionUtil as E;
 
@@ -21,13 +23,14 @@ use CRM_Mailbatch_ExtensionUtil as E;
  */
 class CRM_Mailbatch_SendMembershipMailJob extends CRM_Mailbatch_SendMailJob {
 
-  const MEMBERSHIP_ID = 0;
+  private const MEMBERSHIP_ID = 0;
 
-  const CONTACT_ID = 1;
+  private const CONTACT_ID = 1;
 
-  const EMAIL = 2;
+  private const EMAIL = 2;
 
-  /** @var array list of tuples (membership_id, contact_id, email) */
+  /**
+   * @var array list of tuples (membership_id, contact_id, email) */
   protected $membership_contact_email_tuples;
 
   public function __construct($membership_contact_email_tuples, $config, $title) {
@@ -40,6 +43,7 @@ class CRM_Mailbatch_SendMembershipMailJob extends CRM_Mailbatch_SendMailJob {
    *
    * @return true
    */
+  // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh, Generic.Metrics.NestingLevel.TooHigh
   public function run(): bool {
     if (!empty($this->membership_contact_email_tuples)) {
       // Load the relevant contacts.
@@ -71,10 +75,6 @@ class CRM_Mailbatch_SendMembershipMailJob extends CRM_Mailbatch_SendMailJob {
       $mail_sending_failed = [];
       if (class_exists('Civi\Mailattachment\Form\Attachments')) {
         $attachment_types = \Civi\Mailattachment\Form\Attachments::attachmentTypes();
-        // TODO: Pre-cache attachments for all contacts in the batch, wrapped in try...catch.
-        //                foreach ($this->config['attachments'] as $attachment_id => $attachment_values) {
-        //                  $attachment_type['controller']::preCacheAttachments(['contacts' => $contacts['values']], $attachment_values)
-        //                }
       }
       foreach ($this->membership_contact_email_tuples as $contact_email_tuple) {
         try {
@@ -103,7 +103,7 @@ class CRM_Mailbatch_SendMembershipMailJob extends CRM_Mailbatch_SendMailJob {
           if (class_exists('Civi\Mailattachment\Form\Attachments')) {
             foreach ($this->config['attachments'] as $attachment_id => $attachment_values) {
               $attachment_type = $attachment_types[$attachment_values['type']];
-              /* @var \Civi\Mailattachment\AttachmentType\AttachmentTypeInterface $controller */
+              /** @var \Civi\Mailattachment\AttachmentType\AttachmentTypeInterface $controller */
               $controller = $attachment_type['controller'];
               if (
                 !($attachment = $controller::buildAttachment(
@@ -134,7 +134,8 @@ class CRM_Mailbatch_SendMembershipMailJob extends CRM_Mailbatch_SendMailJob {
           // Mark as success.
           $mail_successfully_sent[] = $membership_id;
 
-        } catch (Exception $exception) {
+        }
+        catch (Exception $exception) {
           // This shouldn't happen, sendMessageTo has its own error handling.
           $mail_sending_failed[] = $membership_id;
           $this->errors[$membership_id] = $exception->getMessage();
@@ -175,18 +176,18 @@ class CRM_Mailbatch_SendMembershipMailJob extends CRM_Mailbatch_SendMailJob {
 
       if (!empty($mail_sending_failed) && !empty($this->config['failed_activity_type_id'])) {
         // Render list of errors.
-        $details = '<p>' . E::ts("The following errors occurred (with contact/membership IDs):") . '</p><ul>';
+        $details = '<p>' . E::ts('The following errors occurred (with contact/membership IDs):') . '</p><ul>';
         foreach ($this->errors as $membership_id => $error) {
           $contact_id = $this->getContactIdFromMembership($membership_id);
           $details .= '<li>'
-            . E::ts("Membership [%1] (Contact [%2]): %3", [
+            . E::ts('Membership [%1] (Contact [%2]): %3', [
               1 => $membership_id,
               2 => $contact_id,
               3 => $error,
             ])
             . '</li>';
         }
-        $details .= "</ul></p>";
+        $details .= '</ul></p>';
 
         if (!empty($this->config['activity_grouped'])) {
           // Create one grouped activity.
@@ -210,7 +211,7 @@ class CRM_Mailbatch_SendMembershipMailJob extends CRM_Mailbatch_SendMailJob {
               $this->config['sender_contact_id'],
               [$contact_id],
               'Scheduled',
-              E::ts("Error was: %1", [1 => $this->errors[$membership_id]]),
+              E::ts('Error was: %1', [1 => $this->errors[$membership_id]]),
               $this->config['failed_activity_assignee']
             );
           }
@@ -264,4 +265,5 @@ class CRM_Mailbatch_SendMembershipMailJob extends CRM_Mailbatch_SendMailJob {
     // We shouldn't even get here.
     return CRM_Core_DAO::singleValueQuery("SELECT contact_id FROM civicrm_membership WHERE id = {$membership_id}");
   }
+
 }

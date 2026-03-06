@@ -14,9 +14,12 @@
 | written permission from the original author(s).        |
 +--------------------------------------------------------*/
 
-require_once 'mailbatch.civix.php';
+declare(strict_types = 1);
 
-// phpcs:disable
+// phpcs:disable PSR1.Files.SideEffects
+require_once 'mailbatch.civix.php';
+// phpcs:enable
+
 use CRM_Mailbatch_ExtensionUtil as E;
 
 // phpcs:enable
@@ -26,9 +29,8 @@ use CRM_Mailbatch_ExtensionUtil as E;
  *
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_config/
  */
-function mailbatch_civicrm_config(&$config)
-{
-    _mailbatch_civix_civicrm_config($config);
+function mailbatch_civicrm_config(&$config) {
+  _mailbatch_civix_civicrm_config($config);
 }
 
 /**
@@ -36,9 +38,8 @@ function mailbatch_civicrm_config(&$config)
  *
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_install
  */
-function mailbatch_civicrm_install()
-{
-    _mailbatch_civix_civicrm_install();
+function mailbatch_civicrm_install() {
+  _mailbatch_civix_civicrm_install();
 }
 
 /**
@@ -46,42 +47,39 @@ function mailbatch_civicrm_install()
  *
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_enable
  */
-function mailbatch_civicrm_enable()
-{
-    _mailbatch_civix_civicrm_enable();
+function mailbatch_civicrm_enable() {
+  _mailbatch_civix_civicrm_enable();
 }
 
 /**
- * Implementation of hook_civicrm_searchTasks,
- *  to inject our 'Send E-Mail' task
+ * Implements hook_civicrm_searchTasks().
  */
-function mailbatch_civicrm_searchTasks($objectType, &$tasks)
-{
-    // Add "Send E-Mail" task to contact search result.
-    if ($objectType == 'contact') {
-        $tasks[] = [
-            'title' => E::ts('Send E-Mail (via MailBatch)'),
-            'class' => 'CRM_Mailbatch_Form_Task_ContactEmail',
-            'result' => false
-        ];
-        return;
-    }
+function mailbatch_civicrm_searchTasks($objectType, &$tasks) {
+  // Add "Send E-Mail" task to contact search result.
+  if ($objectType == 'contact') {
+    $tasks[] = [
+      'title' => E::ts('Send E-Mail (via MailBatch)'),
+      'class' => 'CRM_Mailbatch_Form_Task_ContactEmail',
+      'result' => FALSE,
+    ];
+    return;
+  }
 
-    // Add "Send E-Mail" task to contribution search result.
-    if ($objectType == 'contribution') {
-        $tasks[] = [
-            'title' => E::ts('Send E-Mail (via MailBatch)'),
-            'class' => 'CRM_Mailbatch_Form_Task_ContributionEmail',
-            'result' => false
-        ];
-    }
+  // Add "Send E-Mail" task to contribution search result.
+  if ($objectType == 'contribution') {
+    $tasks[] = [
+      'title' => E::ts('Send E-Mail (via MailBatch)'),
+      'class' => 'CRM_Mailbatch_Form_Task_ContributionEmail',
+      'result' => FALSE,
+    ];
+  }
 
-    // Add "Send E-Mail" task to membership search result
-    if ($objectType == 'membership') {
-        $tasks[] = [
-            'title' => E::ts('Send E-Mail (via MailBatch)'),
-            'class' => 'CRM_Mailbatch_Form_Task_MembershipEmail',
-            'result' => false
-        ];
-    }
+  // Add "Send E-Mail" task to membership search result
+  if ($objectType == 'membership') {
+    $tasks[] = [
+      'title' => E::ts('Send E-Mail (via MailBatch)'),
+      'class' => 'CRM_Mailbatch_Form_Task_MembershipEmail',
+      'result' => FALSE,
+    ];
+  }
 }
