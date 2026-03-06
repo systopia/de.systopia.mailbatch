@@ -74,6 +74,8 @@ jobs:
             "civicrm/civicrm-packages:${{ inputs.civicrm-version }}"
         fi
 
+        git clone --depth=1 https://github.com/systopia/de.systopia.mailattachment.git ../de.systopia.mailattachment
+
         # Run with --no-scripts so ComposerHelper doesn't prevent installation
         # of civicrm packages.
         composer update --no-scripts --no-progress --prefer-dist --${{ matrix.prefer }} --optimize-autoloader --ignore-platform-reqs

@@ -50,7 +50,7 @@ class CRM_Mailbatch_Form_Task_MembershipEmail extends CRM_Member_Form_Task {
       'select',
       'sender_email',
       E::ts('Sender'),
-      MailUtils::getSenderEmails(),
+      MailUtils::getSenderOptions(),
       TRUE,
       ['class' => 'crm-select2 huge']
     );
@@ -244,7 +244,7 @@ class CRM_Mailbatch_Form_Task_MembershipEmail extends CRM_Member_Form_Task {
     Civi::settings()
       ->set('batchmail_sender_reply_to', $values['sender_reply_to']);
     Civi::settings()
-      ->set('batchmail_location_type_id', CRM_Utils_Array::value('location_type_id', $values, 0));
+      ->set('batchmail_location_type_id', $values['location_type_id'] ?? 0);
     Civi::settings()
       ->set('batchmail_sent_activity_type_id', $values['sent_activity_type_id']);
     Civi::settings()
@@ -264,7 +264,7 @@ class CRM_Mailbatch_Form_Task_MembershipEmail extends CRM_Member_Form_Task {
 
     if (class_exists('Civi\Mailattachment\Form\Attachments')) {
       Civi::settings()
-        ->set('batchmail_send_wo_attachment', CRM_Utils_Array::value('send_wo_attachment', $values, 0));
+        ->set('batchmail_send_wo_attachment', $values['send_wo_attachment'] ?? 0);
       $values['attachments'] = \Civi\Mailattachment\Form\Attachments::processAttachments($this);
     }
 
@@ -308,6 +308,7 @@ class CRM_Mailbatch_Form_Task_MembershipEmail extends CRM_Member_Form_Task {
     $membership_list = implode(',', $this->_memberIds);
     $EMAIL_SELECTOR_CRITERIA = $this->getSQLEmailSelectorCriteria();
     CRM_Core_DAO::disableFullGroupByMode();
+    /** @var CRM_Core_DAO $contact_query */
     $contact_query = CRM_Core_DAO::executeQuery("
             SELECT
                    membership.id AS membership_id,
@@ -476,6 +477,7 @@ class CRM_Mailbatch_Form_Task_MembershipEmail extends CRM_Member_Form_Task {
     $contacts_without_email = [];
     $EMAIL_SELECTOR_CRITERIA = $this->getSQLEmailSelectorCriteria();
     $membership_id_list = implode(',', $this->_memberIds);
+    /** @var CRM_Core_DAO $contact_query */
     $contact_query = CRM_Core_DAO::executeQuery("
             SELECT COUNT(DISTINCT(contact.id)) AS contact_id
             FROM civicrm_membership membership

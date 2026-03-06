@@ -125,9 +125,9 @@ class CRM_Mailbatch_SendMailJob {
             'toName'            => $contact['display_name'],
             'toEmail'           => $contact['email'],
             'from'              => $sender,
-            'replyTo'           => CRM_Utils_Array::value('sender_reply_to', $this->config, ''),
-            'cc'                => CRM_Utils_Array::value('sender_cc', $this->config, ''),
-            'bcc'               => CRM_Utils_Array::value('sender_bcc', $this->config, ''),
+            'replyTo'           => $this->config['sender_reply_to'] ?? '',
+            'cc'                => $this->config['sender_cc'] ?? '',
+            'bcc'               => $this->config['sender_bcc'] ?? '',
             'contactId'         => $contact['id'],
             'tplParams'         => [
               'contact_id' => $contact['id'],
@@ -153,7 +153,7 @@ class CRM_Mailbatch_SendMailJob {
               && empty($this->config['send_wo_attachment'])
               ) {
                 // no attachment -> cannot send
-                throw new Exception(
+                throw new \RuntimeException(
                 E::ts("Attachment '%1' could not be generated or found.", [
                   1 => $attachment_id,
                 ])
@@ -171,6 +171,7 @@ class CRM_Mailbatch_SendMailJob {
 
         }
         catch (Exception $exception) {
+          // @ignoreException
           // this shouldn't happen, sendMessageTo has it's own error handling
           $mail_sending_failed[] = $contact['id'];
           $this->errors[$contact['id']] = $exception->getMessage();

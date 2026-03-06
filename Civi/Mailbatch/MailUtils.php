@@ -19,6 +19,8 @@ declare(strict_types = 1);
 
 namespace Civi\Mailbatch;
 
+use Civi\Api4\OptionValue;
+
 class MailUtils {
 
   /**

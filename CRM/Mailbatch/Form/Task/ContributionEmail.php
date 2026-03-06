@@ -229,7 +229,7 @@ class CRM_Mailbatch_Form_Task_ContributionEmail extends CRM_Contribute_Form_Task
     Civi::settings()->set('batchmail_sender_cc', $values['sender_cc']);
     Civi::settings()->set('batchmail_sender_bcc', $values['sender_bcc']);
     Civi::settings()->set('batchmail_sender_reply_to', $values['sender_reply_to']);
-    Civi::settings()->set('batchmail_location_type_id', CRM_Utils_Array::value('location_type_id', $values, 0));
+    Civi::settings()->set('batchmail_location_type_id', $values['location_type_id'] ?? 0);
     Civi::settings()->set('batchmail_sent_activity_type_id', $values['sent_activity_type_id']);
     Civi::settings()->set('batchmail_sent_activity_subject', $values['sent_activity_subject']);
     Civi::settings()->set('batchmail_failed_activity_type_id', $values['failed_activity_type_id']);
@@ -241,7 +241,7 @@ class CRM_Mailbatch_Form_Task_ContributionEmail extends CRM_Contribute_Form_Task
     }
 
     if (class_exists('Civi\Mailattachment\Form\Attachments')) {
-      Civi::settings()->set('batchmail_send_wo_attachment', CRM_Utils_Array::value('send_wo_attachment', $values, 0));
+      Civi::settings()->set('batchmail_send_wo_attachment', $values['send_wo_attachment'] ?? 0);
       $values['attachments'] = \Civi\Mailattachment\Form\Attachments::processAttachments($this);
     }
 
@@ -284,6 +284,7 @@ class CRM_Mailbatch_Form_Task_ContributionEmail extends CRM_Contribute_Form_Task
     $contribution_list = implode(',', $this->_contributionIds);
     $EMAIL_SELECTOR_CRITERIA = $this->getSQLEmailSelectorCriteria();
     CRM_Core_DAO::disableFullGroupByMode();
+    /** @var CRM_Core_DAO $contact_query */
     $contact_query = CRM_Core_DAO::executeQuery("
             SELECT
                    contribution.id AS contribution_id,
@@ -441,6 +442,7 @@ class CRM_Mailbatch_Form_Task_ContributionEmail extends CRM_Contribute_Form_Task
     $contacts_without_email = [];
     $EMAIL_SELECTOR_CRITERIA = $this->getSQLEmailSelectorCriteria();
     $contribution_id_list = implode(',', $this->_contributionIds);
+    /** @var CRM_Core_DAO $contact_query */
     $contact_query = CRM_Core_DAO::executeQuery("
             SELECT COUNT(DISTINCT(contact.id)) AS contact_id
             FROM civicrm_contribution contribution

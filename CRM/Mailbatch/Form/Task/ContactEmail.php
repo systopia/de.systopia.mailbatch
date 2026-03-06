@@ -210,7 +210,7 @@ class CRM_Mailbatch_Form_Task_ContactEmail extends CRM_Contact_Form_Task {
     }
 
     if (class_exists('Civi\Mailattachment\Form\Attachments')) {
-      Civi::settings()->set('batchmail_send_wo_attachment', CRM_Utils_Array::value('send_wo_attachment', $values, 0));
+      Civi::settings()->set('batchmail_send_wo_attachment', $values['send_wo_attachment'] ?? 0);
       $values['attachments'] = \Civi\Mailattachment\Form\Attachments::processAttachments($this);
     }
 
@@ -229,7 +229,7 @@ class CRM_Mailbatch_Form_Task_ContactEmail extends CRM_Contact_Form_Task {
     // init a queue
     $queue = CRM_Queue_Service::singleton()->create([
       'type' => 'Sql',
-      'name' => 'mailbatch_email_task_' . CRM_Core_Session::singleton()->getLoggedInContactID(),
+      'name' => 'mailbatch_email_task_' . CRM_Core_Session::getLoggedInContactID(),
       'reset' => TRUE,
     ]);
     // add a dummy item to display the 'upcoming' message
@@ -245,6 +245,7 @@ class CRM_Mailbatch_Form_Task_ContactEmail extends CRM_Contact_Form_Task {
 
     // run query to get all contacts
     $contact_id_list = implode(',', $this->_contactIds);
+    /** @var CRM_Core_DAO $contact_query */
     $contact_query = CRM_Core_DAO::executeQuery("
             SELECT contact.id AS contact_id
             FROM civicrm_contact contact
@@ -380,6 +381,7 @@ class CRM_Mailbatch_Form_Task_ContactEmail extends CRM_Contact_Form_Task {
   private function getNoEmailContacts() {
     $contacts_without_email = [];
     $full_contact_id_list = implode(',', $this->_contactIds);
+    /** @var CRM_Core_DAO $contact_query */
     $contact_query = CRM_Core_DAO::executeQuery("
             SELECT DISTINCT(contact.id) contact_id
             FROM civicrm_contact contact
