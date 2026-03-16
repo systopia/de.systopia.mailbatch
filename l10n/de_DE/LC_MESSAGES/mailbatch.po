@@ -13,8 +13,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.3\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.0.1\n"
 
 #: CRM/Mailbatch/Form/Task/ContactEmail.php
 msgid "Send e-mail to %1 contacts"
@@ -231,6 +231,7 @@ msgstr "E-Mail versenden (via MailBatch)"
 
 #: templates/CRM/Mailbatch/Form/Task/ContactEmail.hlp
 #: templates/CRM/Mailbatch/Form/Task/ContributionEmail.hlp
+#: templates/CRM/Mailbatch/Form/Task/MembershipEmail.hlp
 msgid ""
 "If this is checked, the email will be sent, even if the attachment is not "
 "found."
@@ -240,6 +241,7 @@ msgstr ""
 
 #: templates/CRM/Mailbatch/Form/Task/ContactEmail.hlp
 #: templates/CRM/Mailbatch/Form/Task/ContributionEmail.hlp
+#: templates/CRM/Mailbatch/Form/Task/MembershipEmail.hlp
 msgid "Otherwise it will be not sent, and receive an error activity instead."
 msgstr ""
 "Andernfalls wird gar keine E-Mail versandt, und stattdessen eine "
@@ -247,6 +249,7 @@ msgstr ""
 
 #: templates/CRM/Mailbatch/Form/Task/ContactEmail.hlp
 #: templates/CRM/Mailbatch/Form/Task/ContributionEmail.hlp
+#: templates/CRM/Mailbatch/Form/Task/MembershipEmail.hlp
 msgid ""
 "SMARTY is a template language to provide highly personalised content. Only "
 "turn this on, if you know what you're doing."
@@ -256,6 +259,7 @@ msgstr ""
 
 #: templates/CRM/Mailbatch/Form/Task/ContactEmail.hlp
 #: templates/CRM/Mailbatch/Form/Task/ContributionEmail.hlp
+#: templates/CRM/Mailbatch/Form/Task/MembershipEmail.hlp
 msgid ""
 "SMARTY can negatively interact with inline html styling or font "
 "declarations, so if you don't have straightforward HTML content, you might "
@@ -268,6 +272,7 @@ msgstr ""
 
 #: templates/CRM/Mailbatch/Form/Task/ContactEmail.hlp
 #: templates/CRM/Mailbatch/Form/Task/ContributionEmail.hlp
+#: templates/CRM/Mailbatch/Form/Task/MembershipEmail.hlp
 msgid ""
 "You can set another subject for activities contacts that didn't have a valid "
 "email address in the first place."
@@ -277,6 +282,7 @@ msgstr ""
 
 #: templates/CRM/Mailbatch/Form/Task/ContactEmail.hlp
 #: templates/CRM/Mailbatch/Form/Task/ContributionEmail.hlp
+#: templates/CRM/Mailbatch/Form/Task/MembershipEmail.hlp
 msgid ""
 "If you leave this empty, no activity will be created in for those contacts."
 msgstr ""
@@ -285,6 +291,7 @@ msgstr ""
 
 #: templates/CRM/Mailbatch/Form/Task/ContactEmail.tpl
 #: templates/CRM/Mailbatch/Form/Task/ContributionEmail.tpl
+#: templates/CRM/Mailbatch/Form/Task/MembershipEmail.tpl
 msgid "Warning:"
 msgstr "Warnung:"
 
@@ -298,21 +305,25 @@ msgstr ""
 
 #: templates/CRM/Mailbatch/Form/Task/ContactEmail.tpl
 #: templates/CRM/Mailbatch/Form/Task/ContributionEmail.tpl
+#: templates/CRM/Mailbatch/Form/Task/MembershipEmail.tpl
 msgid "Mailing Properties"
 msgstr "E-Mail Einstellungen"
 
 #: templates/CRM/Mailbatch/Form/Task/ContactEmail.tpl
 #: templates/CRM/Mailbatch/Form/Task/ContributionEmail.tpl
+#: templates/CRM/Mailbatch/Form/Task/MembershipEmail.tpl
 msgid "Content"
 msgstr "Inhalt"
 
 #: templates/CRM/Mailbatch/Form/Task/ContactEmail.tpl
 #: templates/CRM/Mailbatch/Form/Task/ContributionEmail.tpl
+#: templates/CRM/Mailbatch/Form/Task/MembershipEmail.tpl
 msgid "Attachments"
 msgstr "Dateianhänge"
 
 #: templates/CRM/Mailbatch/Form/Task/ContactEmail.tpl
 #: templates/CRM/Mailbatch/Form/Task/ContributionEmail.tpl
+#: templates/CRM/Mailbatch/Form/Task/MembershipEmail.tpl
 msgid ""
 "If you would like to add file attachments to e-mails, consider installing "
 "the %1 extension which provides a framework for different attachment types."
@@ -327,20 +338,17 @@ msgstr "Dies beinhaltet z. B. das Anhängen bestehender Dateien pro Kontakt."
 
 #: templates/CRM/Mailbatch/Form/Task/ContactEmail.tpl
 #: templates/CRM/Mailbatch/Form/Task/ContributionEmail.tpl
+#: templates/CRM/Mailbatch/Form/Task/MembershipEmail.tpl
 msgid "Activities"
 msgstr "Aktivitäten"
 
 #: templates/CRM/Mailbatch/Form/Task/ContributionEmail.tpl
-#, fuzzy
-#| msgid ""
-#| "%1 contribution(s) belong to a contact that has no viable email address, "
-#| "an email will not be sent for those contributions"
 msgid ""
 "%1 contribution(s) belong to a contact that has no viable e-mail address, e-"
 "mail will not be sent for those contributions."
 msgstr ""
-"Bei %1 Zuwendungen hat der zugehörige Kontakt keine (aktive) E-Mail-Adresse; "
-"diesen Kontakten wird keine E-Mail geschickt."
+"Bei %1 Zuwendung(en) hat der zugehörige Kontakt keine (aktive) E-Mail-"
+"Adresse; diesen Kontakten wird keine E-Mail geschickt."
 
 #: templates/CRM/Mailbatch/Form/Task/ContributionEmail.tpl
 msgid ""
@@ -349,6 +357,20 @@ msgid ""
 msgstr ""
 "Dies beinhaltet z. B. das Anhängen bestehender Dateien pro Kontakt oder "
 "Zuwendung, und CiviCRM-Rechnungen."
+
+#: templates/CRM/Mailbatch/Form/Task/MembershipEmail.tpl
+msgid ""
+"%1 membership(s) belong to a contact that has no viable e-mail address, e-"
+"mail will not be sent for those memberships."
+msgstr ""
+"Bei %1 Mitgliedschaft(en) hat der zugehörige Kontakt keine (aktive) E-Mail-"
+"Adresse; diesen Kontakten wird keine E-Mail geschickt."
+
+#: templates/CRM/Mailbatch/Form/Task/MembershipEmail.tpl
+msgid "This includes e.g. attaching existing files per contact or membership."
+msgstr ""
+"Dies beinhaltet z. B. das Anhängen bestehender Dateien pro Kontakt oder "
+"Mitgliedschaft."
 
 #~ msgid "Type"
 #~ msgstr "Art"
