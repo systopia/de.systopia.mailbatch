@@ -22,20 +22,25 @@ use CRM_Mailbatch_ExtensionUtil as E;
  * Queue item for sending emails to contacts
  */
 class CRM_Mailbatch_SendMailJob {
+
   /**
-   * @var string job title */
+   * @var string job title
+   */
   public $title = '';
 
   /**
-   * @var array list of (int) contact IDs */
+   * @var array list of (int) contact IDs
+   */
   protected $contact_ids;
 
   /**
-   * @var array template to send to */
+   * @var array template to send to
+   */
   protected $config;
 
   /**
-   * @var array errors by contact ID */
+   * @var array errors by contact ID
+   */
   protected $errors;
 
   /**
@@ -46,7 +51,7 @@ class CRM_Mailbatch_SendMailJob {
    * @param int $sender_contact_id
    * @param array $target_contact_ids
    * @param string $status
-   * @param string $details
+   * @param string|null $details
    * @param string $assignees
    * @param int $source_record_id
    */
@@ -62,14 +67,14 @@ class CRM_Mailbatch_SendMailJob {
   ) {
     try {
       $activity_data = [
-        'activity_type_id'  => $activity_type_id,
-        'status_id'         => $status,
+        'activity_type_id' => $activity_type_id,
+        'status_id' => $status,
         'source_contact_id' => $sender_contact_id,
         'target_contact_id' => $target_contact_ids,
-        'assignee_id'       => empty($assignees) ? '' : explode(',', $assignees),
-        'subject'           => $subject,
-        'details'           => $details,
-        'source_record_id'  => $source_record_id,
+        'assignee_id' => empty($assignees) ? '' : explode(',', $assignees),
+        'subject' => $subject,
+        'details' => $details,
+        'source_record_id' => $source_record_id,
       ];
       civicrm_api3('Activity', 'create', $activity_data);
     }
@@ -88,17 +93,22 @@ class CRM_Mailbatch_SendMailJob {
 
   /**
    * Execute the batch of emails to be sent
+   *
    * @return true
    */
   // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh, Generic.Metrics.NestingLevel.TooHigh
   public function run(): bool {
     if (!empty($this->contact_ids)) {
       // load the contacts
-      $contacts = civicrm_api3('Contact', 'get', [
-        'id'           => ['IN' => $this->contact_ids],
-        'return'       => 'id,display_name,email',
-        'option.limit' => 0,
-      ]);
+      $contacts = civicrm_api3(
+        'Contact',
+        'get',
+        [
+          'id' => ['IN' => $this->contact_ids],
+          'return' => 'id,display_name,email',
+          'option.limit' => 0,
+        ]
+      );
 
       // get sender
       $from_addresses = MailUtils::getSenderOptions(FALSE);
@@ -120,16 +130,16 @@ class CRM_Mailbatch_SendMailJob {
         try {
           // send email
           $email_data = [
-            'id'                => $this->config['template_id'],
+            'id' => $this->config['template_id'],
             'messageTemplateID' => $this->config['template_id'],
-            'toName'            => $contact['display_name'],
-            'toEmail'           => $contact['email'],
-            'from'              => $sender,
-            'replyTo'           => $this->config['sender_reply_to'] ?? '',
-            'cc'                => $this->config['sender_cc'] ?? '',
-            'bcc'               => $this->config['sender_bcc'] ?? '',
-            'contactId'         => $contact['id'],
-            'tplParams'         => [
+            'toName' => $contact['display_name'],
+            'toEmail' => $contact['email'],
+            'from' => $sender,
+            'replyTo' => $this->config['sender_reply_to'] ?? '',
+            'cc' => $this->config['sender_cc'] ?? '',
+            'bcc' => $this->config['sender_bcc'] ?? '',
+            'contactId' => $contact['id'],
+            'tplParams' => [
               'contact_id' => $contact['id'],
             ],
           ];
@@ -141,22 +151,26 @@ class CRM_Mailbatch_SendMailJob {
               /** @var \Civi\Mailattachment\AttachmentType\AttachmentTypeInterface $controller */
               $controller = $attachment_type['controller'];
               if (
-              !($attachment = $controller::buildAttachment(
-              [
-                'entity_type' => 'contact',
-                'entity_id' => $contact['id'],
-                'entity' => $contact,
-                'entity_ids' => $this->contact_ids,
-              ],
-    $attachment_values)
-              )
-              && empty($this->config['send_wo_attachment'])
+                !($attachment = $controller::buildAttachment(
+                  [
+                    'entity_type' => 'contact',
+                    'entity_id' => $contact['id'],
+                    'entity' => $contact,
+                    'entity_ids' => $this->contact_ids,
+                  ],
+                  $attachment_values
+                )
+                )
+                && empty($this->config['send_wo_attachment'])
               ) {
                 // no attachment -> cannot send
                 throw new \RuntimeException(
-                E::ts("Attachment '%1' could not be generated or found.", [
-                  1 => $attachment_id,
-                ])
+                  E::ts(
+                    "Attachment '%1' could not be generated or found.",
+                    [
+                      1 => $attachment_id,
+                    ]
+                  )
                 );
               }
               $email_data['attachments'][] = $attachment;
@@ -168,7 +182,6 @@ class CRM_Mailbatch_SendMailJob {
 
           // mark as success
           $mail_successfully_sent[] = $contact['id'];
-
         }
         catch (Exception $exception) {
           // @ignoreException
@@ -183,22 +196,22 @@ class CRM_Mailbatch_SendMailJob {
         if (!empty($this->config['activity_grouped'])) {
           // create one grouped activity:
           self::createActivity(
-          $this->config['sent_activity_type_id'],
-          $this->config['sent_activity_subject'],
-          $this->config['sender_contact_id'],
-          $mail_successfully_sent,
-          'Completed'
+            $this->config['sent_activity_type_id'],
+            $this->config['sent_activity_subject'],
+            $this->config['sender_contact_id'],
+            $mail_successfully_sent,
+            'Completed'
           );
         }
         else {
           // create individual activities
           foreach ($mail_successfully_sent as $contact_id) {
             self::createActivity(
-            $this->config['sent_activity_type_id'],
-            $this->config['sent_activity_subject'],
-            $this->config['sender_contact_id'],
-            [$contact_id],
-            'Completed'
+              $this->config['sent_activity_type_id'],
+              $this->config['sent_activity_subject'],
+              $this->config['sender_contact_id'],
+              [$contact_id],
+              'Completed'
             );
           }
         }
@@ -220,31 +233,30 @@ class CRM_Mailbatch_SendMailJob {
         if (!empty($this->config['activity_grouped'])) {
           // create one grouped activity:
           self::createActivity(
-          $this->config['failed_activity_type_id'],
-          $this->config['failed_activity_subject'],
-          $this->config['sender_contact_id'],
-          $mail_sending_failed,
-          'Scheduled',
-          $details,
-          $this->config['failed_activity_assignee']
+            $this->config['failed_activity_type_id'],
+            $this->config['failed_activity_subject'],
+            $this->config['sender_contact_id'],
+            $mail_sending_failed,
+            'Scheduled',
+            $details,
+            $this->config['failed_activity_assignee']
           );
         }
         else {
           // create individual activities
           foreach ($mail_sending_failed as $contact_id) {
             self::createActivity(
-            $this->config['failed_activity_type_id'],
-            $this->config['failed_activity_subject'],
-            $this->config['sender_contact_id'],
-            [$contact_id],
-            'Scheduled',
-            E::ts('Error was: %1', [1 => $this->errors[$contact_id]]),
-            $this->config['failed_activity_assignee']
+              $this->config['failed_activity_type_id'],
+              $this->config['failed_activity_subject'],
+              $this->config['sender_contact_id'],
+              [$contact_id],
+              'Scheduled',
+              E::ts('Error was: %1', [1 => $this->errors[$contact_id]]),
+              $this->config['failed_activity_assignee']
             );
           }
         }
       }
-
     }
     return TRUE;
   }
