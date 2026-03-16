@@ -1,21 +1,20 @@
-site_name: Mailbatch
+site_name: MailBatch Tools
+site_description: A tool to send out batches of mails, e.g. with pre-generated attachments.
+site_author: SYSTOPIA
 repo_url: https://github.com/systopia/de.systopia.mailbatch
-site_description: 'Documentation for the Mailbatch Extension (de.systopia.mailbatch)'
-site_author: 'SYSTOPIA'
+
 theme:
-  name:
-    material
+  name: material
 
 nav:
   - Introduction: index.md
   - Usage: usage.md
-  
+
 markdown_extensions:
   - attr_list
   - admonition
   - def_list
-  - pymdownx.highlight:
-      guess_lang: false
+  - codehilite
   - toc:
       permalink: true
   - pymdownx.superfences

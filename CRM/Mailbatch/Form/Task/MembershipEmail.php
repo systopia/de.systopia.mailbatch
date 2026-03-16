@@ -14,6 +14,8 @@
 | written permission from the original author(s).        |
 +--------------------------------------------------------*/
 
+declare(strict_types = 1);
+
 use Civi\Mailbatch\MailUtils;
 use CRM_Mailbatch_ExtensionUtil as E;
 
@@ -25,7 +27,7 @@ class CRM_Mailbatch_Form_Task_MembershipEmail extends CRM_Member_Form_Task {
   /**
    * {@inheritDoc}
    */
-  function buildQuickForm() {
+  public function buildQuickForm() {
     $membership_count = count($this->_memberIds);
     $contact_count = $this->getContactCount();
 
@@ -48,7 +50,7 @@ class CRM_Mailbatch_Form_Task_MembershipEmail extends CRM_Member_Form_Task {
       'select',
       'sender_email',
       E::ts('Sender'),
-      MailUtils::getSenderEmails(),
+      MailUtils::getSenderOptions(),
       TRUE,
       ['class' => 'crm-select2 huge']
     );
@@ -136,7 +138,7 @@ class CRM_Mailbatch_Form_Task_MembershipEmail extends CRM_Member_Form_Task {
       'select',
       'activity_grouped',
       E::ts('Activity Style'),
-      [0 => E::ts("Individual"), 1 => E::ts("Grouped")],
+      [0 => E::ts('Individual'), 1 => E::ts('Grouped')],
       FALSE,
       ['class' => 'huge']
     );
@@ -212,7 +214,7 @@ class CRM_Mailbatch_Form_Task_MembershipEmail extends CRM_Member_Form_Task {
     $this->addButtons([
       [
         'type' => 'submit',
-        'name' => E::ts("Send %1 Emails", [1 => $membership_count - $no_email_count]),
+        'name' => E::ts('Send %1 Emails', [1 => $membership_count - $no_email_count]),
         'isDefault' => TRUE,
       ],
       [
@@ -226,7 +228,7 @@ class CRM_Mailbatch_Form_Task_MembershipEmail extends CRM_Member_Form_Task {
   /**
    * {@inheritDoc}
    */
-  function postProcess() {
+  public function postProcess() {
     $values = $this->exportValues();
     $values['sender_contact_id'] = CRM_Core_Session::getLoggedInContactID();
     $no_email_count = $this->getNoEmailCount();
@@ -242,7 +244,7 @@ class CRM_Mailbatch_Form_Task_MembershipEmail extends CRM_Member_Form_Task {
     Civi::settings()
       ->set('batchmail_sender_reply_to', $values['sender_reply_to']);
     Civi::settings()
-      ->set('batchmail_location_type_id', CRM_Utils_Array::value('location_type_id', $values, 0));
+      ->set('batchmail_location_type_id', $values['location_type_id'] ?? 0);
     Civi::settings()
       ->set('batchmail_sent_activity_type_id', $values['sent_activity_type_id']);
     Civi::settings()
@@ -262,7 +264,7 @@ class CRM_Mailbatch_Form_Task_MembershipEmail extends CRM_Member_Form_Task {
 
     if (class_exists('Civi\Mailattachment\Form\Attachments')) {
       Civi::settings()
-        ->set('batchmail_send_wo_attachment', CRM_Utils_Array::value('send_wo_attachment', $values, 0));
+        ->set('batchmail_send_wo_attachment', $values['send_wo_attachment'] ?? 0);
       $values['attachments'] = \Civi\Mailattachment\Form\Attachments::processAttachments($this);
     }
 
@@ -288,14 +290,14 @@ class CRM_Mailbatch_Form_Task_MembershipEmail extends CRM_Member_Form_Task {
     $queue = CRM_Queue_Service::singleton()->create([
       'type' => 'Sql',
       'name' => 'mailbatch_membership_email_task_' . CRM_Core_Session::singleton()
-          ->getLoggedInContactID(),
+        ->getLoggedInContactID(),
       'reset' => TRUE,
     ]);
     // add a dummy item to display the 'upcoming' message
     $queue->createItem(new CRM_Mailbatch_SendMembershipMailJob(
       [],
       $values['template_id'],
-      E::ts("Sending Emails %1 - %2", [
+      E::ts('Sending Emails %1 - %2', [
         1 => 1,
         // keep in mind that this is showing when the _next_ task is running
         2 => min($values['batch_size'], $membership_count),
@@ -306,6 +308,7 @@ class CRM_Mailbatch_Form_Task_MembershipEmail extends CRM_Member_Form_Task {
     $membership_list = implode(',', $this->_memberIds);
     $EMAIL_SELECTOR_CRITERIA = $this->getSQLEmailSelectorCriteria();
     CRM_Core_DAO::disableFullGroupByMode();
+    /** @var CRM_Core_DAO $contact_query */
     $contact_query = CRM_Core_DAO::executeQuery("
             SELECT
                    membership.id AS membership_id,
@@ -337,7 +340,7 @@ class CRM_Mailbatch_Form_Task_MembershipEmail extends CRM_Member_Form_Task {
           new CRM_Mailbatch_SendMembershipMailJob(
             $current_batch,
             $values,
-            E::ts("Sending Emails %1 - %2", [
+            E::ts('Sending Emails %1 - %2', [
               1 => $next_offset,
               // keep in mind that this is showing when the _next_ task is running
               2 => $next_offset + $values['batch_size'],
@@ -354,13 +357,13 @@ class CRM_Mailbatch_Form_Task_MembershipEmail extends CRM_Member_Form_Task {
       new CRM_Mailbatch_SendMembershipMailJob(
         $current_batch,
         $values,
-        E::ts("Finishing")
+        E::ts('Finishing')
       )
     );
 
     // start a runner on the queue
     $runner = new CRM_Queue_Runner([
-      'title' => E::ts("Sending %1 Event Emails", [1 => $membership_count]),
+      'title' => E::ts('Sending %1 Event Emails', [1 => $membership_count]),
       'queue' => $queue,
       'errorMode' => CRM_Queue_Runner::ERROR_ABORT,
       'onEndUrl' => html_entity_decode(CRM_Core_Session::singleton()
@@ -404,12 +407,10 @@ class CRM_Mailbatch_Form_Task_MembershipEmail extends CRM_Member_Form_Task {
    */
   private function getBatchSizes() {
     return [
-      '10' => E::ts("%1 E-Mails per Batch", [1 => 10]),
-      '25' => E::ts("%1 E-Mails per Batch", [1 => 25]),
-      '50' => E::ts("%1 E-Mails per Batch", [1 => 50]),
-      '100' => E::ts("%1 E-Mails per Batch", [1 => 100]),
-      //            '150' => E::ts("%1 E-Mails per Batch", [1 => 150]),
-      //            '250' => E::ts("%1 E-Mails per Batch", [1 => 250]),
+      '10' => E::ts('%1 E-Mails per Batch', [1 => 10]),
+      '25' => E::ts('%1 E-Mails per Batch', [1 => 25]),
+      '50' => E::ts('%1 E-Mails per Batch', [1 => 50]),
+      '100' => E::ts('%1 E-Mails per Batch', [1 => 100]),
     ];
   }
 
@@ -417,7 +418,7 @@ class CRM_Mailbatch_Form_Task_MembershipEmail extends CRM_Member_Form_Task {
    * Retrieves a list of activity types.
    */
   private function getActivityTypes() {
-    $types = ['' => E::ts("--disabled--")];
+    $types = ['' => E::ts('--disabled--')];
     $query = civicrm_api3('OptionValue', 'get', [
       'option_group_id' => 'activity_type',
       'is_reserved' => 0,
@@ -476,6 +477,7 @@ class CRM_Mailbatch_Form_Task_MembershipEmail extends CRM_Member_Form_Task {
     $contacts_without_email = [];
     $EMAIL_SELECTOR_CRITERIA = $this->getSQLEmailSelectorCriteria();
     $membership_id_list = implode(',', $this->_memberIds);
+    /** @var CRM_Core_DAO $contact_query */
     $contact_query = CRM_Core_DAO::executeQuery("
             SELECT COUNT(DISTINCT(contact.id)) AS contact_id
             FROM civicrm_membership membership
@@ -548,8 +550,8 @@ class CRM_Mailbatch_Form_Task_MembershipEmail extends CRM_Member_Form_Task {
    */
   private function getEmailTypes() {
     $location_types = [
-      'P' => E::ts("primary"),
-      'B' => E::ts("billing (flag)"),
+      'P' => E::ts('primary'),
+      'B' => E::ts('billing (flag)'),
     ];
 
     // add the specific ones
@@ -575,16 +577,19 @@ class CRM_Mailbatch_Form_Task_MembershipEmail extends CRM_Member_Form_Task {
    * @return string
    *   A (safe) SQL clause (as long as $table_name is safe).
    */
-  private function getSQLEmailSelectorCriteria($table_name = "email") {
+  private function getSQLEmailSelectorCriteria($table_name = 'email') {
     $location_type_id = $this->_submitValues['location_type_id'] ?? NULL;
     switch ($location_type_id) {
-      case 'P': // primary
+      // primary
+      case 'P':
         return "{$table_name}.is_primary";
 
-      case 'B': // billing
+      // billing
+      case 'B':
         return "{$table_name}.is_billing";
 
-      default:  // location type
+      // location type
+      default:
         $location_type_id = (int) $location_type_id;
         return "{$table_name}.location_type_id = {$location_type_id}";
     }

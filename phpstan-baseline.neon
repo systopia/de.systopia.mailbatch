@@ -1,0 +1,619 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Cannot access offset ''values'' on array\|int\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 2
+			path: CRM/Mailbatch/Form/Task/ContactEmail.php
+
+		-
+			message: '#^Construct empty\(\) is not allowed\. Use more strict comparison\.$#'
+			identifier: empty.notAllowed
+			count: 4
+			path: CRM/Mailbatch/Form/Task/ContactEmail.php
+
+		-
+			message: '#^Method CRM_Mailbatch_Form_Task_ContactEmail\:\:buildQuickForm\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: CRM/Mailbatch/Form/Task/ContactEmail.php
+
+		-
+			message: '#^Method CRM_Mailbatch_Form_Task_ContactEmail\:\:createNoEmailActivities\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: CRM/Mailbatch/Form/Task/ContactEmail.php
+
+		-
+			message: '#^Method CRM_Mailbatch_Form_Task_ContactEmail\:\:createNoEmailActivities\(\) has parameter \$assignees with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Mailbatch/Form/Task/ContactEmail.php
+
+		-
+			message: '#^Method CRM_Mailbatch_Form_Task_ContactEmail\:\:getActivityTypes\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: CRM/Mailbatch/Form/Task/ContactEmail.php
+
+		-
+			message: '#^Method CRM_Mailbatch_Form_Task_ContactEmail\:\:getBatchSizes\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Mailbatch/Form/Task/ContactEmail.php
+
+		-
+			message: '#^Method CRM_Mailbatch_Form_Task_ContactEmail\:\:getMessageTemplates\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Mailbatch/Form/Task/ContactEmail.php
+
+		-
+			message: '#^Method CRM_Mailbatch_Form_Task_ContactEmail\:\:getNoEmailContacts\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: CRM/Mailbatch/Form/Task/ContactEmail.php
+
+		-
+			message: '#^Method CRM_Mailbatch_Form_Task_ContactEmail\:\:getNoEmailCount\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: CRM/Mailbatch/Form/Task/ContactEmail.php
+
+		-
+			message: '#^Method CRM_Mailbatch_Form_Task_ContactEmail\:\:postProcess\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: CRM/Mailbatch/Form/Task/ContactEmail.php
+
+		-
+			message: '#^Parameter \#3 \$sender_contact_id of static method CRM_Mailbatch_SendMailJob\:\:createActivity\(\) expects int, int\|null given\.$#'
+			identifier: argument.type
+			count: 2
+			path: CRM/Mailbatch/Form/Task/ContactEmail.php
+
+		-
+			message: '#^Parameter \#7 \$assignees of static method CRM_Mailbatch_SendMailJob\:\:createActivity\(\) expects string, array given\.$#'
+			identifier: argument.type
+			count: 2
+			path: CRM/Mailbatch/Form/Task/ContactEmail.php
+
+		-
+			message: '#^Cannot access offset ''values'' on array\|int\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 3
+			path: CRM/Mailbatch/Form/Task/ContributionEmail.php
+
+		-
+			message: '#^Construct empty\(\) is not allowed\. Use more strict comparison\.$#'
+			identifier: empty.notAllowed
+			count: 4
+			path: CRM/Mailbatch/Form/Task/ContributionEmail.php
+
+		-
+			message: '#^Dynamic call to static method CRM_Core_Session\:\:getLoggedInContactID\(\)\.$#'
+			identifier: staticMethod.dynamicCall
+			count: 1
+			path: CRM/Mailbatch/Form/Task/ContributionEmail.php
+
+		-
+			message: '#^Loose comparison via "\=\=" is not allowed\.$#'
+			identifier: equal.notAllowed
+			count: 1
+			path: CRM/Mailbatch/Form/Task/ContributionEmail.php
+
+		-
+			message: '#^Method CRM_Mailbatch_Form_Task_ContributionEmail\:\:buildQuickForm\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: CRM/Mailbatch/Form/Task/ContributionEmail.php
+
+		-
+			message: '#^Method CRM_Mailbatch_Form_Task_ContributionEmail\:\:createNoEmailActivities\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: CRM/Mailbatch/Form/Task/ContributionEmail.php
+
+		-
+			message: '#^Method CRM_Mailbatch_Form_Task_ContributionEmail\:\:createNoEmailActivities\(\) has parameter \$assignees with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Mailbatch/Form/Task/ContributionEmail.php
+
+		-
+			message: '#^Method CRM_Mailbatch_Form_Task_ContributionEmail\:\:getActivityTypes\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: CRM/Mailbatch/Form/Task/ContributionEmail.php
+
+		-
+			message: '#^Method CRM_Mailbatch_Form_Task_ContributionEmail\:\:getBatchSizes\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Mailbatch/Form/Task/ContributionEmail.php
+
+		-
+			message: '#^Method CRM_Mailbatch_Form_Task_ContributionEmail\:\:getContactCount\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: CRM/Mailbatch/Form/Task/ContributionEmail.php
+
+		-
+			message: '#^Method CRM_Mailbatch_Form_Task_ContributionEmail\:\:getEmailTypes\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Mailbatch/Form/Task/ContributionEmail.php
+
+		-
+			message: '#^Method CRM_Mailbatch_Form_Task_ContributionEmail\:\:getMessageTemplates\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Mailbatch/Form/Task/ContributionEmail.php
+
+		-
+			message: '#^Method CRM_Mailbatch_Form_Task_ContributionEmail\:\:getNoEmailContacts\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: CRM/Mailbatch/Form/Task/ContributionEmail.php
+
+		-
+			message: '#^Method CRM_Mailbatch_Form_Task_ContributionEmail\:\:getNoEmailCount\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: CRM/Mailbatch/Form/Task/ContributionEmail.php
+
+		-
+			message: '#^Method CRM_Mailbatch_Form_Task_ContributionEmail\:\:postProcess\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: CRM/Mailbatch/Form/Task/ContributionEmail.php
+
+		-
+			message: '#^Parameter \#3 \$sender_contact_id of static method CRM_Mailbatch_SendMailJob\:\:createActivity\(\) expects int, int\|null given\.$#'
+			identifier: argument.type
+			count: 2
+			path: CRM/Mailbatch/Form/Task/ContributionEmail.php
+
+		-
+			message: '#^Parameter \#7 \$assignees of static method CRM_Mailbatch_SendMailJob\:\:createActivity\(\) expects string, array given\.$#'
+			identifier: argument.type
+			count: 2
+			path: CRM/Mailbatch/Form/Task/ContributionEmail.php
+
+		-
+			message: '#^Variable \$no_email_count in empty\(\) is never defined\.$#'
+			identifier: empty.variable
+			count: 1
+			path: CRM/Mailbatch/Form/Task/ContributionEmail.php
+
+		-
+			message: '#^Cannot access offset ''values'' on array\|int\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 3
+			path: CRM/Mailbatch/Form/Task/MembershipEmail.php
+
+		-
+			message: '#^Construct empty\(\) is not allowed\. Use more strict comparison\.$#'
+			identifier: empty.notAllowed
+			count: 4
+			path: CRM/Mailbatch/Form/Task/MembershipEmail.php
+
+		-
+			message: '#^Dynamic call to static method CRM_Core_Session\:\:getLoggedInContactID\(\)\.$#'
+			identifier: staticMethod.dynamicCall
+			count: 1
+			path: CRM/Mailbatch/Form/Task/MembershipEmail.php
+
+		-
+			message: '#^Loose comparison via "\=\=" is not allowed\.$#'
+			identifier: equal.notAllowed
+			count: 1
+			path: CRM/Mailbatch/Form/Task/MembershipEmail.php
+
+		-
+			message: '#^Method CRM_Mailbatch_Form_Task_MembershipEmail\:\:buildQuickForm\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: CRM/Mailbatch/Form/Task/MembershipEmail.php
+
+		-
+			message: '#^Method CRM_Mailbatch_Form_Task_MembershipEmail\:\:createNoEmailActivities\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: CRM/Mailbatch/Form/Task/MembershipEmail.php
+
+		-
+			message: '#^Method CRM_Mailbatch_Form_Task_MembershipEmail\:\:createNoEmailActivities\(\) has parameter \$assignees with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Mailbatch/Form/Task/MembershipEmail.php
+
+		-
+			message: '#^Method CRM_Mailbatch_Form_Task_MembershipEmail\:\:getActivityTypes\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: CRM/Mailbatch/Form/Task/MembershipEmail.php
+
+		-
+			message: '#^Method CRM_Mailbatch_Form_Task_MembershipEmail\:\:getBatchSizes\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Mailbatch/Form/Task/MembershipEmail.php
+
+		-
+			message: '#^Method CRM_Mailbatch_Form_Task_MembershipEmail\:\:getContactCount\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: CRM/Mailbatch/Form/Task/MembershipEmail.php
+
+		-
+			message: '#^Method CRM_Mailbatch_Form_Task_MembershipEmail\:\:getEmailTypes\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Mailbatch/Form/Task/MembershipEmail.php
+
+		-
+			message: '#^Method CRM_Mailbatch_Form_Task_MembershipEmail\:\:getMessageTemplates\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Mailbatch/Form/Task/MembershipEmail.php
+
+		-
+			message: '#^Method CRM_Mailbatch_Form_Task_MembershipEmail\:\:getNoEmailContacts\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Mailbatch/Form/Task/MembershipEmail.php
+
+		-
+			message: '#^Method CRM_Mailbatch_Form_Task_MembershipEmail\:\:postProcess\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: CRM/Mailbatch/Form/Task/MembershipEmail.php
+
+		-
+			message: '#^Parameter \#3 \$sender_contact_id of static method CRM_Mailbatch_SendMailJob\:\:createActivity\(\) expects int, int\|null given\.$#'
+			identifier: argument.type
+			count: 2
+			path: CRM/Mailbatch/Form/Task/MembershipEmail.php
+
+		-
+			message: '#^Parameter \#7 \$assignees of static method CRM_Mailbatch_SendMailJob\:\:createActivity\(\) expects string, array given\.$#'
+			identifier: argument.type
+			count: 2
+			path: CRM/Mailbatch/Form/Task/MembershipEmail.php
+
+		-
+			message: '#^Variable \$no_email_count in empty\(\) is never defined\.$#'
+			identifier: empty.variable
+			count: 1
+			path: CRM/Mailbatch/Form/Task/MembershipEmail.php
+
+		-
+			message: '#^Cannot access offset ''values'' on array\|int\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: CRM/Mailbatch/SendContributionMailJob.php
+
+		-
+			message: '#^Constant CRM_Mailbatch_SendContributionMailJob\:\:EMAIL is unused\.$#'
+			identifier: classConstant.unused
+			count: 1
+			path: CRM/Mailbatch/SendContributionMailJob.php
+
+		-
+			message: '#^Construct empty\(\) is not allowed\. Use more strict comparison\.$#'
+			identifier: empty.notAllowed
+			count: 9
+			path: CRM/Mailbatch/SendContributionMailJob.php
+
+		-
+			message: '#^Loose comparison via "\=\=" is not allowed\.$#'
+			identifier: equal.notAllowed
+			count: 1
+			path: CRM/Mailbatch/SendContributionMailJob.php
+
+		-
+			message: '#^Method CRM_Mailbatch_SendContributionMailJob\:\:__construct\(\) has parameter \$config with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: CRM/Mailbatch/SendContributionMailJob.php
+
+		-
+			message: '#^Method CRM_Mailbatch_SendContributionMailJob\:\:__construct\(\) has parameter \$contribution_contact_email_tuples with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: CRM/Mailbatch/SendContributionMailJob.php
+
+		-
+			message: '#^Method CRM_Mailbatch_SendContributionMailJob\:\:__construct\(\) has parameter \$title with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: CRM/Mailbatch/SendContributionMailJob.php
+
+		-
+			message: '#^Method CRM_Mailbatch_SendContributionMailJob\:\:getContactIdFromContribution\(\) should return int but returns null\.$#'
+			identifier: return.type
+			count: 1
+			path: CRM/Mailbatch/SendContributionMailJob.php
+
+		-
+			message: '#^Method CRM_Mailbatch_SendContributionMailJob\:\:getContactIdFromContribution\(\) should return int but returns string\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: CRM/Mailbatch/SendContributionMailJob.php
+
+		-
+			message: '#^Method CRM_Mailbatch_SendContributionMailJob\:\:getContactIdsFromContributions\(\) has parameter \$contribution_ids with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Mailbatch/SendContributionMailJob.php
+
+		-
+			message: '#^Method CRM_Mailbatch_SendContributionMailJob\:\:getContactIdsFromContributions\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Mailbatch/SendContributionMailJob.php
+
+		-
+			message: '#^Only booleans are allowed in a negated boolean, mixed given\.$#'
+			identifier: booleanNot.exprNotBoolean
+			count: 1
+			path: CRM/Mailbatch/SendContributionMailJob.php
+
+		-
+			message: '#^PHPDoc tag @var with type Civi\\Mailattachment\\AttachmentType\\AttachmentTypeInterface is not subtype of type string\.$#'
+			identifier: varTag.type
+			count: 1
+			path: CRM/Mailbatch/SendContributionMailJob.php
+
+		-
+			message: '#^Parameter \#1 \$context of static method Civi\\Mailattachment\\AttachmentType\\AttachmentTypeInterface\:\:buildAttachment\(\) expects array\{entity_type\: string, entity_id\: string, entity_ids\: list\<int\>\|null, entity\: array\<string, mixed\>\|null, extra\: array\<string, mixed\>\|null\}, array\{entity_type\: ''contribution'', entity_id\: mixed, entity_ids\: list, extra\: array\{contact_id\: mixed\}\} given\.$#'
+			identifier: argument.type
+			count: 1
+			path: CRM/Mailbatch/SendContributionMailJob.php
+
+		-
+			message: '#^Property CRM_Mailbatch_SendContributionMailJob\:\:\$contribution_contact_email_tuples type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Mailbatch/SendContributionMailJob.php
+
+		-
+			message: '#^Cannot access offset ''values'' on array\|int\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: CRM/Mailbatch/SendMailJob.php
+
+		-
+			message: '#^Construct empty\(\) is not allowed\. Use more strict comparison\.$#'
+			identifier: empty.notAllowed
+			count: 9
+			path: CRM/Mailbatch/SendMailJob.php
+
+		-
+			message: '#^Method CRM_Mailbatch_SendMailJob\:\:__construct\(\) has parameter \$config with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: CRM/Mailbatch/SendMailJob.php
+
+		-
+			message: '#^Method CRM_Mailbatch_SendMailJob\:\:__construct\(\) has parameter \$contact_ids with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: CRM/Mailbatch/SendMailJob.php
+
+		-
+			message: '#^Method CRM_Mailbatch_SendMailJob\:\:__construct\(\) has parameter \$title with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: CRM/Mailbatch/SendMailJob.php
+
+		-
+			message: '#^Method CRM_Mailbatch_SendMailJob\:\:createActivity\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: CRM/Mailbatch/SendMailJob.php
+
+		-
+			message: '#^Method CRM_Mailbatch_SendMailJob\:\:createActivity\(\) has parameter \$target_contact_ids with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Mailbatch/SendMailJob.php
+
+		-
+			message: '#^Only booleans are allowed in a negated boolean, mixed given\.$#'
+			identifier: booleanNot.exprNotBoolean
+			count: 1
+			path: CRM/Mailbatch/SendMailJob.php
+
+		-
+			message: '#^PHPDoc tag @var with type Civi\\Mailattachment\\AttachmentType\\AttachmentTypeInterface is not subtype of type string\.$#'
+			identifier: varTag.type
+			count: 1
+			path: CRM/Mailbatch/SendMailJob.php
+
+		-
+			message: '#^Parameter \#1 \$context of static method Civi\\Mailattachment\\AttachmentType\\AttachmentTypeInterface\:\:buildAttachment\(\) expects array\{entity_type\: string, entity_id\: string, entity_ids\: list\<int\>\|null, entity\: array\<string, mixed\>\|null, extra\: array\<string, mixed\>\|null\}, array\{entity_type\: ''contact'', entity_id\: mixed, entity\: mixed, entity_ids\: non\-empty\-array\} given\.$#'
+			identifier: argument.type
+			count: 1
+			path: CRM/Mailbatch/SendMailJob.php
+
+		-
+			message: '#^Property CRM_Mailbatch_SendMailJob\:\:\$config type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Mailbatch/SendMailJob.php
+
+		-
+			message: '#^Property CRM_Mailbatch_SendMailJob\:\:\$contact_ids type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Mailbatch/SendMailJob.php
+
+		-
+			message: '#^Property CRM_Mailbatch_SendMailJob\:\:\$errors type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Mailbatch/SendMailJob.php
+
+		-
+			message: '#^Cannot access offset ''values'' on array\|int\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: CRM/Mailbatch/SendMembershipMailJob.php
+
+		-
+			message: '#^Constant CRM_Mailbatch_SendMembershipMailJob\:\:EMAIL is unused\.$#'
+			identifier: classConstant.unused
+			count: 1
+			path: CRM/Mailbatch/SendMembershipMailJob.php
+
+		-
+			message: '#^Construct empty\(\) is not allowed\. Use more strict comparison\.$#'
+			identifier: empty.notAllowed
+			count: 9
+			path: CRM/Mailbatch/SendMembershipMailJob.php
+
+		-
+			message: '#^Loose comparison via "\=\=" is not allowed\.$#'
+			identifier: equal.notAllowed
+			count: 1
+			path: CRM/Mailbatch/SendMembershipMailJob.php
+
+		-
+			message: '#^Method CRM_Mailbatch_SendMembershipMailJob\:\:__construct\(\) has parameter \$config with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: CRM/Mailbatch/SendMembershipMailJob.php
+
+		-
+			message: '#^Method CRM_Mailbatch_SendMembershipMailJob\:\:__construct\(\) has parameter \$membership_contact_email_tuples with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: CRM/Mailbatch/SendMembershipMailJob.php
+
+		-
+			message: '#^Method CRM_Mailbatch_SendMembershipMailJob\:\:__construct\(\) has parameter \$title with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: CRM/Mailbatch/SendMembershipMailJob.php
+
+		-
+			message: '#^Method CRM_Mailbatch_SendMembershipMailJob\:\:getContactIdFromMembership\(\) should return int but returns null\.$#'
+			identifier: return.type
+			count: 1
+			path: CRM/Mailbatch/SendMembershipMailJob.php
+
+		-
+			message: '#^Method CRM_Mailbatch_SendMembershipMailJob\:\:getContactIdFromMembership\(\) should return int but returns string\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: CRM/Mailbatch/SendMembershipMailJob.php
+
+		-
+			message: '#^Method CRM_Mailbatch_SendMembershipMailJob\:\:getContactIdsFromMemberships\(\) has parameter \$membership_ids with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Mailbatch/SendMembershipMailJob.php
+
+		-
+			message: '#^Method CRM_Mailbatch_SendMembershipMailJob\:\:getContactIdsFromMemberships\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Mailbatch/SendMembershipMailJob.php
+
+		-
+			message: '#^Only booleans are allowed in a negated boolean, mixed given\.$#'
+			identifier: booleanNot.exprNotBoolean
+			count: 1
+			path: CRM/Mailbatch/SendMembershipMailJob.php
+
+		-
+			message: '#^PHPDoc tag @var with type Civi\\Mailattachment\\AttachmentType\\AttachmentTypeInterface is not subtype of type string\.$#'
+			identifier: varTag.type
+			count: 1
+			path: CRM/Mailbatch/SendMembershipMailJob.php
+
+		-
+			message: '#^Parameter \#1 \$context of static method Civi\\Mailattachment\\AttachmentType\\AttachmentTypeInterface\:\:buildAttachment\(\) expects array\{entity_type\: string, entity_id\: string, entity_ids\: list\<int\>\|null, entity\: array\<string, mixed\>\|null, extra\: array\<string, mixed\>\|null\}, array\{entity_type\: ''membership'', entity_id\: mixed, entity_ids\: list, extra\: array\{contact_id\: mixed\}\} given\.$#'
+			identifier: argument.type
+			count: 1
+			path: CRM/Mailbatch/SendMembershipMailJob.php
+
+		-
+			message: '#^Property CRM_Mailbatch_SendMembershipMailJob\:\:\$membership_contact_email_tuples type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: CRM/Mailbatch/SendMembershipMailJob.php
+
+		-
+			message: '#^Cannot access offset ''display_name'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: Civi/Mailbatch/MailUtils.php
+
+		-
+			message: '#^Cannot access offset ''email'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: Civi/Mailbatch/MailUtils.php
+
+		-
+			message: '#^Parameter \#2 \.\.\.\$values of function sprintf expects bool\|float\|int\|string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Civi/Mailbatch/MailUtils.php
+
+		-
+			message: '#^Parameter \#3 \.\.\.\$values of function sprintf expects bool\|float\|int\|string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Civi/Mailbatch/MailUtils.php
+
+		-
+			message: '#^Function mailbatch_civicrm_config\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: mailbatch.php
+
+		-
+			message: '#^Function mailbatch_civicrm_config\(\) has parameter \$config with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: mailbatch.php
+
+		-
+			message: '#^Function mailbatch_civicrm_enable\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: mailbatch.php
+
+		-
+			message: '#^Function mailbatch_civicrm_install\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: mailbatch.php
+
+		-
+			message: '#^Function mailbatch_civicrm_searchTasks\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: mailbatch.php
+
+		-
+			message: '#^Function mailbatch_civicrm_searchTasks\(\) has parameter \$objectType with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: mailbatch.php
+
+		-
+			message: '#^Function mailbatch_civicrm_searchTasks\(\) has parameter \$tasks with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: mailbatch.php
+
+		-
+			message: '#^Loose comparison via "\=\=" is not allowed\.$#'
+			identifier: equal.notAllowed
+			count: 3
+			path: mailbatch.php
